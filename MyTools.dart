@@ -505,3 +505,6 @@ bool IsConnectedToInternet() {
   }
   return true;
 }
+Future PhotoImageFromGalary() async {
+  return await ImagePicker().pickImage(source: ImageSource.gallery);
+}
