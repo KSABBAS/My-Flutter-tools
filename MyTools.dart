@@ -508,3 +508,200 @@ bool IsConnectedToInternet() {
 Future PhotoImageFromGalary() async {
   return await ImagePicker().pickImage(source: ImageSource.gallery);
 }
+class NavBar extends StatefulWidget {
+  NavBar({
+    super.key,
+    required this.pages,
+    required this.initIndex,
+    required this.iconsList,
+    this.orientation,
+    required this.height,
+    required this.width,
+    this.barColor,
+    this.sectedIconColor,
+    this.pageBackgroundColor,
+    this.iconBackgroundColor,
+    this.unselectedIconColor,
+    this.iconSize,
+    this.iconFrameHeight,
+    this.iconFrameWidth
+  });
+  List pages;
+  int initIndex;
+  List iconsList;
+  String? orientation;
+  double height;
+  double width;
+  double? iconFrameHeight;
+  double? iconFrameWidth;
+  Color? barColor;
+  Color? sectedIconColor;
+  Color? unselectedIconColor;
+  Color? iconBackgroundColor;
+  Color? pageBackgroundColor;
+  double? iconSize;
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
+  @override
+  Widget build(BuildContext context) {
+  int PageIndex = widget.initIndex;
+    late Widget BarBody;
+    if (widget.orientation == "vertical") {
+      print("===============================\nhor");
+      BarBody = Stack(
+        children: [
+          Expanded(
+              child: CMaker(
+                  color: widget.pageBackgroundColor ?? Colors.white,
+                  width: double.infinity,
+                  child: widget.pages[PageIndex])),
+          Positioned(
+            top: (PageHeight(context) - widget.height) / 2,
+            left: 20,
+            child: CMaker(
+              circularRadius: 20,
+              color: widget.barColor ?? Colors.white,
+              height: widget.height,
+              width: widget.width,
+              child: Column(
+                children: [
+                  Container(
+                    height: (widget.height - (widget.iconsList.length * (widget.iconFrameHeight??60))) /
+                        (widget.iconsList.length + 1),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: false,
+                      itemCount: widget.iconsList.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  print(index);
+                                  PageIndex = index;
+                                });
+                              },
+                              child: CMaker(
+                                  alignment: Alignment.center,
+                                  child: CMaker(
+                                    alignment: Alignment.center,
+                                    height: widget.iconFrameHeight??60,
+                                  width: widget.iconFrameWidth??60,
+                                      circularRadius: 15,
+                                      color: (PageIndex == index)
+                                          ? widget.iconBackgroundColor ??
+                                              Color.fromARGB(255, 0, 0, 0)
+                                          : widget.unselectedIconColor,
+                                      child: Icon(
+                                        widget.iconsList[index],
+                                        color: (PageIndex == index)
+                                            ? widget.sectedIconColor ??
+                                                Colors.white
+                                            : widget.unselectedIconColor ??
+                                                Colors.black,
+                                        size: widget.iconSize,
+                                      ))),
+                            ),
+                            Container(
+                              height: (widget.height -
+                                      (widget.iconsList.length * (widget.iconFrameHeight??60))) /
+                                  (widget.iconsList.length + 1),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      print("===============================\nhor");
+      BarBody = Stack(
+        children: [
+          Expanded(
+              child: CMaker(
+                  color: widget.pageBackgroundColor ?? Colors.white,
+                  width: double.infinity,
+                  child: widget.pages[PageIndex])),
+          Positioned(
+            left: (PageWidth(context) - widget.width) / 2,
+            bottom: 20,
+            child: CMaker(
+              circularRadius: 20,
+              color: widget.barColor ?? Colors.white,
+              height: widget.height,
+              width: widget.width,
+              child: Row(
+                children: [
+                  Container(
+                    width: (widget.width - (widget.iconsList.length * (widget.iconFrameWidth??60))) /
+                        (widget.iconsList.length + 1),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: false,
+                      itemCount: widget.iconsList.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  print(index);
+                                  PageIndex = index;
+                                });
+                              },
+                              child: CMaker(
+                                  alignment: Alignment.center,
+                                  child: CMaker(
+                                    alignment: Alignment.center,
+                                    height: widget.iconFrameHeight??60,
+                                  width: widget.iconFrameWidth??60,
+                                      circularRadius: 15,
+                                      color: (PageIndex == index)
+                                          ? widget.iconBackgroundColor ??
+                                              Color.fromARGB(255, 0, 0, 0)
+                                          : widget.unselectedIconColor,
+                                      child: Icon(
+                                        widget.iconsList[index],
+                                        color: (PageIndex == index)
+                                            ? widget.sectedIconColor ??
+                                                Colors.white
+                                            : widget.unselectedIconColor ??
+                                                Colors.black,
+                                        size: widget.iconSize,
+                                      ))),
+                            ),
+                            Container(
+                              width: (widget.width -
+                                      (widget.iconsList.length * (widget.iconFrameWidth??60))) /
+                                  (widget.iconsList.length + 1),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return BarBody;
+  }
+}
