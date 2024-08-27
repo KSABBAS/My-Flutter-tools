@@ -509,23 +509,22 @@ class _RButtonState extends State<RButton> {
 //   return await ImagePicker().pickImage(source: ImageSource.gallery);
 // }
 class NavBar extends StatefulWidget {
-  NavBar({
-    super.key,
-    required this.pages,
-    required this.initIndex,
-    required this.iconsList,
-    this.orientation,
-    required this.height,
-    required this.width,
-    this.barColor,
-    this.sectedIconColor,
-    this.pageBackgroundColor,
-    this.iconBackgroundColor,
-    this.unselectedIconColor,
-    this.iconSize,
-    this.iconFrameHeight,
-    this.iconFrameWidth
-  });
+  NavBar(
+      {super.key,
+      required this.pages,
+      required this.initIndex,
+      required this.iconsList,
+      this.orientation,
+      required this.height,
+      required this.width,
+      this.barColor,
+      this.sectedIconColor,
+      this.pageBackgroundColor,
+      this.iconBackgroundColor,
+      this.unselectedIconColor,
+      this.iconSize,
+      this.iconFrameHeight,
+      this.iconFrameWidth});
   List pages;
   int initIndex;
   List iconsList;
@@ -547,15 +546,15 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
-  int PageIndex = widget.initIndex;
+    int PageIndex = widget.initIndex;
     late Widget BarBody;
     if (widget.orientation == "vertical") {
       BarBody = Stack(
         children: [
           CMaker(
-                  color: widget.pageBackgroundColor ?? Colors.white,
-                  width: double.infinity,
-                  child: widget.pages[PageIndex]),
+              color: widget.pageBackgroundColor ?? Colors.white,
+              width: double.infinity,
+              child: widget.pages[PageIndex]),
           Positioned(
             top: (PageHeight(context) - widget.height) / 2,
             left: 20,
@@ -567,58 +566,64 @@ class _NavBarState extends State<NavBar> {
               child: Column(
                 children: [
                   Container(
-                    height: (widget.height - (widget.iconsList.length * (widget.iconFrameHeight??60))) /
+                    height: (widget.height -
+                            (widget.iconsList.length *
+                                (widget.iconFrameHeight ?? 60))) /
                         (widget.iconsList.length + 1),
                   ),
                   CMaker(
-                    height: widget.height-(widget.height - (widget.iconsList.length * (widget.iconFrameHeight??60))) /
-                        (widget.iconsList.length + 1),
-                      child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: false,
-                        itemCount: widget.iconsList.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    print(index);
-                                    PageIndex = index;
-                                  });
-                                },
-                                child: CMaker(
-                                    alignment: Alignment.center,
-                                    child: CMaker(
+                    height: widget.height -
+                        (widget.height -
+                                (widget.iconsList.length *
+                                    (widget.iconFrameHeight ?? 60))) /
+                            (widget.iconsList.length + 1),
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: false,
+                      itemCount: widget.iconsList.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  print(index);
+                                  PageIndex = index;
+                                });
+                              },
+                              child: CMaker(
+                                  alignment: Alignment.center,
+                                  child: CMaker(
                                       alignment: Alignment.center,
-                                      height: widget.iconFrameHeight??60,
-                                    width: widget.iconFrameWidth??60,
-                                        circularRadius: 15,
+                                      height: widget.iconFrameHeight ?? 60,
+                                      width: widget.iconFrameWidth ?? 60,
+                                      circularRadius: 15,
+                                      color: (PageIndex == index)
+                                          ? widget.iconBackgroundColor ??
+                                              Color.fromARGB(255, 0, 0, 0)
+                                          : widget.unselectedIconColor,
+                                      child: Icon(
+                                        widget.iconsList[index],
                                         color: (PageIndex == index)
-                                            ? widget.iconBackgroundColor ??
-                                                Color.fromARGB(255, 0, 0, 0)
-                                            : widget.unselectedIconColor,
-                                        child: Icon(
-                                          widget.iconsList[index],
-                                          color: (PageIndex == index)
-                                              ? widget.sectedIconColor ??
-                                                  Colors.white
-                                              : widget.unselectedIconColor ??
-                                                  Colors.black,
-                                          size: widget.iconSize,
-                                        ))),
-                              ),
-                              Container(
-                                height: (widget.height -
-                                        (widget.iconsList.length * (widget.iconFrameHeight??60))) /
-                                    (widget.iconsList.length + 1),
-                              )
-                            ],
-                          );
-                        },
-                      ),
+                                            ? widget.sectedIconColor ??
+                                                Colors.white
+                                            : widget.unselectedIconColor ??
+                                                Colors.black,
+                                        size: widget.iconSize,
+                                      ))),
+                            ),
+                            Container(
+                              height: (widget.height -
+                                      (widget.iconsList.length *
+                                          (widget.iconFrameHeight ?? 60))) /
+                                  (widget.iconsList.length + 1),
+                            )
+                          ],
+                        );
+                      },
                     ),
+                  ),
                 ],
               ),
             ),
@@ -629,10 +634,10 @@ class _NavBarState extends State<NavBar> {
       BarBody = Stack(
         children: [
           CMaker(
-            height: double.infinity,
-                  color: widget.pageBackgroundColor ?? Colors.white,
-                  width: double.infinity,
-                  child: widget.pages[PageIndex]),
+              height: double.infinity,
+              color: widget.pageBackgroundColor ?? Colors.white,
+              width: double.infinity,
+              child: widget.pages[PageIndex]),
           Positioned(
             left: (PageWidth(context) - widget.width) / 2,
             bottom: 20,
@@ -644,58 +649,64 @@ class _NavBarState extends State<NavBar> {
               child: Row(
                 children: [
                   Container(
-                    width: (widget.width - (widget.iconsList.length * (widget.iconFrameWidth??60))) /
+                    width: (widget.width -
+                            (widget.iconsList.length *
+                                (widget.iconFrameWidth ?? 60))) /
                         (widget.iconsList.length + 1),
                   ),
                   CMaker(
-                    width: widget.width-(widget.width - (widget.iconsList.length * (widget.iconFrameWidth??60))) /
-                        (widget.iconsList.length + 1),
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: false,
-                        itemCount: widget.iconsList.length,
-                        itemBuilder: (context, index) {
-                          return Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    print(index);
-                                    PageIndex = index;
-                                  });
-                                },
-                                child: CMaker(
-                                    alignment: Alignment.center,
-                                    child: CMaker(
+                    width: widget.width -
+                        (widget.width -
+                                (widget.iconsList.length *
+                                    (widget.iconFrameWidth ?? 60))) /
+                            (widget.iconsList.length + 1),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: false,
+                      itemCount: widget.iconsList.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  print(index);
+                                  PageIndex = index;
+                                });
+                              },
+                              child: CMaker(
+                                  alignment: Alignment.center,
+                                  child: CMaker(
                                       alignment: Alignment.center,
-                                      height: widget.iconFrameHeight??60,
-                                    width: widget.iconFrameWidth??60,
-                                        circularRadius: 15,
+                                      height: widget.iconFrameHeight ?? 60,
+                                      width: widget.iconFrameWidth ?? 60,
+                                      circularRadius: 15,
+                                      color: (PageIndex == index)
+                                          ? widget.iconBackgroundColor ??
+                                              Color.fromARGB(255, 0, 0, 0)
+                                          : widget.unselectedIconColor,
+                                      child: Icon(
+                                        widget.iconsList[index],
                                         color: (PageIndex == index)
-                                            ? widget.iconBackgroundColor ??
-                                                Color.fromARGB(255, 0, 0, 0)
-                                            : widget.unselectedIconColor,
-                                        child: Icon(
-                                          widget.iconsList[index],
-                                          color: (PageIndex == index)
-                                              ? widget.sectedIconColor ??
-                                                  Colors.white
-                                              : widget.unselectedIconColor ??
-                                                  Colors.black,
-                                          size: widget.iconSize,
-                                        ))),
-                              ),
-                              Container(
-                                width: (widget.width -
-                                        (widget.iconsList.length * (widget.iconFrameWidth??60))) /
-                                    (widget.iconsList.length + 1),
-                              )
-                            ],
-                          );
-                        },
-                      ),
+                                            ? widget.sectedIconColor ??
+                                                Colors.white
+                                            : widget.unselectedIconColor ??
+                                                Colors.black,
+                                        size: widget.iconSize,
+                                      ))),
+                            ),
+                            Container(
+                              width: (widget.width -
+                                      (widget.iconsList.length *
+                                          (widget.iconFrameWidth ?? 60))) /
+                                  (widget.iconsList.length + 1),
+                            )
+                          ],
+                        );
+                      },
                     ),
+                  ),
                 ],
               ),
             ),
@@ -706,8 +717,9 @@ class _NavBarState extends State<NavBar> {
     return Scaffold(body: BarBody);
   }
 }
+
 class NowClock extends StatefulWidget {
-  NowClock({super.key,this.BackGroundColor});
+  NowClock({super.key, this.BackGroundColor});
   Color? BackGroundColor;
   @override
   State<NowClock> createState() => _NowClockState();
@@ -727,7 +739,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
         SecondOp = 0;
         ali = Alignment.topCenter;
       });
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(Duration(milliseconds: 199));
       setState(() {
         FadeIn = true;
         SecondOp = 1;
@@ -739,7 +751,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
         SecondOp = 0;
         ali = Alignment.bottomCenter;
       });
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(Duration(milliseconds: 199));
       Start = false;
     }
   }
@@ -766,7 +778,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
         color: Colors.white);
     Widget SecondsTW = TMaker(
         text: DateTime.now().second.toString(),
-        fontSize:  50 ,
+        fontSize: 50,
         fontWeight: FontWeight.w800,
         color: Colors.white);
     return CMaker(
@@ -779,7 +791,8 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: widget.BackGroundColor??const Color.fromARGB(255, 255, 0, 0),
+                  color: widget.BackGroundColor ??
+                      const Color.fromARGB(255, 255, 0, 0),
                 ),
                 alignment: Alignment.center,
                 height: 100,
@@ -792,7 +805,8 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
                     duration: Duration(seconds: (Start) ? 1 : 3598),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: widget.BackGroundColor??const Color.fromARGB(255, 255, 0, 0),
+                      color: widget.BackGroundColor ??
+                          const Color.fromARGB(255, 255, 0, 0),
                     ),
                     height: 100,
                     alignment: ali,
@@ -813,7 +827,8 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: widget.BackGroundColor??const Color.fromARGB(255, 255, 0, 0),
+                  color: widget.BackGroundColor ??
+                      const Color.fromARGB(255, 255, 0, 0),
                 ),
                 alignment: Alignment.center,
                 height: 100,
@@ -826,7 +841,8 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
                     duration: Duration(seconds: (Start) ? 1 : 58),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: widget.BackGroundColor??const Color.fromARGB(255, 255, 0, 0),
+                      color: widget.BackGroundColor ??
+                          const Color.fromARGB(255, 255, 0, 0),
                     ),
                     height: 100,
                     alignment: ali,
@@ -847,7 +863,8 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: widget.BackGroundColor??const Color.fromARGB(255, 255, 0, 0),
+                  color: widget.BackGroundColor ??
+                      const Color.fromARGB(255, 255, 0, 0),
                 ),
                 alignment: Alignment.center,
                 height: 100,
@@ -855,12 +872,13 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
               ),
               AnimatedOpacity(
                 opacity: SecondOp,
-                duration: Duration(milliseconds: 150),
+                duration: Duration(milliseconds: 100),
                 child: AnimatedContainer(
-                    duration: Duration(milliseconds: 150),
+                    duration: Duration(milliseconds: 100),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: widget.BackGroundColor??const Color.fromARGB(255, 255, 0, 0),
+                      color: widget.BackGroundColor ??
+                          const Color.fromARGB(255, 255, 0, 0),
                     ),
                     height: 100,
                     alignment: ali,
@@ -871,6 +889,79 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
           ),
           Expanded(flex: 3, child: Container()),
         ],
+      ),
+    );
+  }
+}
+
+class MyButton extends StatefulWidget {
+  MyButton(
+      {super.key,
+      required this.text,
+      this.textFont,
+      this.textFontWeight,
+      this.textColor,
+      this.buttonColor,
+      this.buttonHeight,
+      this.buttonWidth,
+      this.buttonCircularRadius,
+      this.addShadow,
+      this.border,
+      this.gradient,
+      this.margin,
+      this.padding,
+      this.onTap});
+  String text;
+  void Function()? onTap;
+  double? textFont;
+  double? buttonHeight;
+  double? buttonWidth;
+  double? buttonCircularRadius;
+  FontWeight? textFontWeight;
+  Color? textColor;
+  Color? buttonColor;
+  bool? addShadow;
+  EdgeInsetsGeometry? padding;
+  EdgeInsetsGeometry? margin;
+  Gradient? gradient;
+  BoxBorder? border;
+  @override
+  State<MyButton> createState() => _MyButtonState();
+}
+
+class _MyButtonState extends State<MyButton> {
+  @override
+  Widget build(BuildContext context) {
+    return CMaker(
+      width: double.infinity,
+      alignment: Alignment.center,
+      child: InkWell(
+        onTap: widget.onTap,
+        child: CMaker(
+          gradient: widget.gradient,
+          border: widget.border,
+          padding: widget.padding,
+          margin: widget.margin,
+          height: widget.buttonHeight ?? 50,
+          width: widget.buttonWidth ?? 90,
+          circularRadius: widget.buttonCircularRadius ?? 10,
+          color: widget.buttonColor ?? Colors.amber,
+          alignment: Alignment.center,
+          boxShadow: (widget.addShadow ?? false)
+              ? const [
+                  BoxShadow(
+                      color: Color.fromARGB(61, 0, 0, 0),
+                      offset: Offset(2, 2),
+                      blurRadius: 10,
+                      spreadRadius: .06)
+                ]
+              : null,
+          child: TMaker(
+              text: widget.text,
+              fontSize: widget.textFont ?? 20,
+              fontWeight: widget.textFontWeight ?? FontWeight.w500,
+              color: widget.textColor ?? Colors.white),
+        ),
       ),
     );
   }
