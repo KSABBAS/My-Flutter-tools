@@ -98,17 +98,23 @@ dynamic TStyle(double fontSize, FontWeight fontWeight, Color color) {
 class TFMaker extends StatefulWidget {
   TFMaker(
       {super.key,
-      required this.prefix,
-      required this.enabledBorderwidth,
-      required this.focusedBorderwidth,
-      required this.enabledBorderColor,
-      required this.focusedBorderColor,
-      required this.suffix,
-      required this.focusedCircularRadius,
-      required this.enabledCircularRadius,
-      required this.hintText,
-      required this.hintStyle,
-      required this.label});
+      this.prefix,
+      this.enabledBorderwidth,
+      this.focusedBorderwidth,
+      this.enabledBorderColor,
+      this.focusedBorderColor,
+      this.suffix,
+      this.focusedCircularRadius,
+      this.enabledCircularRadius,
+      this.hintText,
+      this.hintStyle,
+      this.label,
+      this.disabledBorderColor,
+      this.disabledBorderwidth,
+      this.disabledCircularRadius,
+      this.onChanged,
+      this.onSubmitted,
+      this.lines});
   Widget? prefix;
   Widget? suffix;
   String? hintText;
@@ -120,9 +126,12 @@ class TFMaker extends StatefulWidget {
   double? enabledBorderwidth;
   double? disabledBorderwidth;
   double? focusedBorderwidth;
+  int? lines;
   Color? enabledBorderColor;
   Color? disabledBorderColor;
   Color? focusedBorderColor;
+  Function(String value)? onChanged;
+  Function(String value)? onSubmitted;
   @override
   State<TFMaker> createState() => _TFMakerState();
 }
@@ -131,6 +140,18 @@ class _TFMakerState extends State<TFMaker> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      minLines: widget.lines ?? 1,
+      maxLines: widget.lines ?? 1,
+      onChanged: (value) {
+        if (widget.onChanged != null) {
+          widget.onChanged!(value);
+        }
+      },
+      onSubmitted: (value) {
+        if (widget.onSubmitted != null) {
+        widget.onSubmitted!(value);
+        }
+      },
       decoration: InputDecoration(
           prefix: widget.prefix,
           suffix: widget.suffix,
@@ -139,17 +160,17 @@ class _TFMakerState extends State<TFMaker> {
           label: widget.label,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: widget.enabledBorderColor!,
-                width: widget.enabledBorderwidth!),
+                color: widget.enabledBorderColor ?? Colors.black,
+                width: widget.enabledBorderwidth ?? 0),
             borderRadius:
-                BorderRadius.circular(widget.enabledCircularRadius ?? 0),
+                BorderRadius.circular(widget.enabledCircularRadius ?? 20),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: widget.focusedBorderColor!,
-                width: widget.focusedBorderwidth!),
+                color: widget.focusedBorderColor ?? Colors.black,
+                width: widget.focusedBorderwidth ?? 1),
             borderRadius:
-                BorderRadius.circular(widget.focusedCircularRadius ?? 0),
+                BorderRadius.circular(widget.focusedCircularRadius ?? 10),
           )),
     );
   }
@@ -329,8 +350,8 @@ class _GVBuilderState extends State<GVBuilder> {
 }
 
 class DDButton extends StatefulWidget {
-  DDButton({super.key, required this.values});
-  // void Function()? onChosen;
+  DDButton({super.key, required this.values, this.onChanged});
+  Function(dynamic value)? onChanged;
   List values = [];
   var commonVar;
   @override
@@ -338,9 +359,10 @@ class DDButton extends StatefulWidget {
 }
 
 class _DDButtonState extends State<DDButton> {
+  int indexChosen = 0;
   @override
   Widget build(BuildContext context) {
-    widget.commonVar = widget.values[0];
+    widget.commonVar = widget.values[indexChosen];
     List<DropdownMenuItem<Object?>>? t(List values) {
       List<DropdownMenuItem<Object?>>? list = [];
       for (int i = 0; i < values.length; i++) {
@@ -348,6 +370,9 @@ class _DDButtonState extends State<DDButton> {
           DropdownMenuItem(
             child: Text(values[i].toString()),
             value: values[i],
+            onTap: () {
+              indexChosen = i;
+            },
           ),
         );
       }
@@ -358,6 +383,7 @@ class _DDButtonState extends State<DDButton> {
         onChanged: (val) {
           setState(() {
             widget.commonVar = val;
+            widget.onChanged!(val);
           });
         },
         underline: Container(),
