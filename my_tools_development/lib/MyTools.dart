@@ -177,32 +177,32 @@ class _TFMakerState extends State<TFMaker> {
 }
 
 class TFFMaker extends StatefulWidget {
-  TFFMaker(
-      {super.key,
-      this.FormKey,
-      this.enabled,
-      this.validator,
-      this.prefix,
-      this.enabledBorderwidth,
-      this.errorBorderwidth,
-      this.focusedBorderwidth,
-      this.enabledBorderColor,
-      this.errorBorderColor,
-      this.focusedBorderColor,
-      this.suffix,
-      this.focusedCircularRadius,
-      this.enabledCircularRadius,
-      this.errorCircularRadius,
-      this.hintText,
-      this.hintStyle,
-      this.label,
-      this.disabledBorderColor,
-      this.disabledBorderwidth,
-      this.disabledCircularRadius,
-      this.onChanged,
-      this.onSaved,
-      this.lines,
-      });
+  TFFMaker({
+    super.key,
+    this.FormKey,
+    this.enabled,
+    this.validator,
+    this.prefix,
+    this.enabledBorderwidth,
+    this.errorBorderwidth,
+    this.focusedBorderwidth,
+    this.enabledBorderColor,
+    this.errorBorderColor,
+    this.focusedBorderColor,
+    this.suffix,
+    this.focusedCircularRadius,
+    this.enabledCircularRadius,
+    this.errorCircularRadius,
+    this.hintText,
+    this.hintStyle,
+    this.label,
+    this.disabledBorderColor,
+    this.disabledBorderwidth,
+    this.disabledCircularRadius,
+    this.onChanged,
+    this.onSaved,
+    this.lines,
+  });
   Widget? prefix;
   bool? enabled;
   Widget? suffix;
@@ -256,7 +256,7 @@ class _TFFMakerState extends State<TFFMaker> {
         suffix: widget.suffix,
         hintText: widget.hintText,
         hintStyle: widget.hintStyle,
-        enabled: widget.enabled??true,
+        enabled: widget.enabled ?? true,
         label: widget.label,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
@@ -289,7 +289,6 @@ class _TFFMakerState extends State<TFFMaker> {
     );
   }
 }
-
 double PageHeight(BuildContext context) {
   List l = [2.2];
   final Sheigt = MediaQuery.of(context).size.height;
@@ -309,7 +308,28 @@ double PageWidth(BuildContext context) {
 // to remove the red debug , insert it inside the materialApp (debugShowCheckedModeBanner: false,)
 
 class SplashViewPage extends StatefulWidget {
-  const SplashViewPage({super.key});
+  SplashViewPage(
+      {super.key,
+      this.backgroundGradient,
+      this.backgroundColor,
+      this.poweredByColor,
+      this.child,
+      this.fadingBegin,
+      this.fadingEnd,
+      this.animationDurationInMilliseconds,
+      this.afterAnimationDurationInMilliseconds,
+      this.reverseAnimation,
+      this.afterAnimationIsDone});
+  Gradient? backgroundGradient;
+  Color? backgroundColor;
+  Color? poweredByColor;
+  Widget? child;
+  double? fadingBegin;
+  double? fadingEnd;
+  int? animationDurationInMilliseconds;
+  int? afterAnimationDurationInMilliseconds;
+  bool? reverseAnimation;
+  Function()? afterAnimationIsDone;
   @override
   State<SplashViewPage> createState() => _SplashViewPageState();
 }
@@ -322,141 +342,90 @@ class _SplashViewPageState extends State<SplashViewPage>
   void initState() {
     super.initState();
     animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 3000));
-    fading = Tween<double>(begin: 0, end: 1).animate(animationController!)
+        vsync: this,
+        duration: Duration(
+            milliseconds: widget.animationDurationInMilliseconds ?? 3000));
+    fading = Tween<double>(
+            begin: widget.fadingBegin ?? 0, end: widget.fadingEnd ?? 1)
+        .animate(animationController!)
       ..addListener(() {
         setState(() {
           if (animationController!.isCompleted) {
-            Timer(Duration(milliseconds: 300), () {
-              // Navigator.pushReplacementNamed(context, "LogInPage");
+            Timer(
+                Duration(
+                    milliseconds: widget.afterAnimationDurationInMilliseconds ??
+                        300), () {
+              widget.afterAnimationIsDone!();
             });
           }
         });
       });
-    animationController!.forward();
+    animationController!.forward().whenComplete(() {
+      if (widget.reverseAnimation ?? false) {
+        animationController!.reverse();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: CMaker(
         height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-                colors: [
-              Color.fromARGB(255, 8, 125, 159),
-              Color.fromARGB(255, 74, 193, 241)
-            ])),
+        color: widget.backgroundColor,
+        gradient: widget.backgroundGradient,
         alignment: Alignment.center,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
               Expanded(flex: 10, child: Container()),
+              CMaker(
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Opacity(
+                      opacity: fading?.value,
+                      child: Container(
+                        child: widget.child,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    )),
+                  ],
+                ),
+              ),
+              Expanded(flex: 5, child: Container()),
               Expanded(
-                  flex: 7,
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Opacity(
-                            opacity: fading?.value,
-                            child: Container(
-                              child: Image.asset("images/Codeveloper.jpg"),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          )),
-                    ],
-                  )),
-              Expanded(flex: 10, child: Container()),
+                  flex: 2,
+                  child: CMaker(
+                      alignment: Alignment.bottomCenter,
+                      child: Opacity(
+                          opacity: fading?.value,
+                          child: TMaker(
+                              text: "Powered By",
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: widget.poweredByColor ??
+                                  const Color.fromARGB(210, 243, 243, 243))))),
+              Expanded(
+                  flex: 3,
+                  child: CMaker(
+                      alignment: Alignment.topCenter,
+                      child: Opacity(
+                          opacity: fading?.value,
+                          child: TMaker(
+                              text: "Codeveloper",
+                              fontSize: 25,
+                              fontWeight: FontWeight.w600,
+                              color: widget.poweredByColor ??
+                                  const Color.fromARGB(210, 243, 243, 243))))),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class GVBuilder extends StatefulWidget {
-  GVBuilder(
-      {super.key,
-      required this.scroll,
-      required this.list,
-      required this.crossAxisCount,
-      this.mainAxisSpacing,
-      this.crossAxisSpacing,
-      required this.onTap,
-      this.boxShadow,
-      this.border,
-      this.BackGroundimage,
-      this.margin,
-      this.padding,
-      this.alignment,
-      this.color,
-      this.gradient,
-      this.circularRadius});
-  bool? scroll;
-  List list;
-  Color? color;
-  int? crossAxisCount;
-  double? mainAxisSpacing;
-  double? crossAxisSpacing;
-  void Function()? onTap;
-  AlignmentGeometry? alignment;
-  EdgeInsetsGeometry? padding;
-  EdgeInsetsGeometry? margin;
-  DecorationImage? BackGroundimage;
-  List<BoxShadow>? boxShadow;
-  Gradient? gradient;
-  BoxBorder? border;
-  double? circularRadius;
-  @override
-  State<GVBuilder> createState() => _GVBuilderState();
-}
-
-class _GVBuilderState extends State<GVBuilder> {
-  @override
-  Widget build(BuildContext context) {
-    ScrollPhysics? physi;
-    if (widget.scroll ?? true) {
-      physi = null;
-    } else {
-      physi = NeverScrollableScrollPhysics();
-    }
-    return GridView.builder(
-      shrinkWrap: widget.scroll!,
-      physics: physi,
-      itemCount: widget.list.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: widget.crossAxisCount ?? 1,
-          mainAxisSpacing: widget.mainAxisSpacing ?? 0,
-          crossAxisSpacing: widget.crossAxisSpacing ?? 0),
-      itemBuilder: (context, index) {
-        return InkWell(
-            onTap: () {
-              setState(() {
-                widget.onTap;
-              });
-            },
-            child: Container(
-                alignment: widget.alignment,
-                padding: widget.padding,
-                margin: widget.margin,
-                decoration: BoxDecoration(
-                    gradient: widget.gradient,
-                    image: widget.BackGroundimage,
-                    border: widget.border,
-                    color: widget.color,
-                    boxShadow: widget.boxShadow,
-                    borderRadius: BorderRadius.circular(
-                      widget.circularRadius ?? 0,
-                    )),
-                child: widget.list[index]));
-      },
     );
   }
 }
@@ -509,13 +478,19 @@ class RButton extends StatefulWidget {
     super.key,
     required this.list,
     required this.crossAxisCount,
+    required this.onChanged,
     this.mainAxisSpacing,
+    this.rowSpaces,
+    this.columnSpaces,
     this.crossAxisSpacing,
   });
   List list;
-  int? crossAxisCount;
+  int crossAxisCount;
   double? mainAxisSpacing;
+  double? rowSpaces;
+  double? columnSpaces;
   double? crossAxisSpacing;
+  Function(dynamic SelectedValue) onChanged;
   @override
   State<RButton> createState() => _RButtonState();
 }
@@ -525,36 +500,49 @@ var selected = "";
 class _RButtonState extends State<RButton> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 300,
-      child: GridView.builder(
-        itemCount: widget.list.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: widget.crossAxisCount ?? 1,
-            mainAxisSpacing: widget.mainAxisSpacing ?? 0,
-            crossAxisSpacing: widget.crossAxisSpacing ?? 0),
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: const Color.fromARGB(96, 216, 216, 216),
-            ),
-            child: RadioListTile(
-                activeColor: Color.fromARGB(255, 74, 193, 241),
-                title: Text(
-                  widget.list[index],
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
-                ),
-                value: widget.list[index],
-                groupValue: selected,
-                onChanged: (val) {
-                  setState(() {
-                    selected = val;
-                  });
+    return ListView.builder(
+        itemCount: (widget.list.length / widget.crossAxisCount).round(),
+        itemBuilder: (context, RowIndex) {
+          return CMaker(
+            margin:EdgeInsets.only(top:(RowIndex==0)?widget.rowSpaces??0: (((widget.rowSpaces)??0)/2),bottom:((RowIndex+1)==(widget.list.length / widget.crossAxisCount).round())?(widget.rowSpaces??0): (((widget.rowSpaces)??0)/2)),
+            height: 60,
+            width: 150.0 * widget.crossAxisCount,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.crossAxisCount,
+                itemBuilder: (context, ColumnIndex) {
+                  return ((widget.list.length % widget.crossAxisCount) != 0 &&
+                          widget.list.length ==
+                              ((widget.crossAxisCount * RowIndex + ColumnIndex)))
+                      ? Container(
+                          width: 150,
+                        )
+                      : Container(
+                          margin:EdgeInsets.only(left:(ColumnIndex==0)?widget.columnSpaces??0: (((widget.columnSpaces)??0)/2),right:((ColumnIndex+1)==widget.crossAxisCount)?(widget.columnSpaces??0): (((widget.columnSpaces)??0)/2)),
+                          width: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: const Color.fromARGB(96, 216, 216, 216),
+                          ),
+                          child: RadioListTile(
+                              activeColor: Color.fromARGB(255, 74, 193, 241),
+                              title: Text(
+                                widget.list[widget.crossAxisCount * RowIndex + ColumnIndex],
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w500),
+                              ),
+                              value: widget.list[widget.crossAxisCount * RowIndex + ColumnIndex],
+                              groupValue: selected,
+                              onChanged: (val) {
+                                setState(() {
+                                  selected = val;
+                                  widget.onChanged(val);
+                                });
+                              }),
+                        );
                 }),
           );
         },
-      ),
     );
   }
 }
