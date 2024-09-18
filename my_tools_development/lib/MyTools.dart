@@ -710,10 +710,17 @@ class WGridBuilder extends StatefulWidget {
 }
 
 class _WGridBuilderState extends State<WGridBuilder> {
-  List<Widget>? list;
   var selected = "";
   @override
   Widget build(BuildContext context) {
+  List<Widget> list= () {
+                  List<Widget>? list = [];
+                  for (int i = 0; i < widget.itemCount; i++) {
+                    list.add(widget.builder(
+                        i));
+                  }
+                  return list;
+                }();
     return ListView.builder(
       itemCount: (widget.itemCount / widget.crossAxisCount).round(),
       itemBuilder: (context, RowIndex) {
@@ -732,14 +739,6 @@ class _WGridBuilderState extends State<WGridBuilder> {
               scrollDirection: Axis.horizontal,
               itemCount: widget.crossAxisCount,
               itemBuilder: (context, ColumnIndex) {
-                list = () {
-                  List<Widget>? list = [];
-                  for (int i = 0; i < widget.itemCount; i++) {
-                    list.add(widget.builder(
-                        widget.crossAxisCount * RowIndex + ColumnIndex));
-                  }
-                  return list;
-                }();
                 return ((widget.itemCount % widget.crossAxisCount) != 0 &&
                         widget.itemCount ==
                             ((widget.crossAxisCount * RowIndex + ColumnIndex)))
@@ -774,7 +773,7 @@ class _WGridBuilderState extends State<WGridBuilder> {
                               color: widget.childColor ??
                                   Color.fromARGB(96, 216, 216, 216),
                               child: (list != [])
-                                  ? list![(widget.crossAxisCount * RowIndex +
+                                  ? list[(widget.crossAxisCount * RowIndex +
                                       ColumnIndex)]
                                   : Container(
                                       width: widget.childWidth ?? 150,
