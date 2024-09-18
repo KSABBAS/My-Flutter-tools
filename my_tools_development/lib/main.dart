@@ -23,20 +23,17 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return Scaffold(
-      body: Center(
-        child: CMaker(
-          height: 300,
-          width: 390,
-          child: RButton(
+        body: WGridBuilder(
+            childAlignment: Alignment.center,
+            columnSpaces: 20,
             rowSpaces: 20,
-            columnSpaces: 30,
-                list: ["male", "female","trans","human","other"],
-                crossAxisCount: 2,
-                onChanged: (SelectedValue) {
-                  print(SelectedValue);
-                },
-              ),
-        )),
-    );
+            onSelected: (SelectedIndex) {
+              print(SelectedIndex);
+            },
+            builder: (Index) {
+              return Text("hi ${Index + 1}");
+            },
+            itemCount: 20,
+            crossAxisCount: 2));
   }
 }
