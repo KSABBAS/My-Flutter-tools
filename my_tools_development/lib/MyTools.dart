@@ -474,8 +474,8 @@ class _DDButtonState extends State<DDButton> {
   }
 }
 
-class RButton extends StatefulWidget {
-  RButton({
+class MultiRButton extends StatefulWidget {
+  MultiRButton({
     super.key,
     required this.list,
     required this.crossAxisCount,
@@ -493,10 +493,10 @@ class RButton extends StatefulWidget {
   double? crossAxisSpacing;
   Function(dynamic SelectedValue) onChanged;
   @override
-  State<RButton> createState() => _RButtonState();
+  State<MultiRButton> createState() => _MultiRButtonState();
 }
 
-class _RButtonState extends State<RButton> {
+class _MultiRButtonState extends State<MultiRButton> {
   var selected = "";
   @override
   Widget build(BuildContext context) {
@@ -554,6 +554,133 @@ class _RButtonState extends State<RButton> {
                                 widget.onChanged(val);
                               });
                             }),
+                      );
+              }),
+        );
+      },
+    );
+  }
+}
+
+class MultiCBox extends StatefulWidget {
+  MultiCBox({
+    super.key,
+    required this.list,
+    required this.crossAxisCount,
+    required this.onChanged,
+    this.mainAxisSpacing,
+    this.rowSpaces,
+    this.columnSpaces,
+    this.crossAxisSpacing,
+    this.maxNumber,
+    this.childAlignment,
+    this.childBackGroundimage,
+    this.childBorder,
+    this.childBoxShadow,
+    this.childCircularRadius,
+    this.childColor,
+    this.childGradient,
+    this.childHeight,
+    this.childWidth,
+    this.childPadding
+  });
+  List list;
+  int crossAxisCount;
+  double? mainAxisSpacing;
+  double? rowSpaces;
+  double? columnSpaces;
+  double? crossAxisSpacing;
+  int? maxNumber;
+  double? childWidth;
+  double? childHeight;
+  Color? childColor;
+  AlignmentGeometry? childAlignment;
+  EdgeInsetsGeometry? childPadding;
+  DecorationImage? childBackGroundimage;
+  List<BoxShadow>? childBoxShadow;
+  Gradient? childGradient;
+  BoxBorder? childBorder;
+  double? childCircularRadius;
+  Function(List SelectedValues) onChanged;
+  @override
+  State<MultiCBox> createState() => _MultiCBoxState();
+}
+
+class _MultiCBoxState extends State<MultiCBox> {
+  List selectedItems = [];
+  var selected = "";
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: (widget.list.length / widget.crossAxisCount).round(),
+      itemBuilder: (context, RowIndex) {
+        return CMaker(
+          margin: EdgeInsets.only(
+              top: (RowIndex == 0)
+                  ? widget.rowSpaces ?? 0
+                  : (((widget.rowSpaces) ?? 0) / 2),
+              bottom: ((RowIndex + 1) ==
+                      (widget.list.length / widget.crossAxisCount).round())
+                  ? (widget.rowSpaces ?? 0)
+                  : (((widget.rowSpaces) ?? 0) / 2)),
+          height: widget.childHeight??60,
+          width: widget.childWidth??150.0 * widget.crossAxisCount,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.crossAxisCount,
+              itemBuilder: (context, ColumnIndex) {
+                return ((widget.list.length % widget.crossAxisCount) != 0 &&
+                        widget.list.length ==
+                            ((widget.crossAxisCount * RowIndex + ColumnIndex)))
+                    ? Container(
+                        width: widget.childWidth??150,
+                      )
+                    : CMaker(
+                        margin: EdgeInsets.only(
+                            left: (ColumnIndex == 0)
+                                ? widget.columnSpaces ?? 0
+                                : (((widget.columnSpaces) ?? 0) / 2),
+                            right: ((ColumnIndex + 1) == widget.crossAxisCount)
+                                ? (widget.columnSpaces ?? 0)
+                                : (((widget.columnSpaces) ?? 0) / 2)),
+                        child:CMaker(
+                              padding: widget.childPadding,
+                              boxShadow: widget.childBoxShadow,
+                              BackGroundimage: widget.childBackGroundimage,
+                              alignment: widget.childAlignment,
+                              border: widget.childBorder,
+                              gradient: widget.childGradient,
+                              width: widget.childWidth ?? 150,
+                              circularRadius: widget.childCircularRadius ?? 20,
+                              color: widget.childColor ??
+                                  Color.fromARGB(96, 216, 216, 216),
+                              child: CheckboxListTile(
+                          activeColor: Color.fromARGB(255, 74, 193, 241),
+                          title: Text(
+                            widget.list[
+                                widget.crossAxisCount * RowIndex + ColumnIndex],
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w500),
+                          ),
+                          value: (selectedItems.contains(widget.list[
+                                  widget.crossAxisCount * RowIndex +
+                                      ColumnIndex]))
+                              ? true
+                              : false,
+                          onChanged: (value) {
+                            if (value!&&((widget.maxNumber!=null)?selectedItems.length<widget.maxNumber!:true)) {
+                              selectedItems.add(widget.list[
+                                  widget.crossAxisCount * RowIndex +
+                                      ColumnIndex]);
+                            } else {
+                              selectedItems.remove(widget.list[
+                                  widget.crossAxisCount * RowIndex +
+                                      ColumnIndex]);
+                            }
+                            widget.onChanged(selectedItems);
+                            setState(() {});
+                          },
+                        ),),
                       );
               }),
         );
@@ -713,14 +840,13 @@ class _WGridBuilderState extends State<WGridBuilder> {
   var selected = "";
   @override
   Widget build(BuildContext context) {
-  List<Widget> list= () {
-                  List<Widget>? list = [];
-                  for (int i = 0; i < widget.itemCount; i++) {
-                    list.add(widget.builder(
-                        i));
-                  }
-                  return list;
-                }();
+    List<Widget> list = () {
+      List<Widget>? list = [];
+      for (int i = 0; i < widget.itemCount; i++) {
+        list.add(widget.builder(i));
+      }
+      return list;
+    }();
     return ListView.builder(
       itemCount: (widget.itemCount / widget.crossAxisCount).round(),
       itemBuilder: (context, RowIndex) {
