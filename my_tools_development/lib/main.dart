@@ -23,23 +23,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return Scaffold(
-        body: Center(
-      child: CMaker(
-          height: 400,
-          width: 400,
-          child: MultiCBox(
-            childWidth: 200,
-            childHeight: 100,
-            childColor: Colors.amber,
-            rowSpaces: 20,
-            columnSpaces: 20,
-            maxNumber: 2,
-            list: ["kareem", "hamsa", "malak"],
-            crossAxisCount: 2,
-            onChanged: (SelectedValues) {
-              print(SelectedValues);
-            },
-          )),
-    ));
+        body: NavBar(barColor: const Color.fromARGB(255, 50, 95, 255),pages: [Center(child: Text("hi 1"),),Center(child: Text("hi 2"),)], iconsList: [Icons.home,Icons.person], height: 100, width: 200));
   }
 }

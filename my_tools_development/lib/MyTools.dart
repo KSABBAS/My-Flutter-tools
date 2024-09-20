@@ -1004,7 +1004,6 @@ class NavBar extends StatefulWidget {
   NavBar(
       {super.key,
       required this.pages,
-      required this.initIndex,
       required this.iconsList,
       this.orientation,
       required this.height,
@@ -1018,7 +1017,6 @@ class NavBar extends StatefulWidget {
       this.iconFrameHeight,
       this.iconFrameWidth});
   List pages;
-  int initIndex;
   List iconsList;
   String? orientation;
   double height;
@@ -1036,11 +1034,11 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
+    int PageIndex = 0;
   @override
   Widget build(BuildContext context) {
-    int PageIndex = widget.initIndex;
     late Widget BarBody;
-    if (widget.orientation == "vertical") {
+    if (widget.orientation == "V") {
       BarBody = Stack(
         children: [
           CMaker(
@@ -1094,7 +1092,7 @@ class _NavBarState extends State<NavBar> {
                                       color: (PageIndex == index)
                                           ? widget.iconBackgroundColor ??
                                               Color.fromARGB(255, 0, 0, 0)
-                                          : widget.unselectedIconColor,
+                                          : widget.unselectedIconColor??Colors.transparent,
                                       child: Icon(
                                         widget.iconsList[index],
                                         color: (PageIndex == index)
