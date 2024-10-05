@@ -4,25 +4,74 @@ import 'package:my_tools_development/MyTools.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: MyApp(),
+    debugShowCheckedModeBanner: false,
+    home: App(),
   ));
 }
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class App extends StatefulWidget {
+  const App({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<App> createState() => _AppState();
 }
 
-String sub = "";
-GlobalKey<FormState> key = GlobalKey();
-
-class _MyAppState extends State<MyApp> {
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    return Scaffold(
-        body: NavBar(barColor: const Color.fromARGB(255, 50, 95, 255),pages: [Center(child: Text("hi 1"),),Center(child: Text("hi 2"),)], iconsList: [Icons.home,Icons.person], height: 100, width: 200));
+    return Scaffold(body: Column(
+      children: [
+        Container(width: 150,height: 200,color: Colors.amber,child: Center(child: Text("hi")),),
+        Container(width: 150,height: 200,color: const Color.fromARGB(255, 0, 0, 0),),
+        Container(width: 150,height: 200,color: const Color.fromARGB(255, 255, 107, 107),),
+      ],
+    ),);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// class MyApp extends StatefulWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
+
+// class _MyAppState extends State<MyApp> {
+//   @override
+//   Widget build(BuildContext context) {
+//     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+//     return Scaffold(
+//       body: GridView(
+//         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5,crossAxisSpacing: 20,mainAxisSpacing: 20),
+//         children: [
+           
+//         ],
+//       )
+//     );
+//   }
+// }

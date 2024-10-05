@@ -3,6 +3,7 @@ import 'dart:convert';
 // import 'package:get/get.dart';
 // import 'package:http/http.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 // import 'package:http/http.dart' as http;
 // import 'package:html/parser.dart' as Parser;
 // import 'package:html/dom.dart' as dom;
@@ -16,7 +17,7 @@ import 'package:flutter/material.dart';
 class CMaker extends StatefulWidget {
   CMaker(
       {super.key,
-      required this.child,
+      this.child,
       this.height,
       this.width,
       this.boxShadow,
@@ -39,7 +40,7 @@ class CMaker extends StatefulWidget {
   Gradient? gradient;
   BoxBorder? border;
   double? circularRadius;
-  Widget child;
+  Widget? child;
   @override
   State<CMaker> createState() => _CMakerState();
 }
@@ -74,19 +75,24 @@ class TMaker extends StatelessWidget {
       required this.fontSize,
       required this.fontWeight,
       required this.color,
-      this.textAlign});
+      this.textAlign,
+      this.fontFamily});
   String text;
   double fontSize;
   FontWeight fontWeight;
   Color color;
   TextAlign? textAlign;
+  String? fontFamily;
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       textAlign: textAlign ?? TextAlign.center,
-      style:
-          TextStyle(fontSize: fontSize, fontWeight: fontWeight, color: color),
+      style: TextStyle(
+          fontFamily: fontFamily,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+          color: color),
     );
   }
 }
@@ -202,6 +208,7 @@ class TFFMaker extends StatefulWidget {
     this.onChanged,
     this.onSaved,
     this.lines,
+    
   });
   Widget? prefix;
   bool? enabled;
@@ -314,13 +321,15 @@ class SplashViewPage extends StatefulWidget {
       this.backgroundGradient,
       this.backgroundColor,
       this.poweredByColor,
-      this.child,
+      required this.child,
       this.fadingBegin,
       this.fadingEnd,
       this.animationDurationInMilliseconds,
       this.afterAnimationDurationInMilliseconds,
       this.reverseAnimation,
-      this.afterAnimationIsDone});
+      required this.afterAnimationIsDone,
+      this.textFontFamily
+      });
   Gradient? backgroundGradient;
   Color? backgroundColor;
   Color? poweredByColor;
@@ -330,6 +339,7 @@ class SplashViewPage extends StatefulWidget {
   int? animationDurationInMilliseconds;
   int? afterAnimationDurationInMilliseconds;
   bool? reverseAnimation;
+  String? textFontFamily;
   Function()? afterAnimationIsDone;
   @override
   State<SplashViewPage> createState() => _SplashViewPageState();
@@ -406,6 +416,7 @@ class _SplashViewPageState extends State<SplashViewPage>
                       child: Opacity(
                           opacity: fading?.value,
                           child: TMaker(
+                              fontFamily: widget.textFontFamily,
                               text: "Powered By",
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -418,6 +429,7 @@ class _SplashViewPageState extends State<SplashViewPage>
                       child: Opacity(
                           opacity: fading?.value,
                           child: TMaker(
+                              fontFamily: widget.textFontFamily,
                               text: "Codeveloper",
                               fontSize: 25,
                               fontWeight: FontWeight.w600,
@@ -563,27 +575,26 @@ class _MultiRButtonState extends State<MultiRButton> {
 }
 
 class MultiCBox extends StatefulWidget {
-  MultiCBox({
-    super.key,
-    required this.list,
-    required this.crossAxisCount,
-    required this.onChanged,
-    this.mainAxisSpacing,
-    this.rowSpaces,
-    this.columnSpaces,
-    this.crossAxisSpacing,
-    this.maxNumber,
-    this.childAlignment,
-    this.childBackGroundimage,
-    this.childBorder,
-    this.childBoxShadow,
-    this.childCircularRadius,
-    this.childColor,
-    this.childGradient,
-    this.childHeight,
-    this.childWidth,
-    this.childPadding
-  });
+  MultiCBox(
+      {super.key,
+      required this.list,
+      required this.crossAxisCount,
+      required this.onChanged,
+      this.mainAxisSpacing,
+      this.rowSpaces,
+      this.columnSpaces,
+      this.crossAxisSpacing,
+      this.maxNumber,
+      this.childAlignment,
+      this.childBackGroundimage,
+      this.childBorder,
+      this.childBoxShadow,
+      this.childCircularRadius,
+      this.childColor,
+      this.childGradient,
+      this.childHeight,
+      this.childWidth,
+      this.childPadding});
   List list;
   int crossAxisCount;
   double? mainAxisSpacing;
@@ -623,8 +634,8 @@ class _MultiCBoxState extends State<MultiCBox> {
                       (widget.list.length / widget.crossAxisCount).round())
                   ? (widget.rowSpaces ?? 0)
                   : (((widget.rowSpaces) ?? 0) / 2)),
-          height: widget.childHeight??60,
-          width: widget.childWidth??150.0 * widget.crossAxisCount,
+          height: widget.childHeight ?? 60,
+          width: widget.childWidth ?? 150.0 * widget.crossAxisCount,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: widget.crossAxisCount,
@@ -633,7 +644,7 @@ class _MultiCBoxState extends State<MultiCBox> {
                         widget.list.length ==
                             ((widget.crossAxisCount * RowIndex + ColumnIndex)))
                     ? Container(
-                        width: widget.childWidth??150,
+                        width: widget.childWidth ?? 150,
                       )
                     : CMaker(
                         margin: EdgeInsets.only(
@@ -643,44 +654,48 @@ class _MultiCBoxState extends State<MultiCBox> {
                             right: ((ColumnIndex + 1) == widget.crossAxisCount)
                                 ? (widget.columnSpaces ?? 0)
                                 : (((widget.columnSpaces) ?? 0) / 2)),
-                        child:CMaker(
-                              padding: widget.childPadding,
-                              boxShadow: widget.childBoxShadow,
-                              BackGroundimage: widget.childBackGroundimage,
-                              alignment: widget.childAlignment,
-                              border: widget.childBorder,
-                              gradient: widget.childGradient,
-                              width: widget.childWidth ?? 150,
-                              circularRadius: widget.childCircularRadius ?? 20,
-                              color: widget.childColor ??
-                                  Color.fromARGB(96, 216, 216, 216),
-                              child: CheckboxListTile(
-                          activeColor: Color.fromARGB(255, 74, 193, 241),
-                          title: Text(
-                            widget.list[
-                                widget.crossAxisCount * RowIndex + ColumnIndex],
-                            style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w500),
+                        child: CMaker(
+                          padding: widget.childPadding,
+                          boxShadow: widget.childBoxShadow,
+                          BackGroundimage: widget.childBackGroundimage,
+                          alignment: widget.childAlignment,
+                          border: widget.childBorder,
+                          gradient: widget.childGradient,
+                          width: widget.childWidth ?? 150,
+                          circularRadius: widget.childCircularRadius ?? 20,
+                          color: widget.childColor ??
+                              Color.fromARGB(96, 216, 216, 216),
+                          child: CheckboxListTile(
+                            activeColor: Color.fromARGB(255, 74, 193, 241),
+                            title: Text(
+                              widget.list[widget.crossAxisCount * RowIndex +
+                                  ColumnIndex],
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w500),
+                            ),
+                            value: (selectedItems.contains(widget.list[
+                                    widget.crossAxisCount * RowIndex +
+                                        ColumnIndex]))
+                                ? true
+                                : false,
+                            onChanged: (value) {
+                              if (value! &&
+                                  ((widget.maxNumber != null)
+                                      ? selectedItems.length < widget.maxNumber!
+                                      : true)) {
+                                selectedItems.add(widget.list[
+                                    widget.crossAxisCount * RowIndex +
+                                        ColumnIndex]);
+                              } else {
+                                selectedItems.remove(widget.list[
+                                    widget.crossAxisCount * RowIndex +
+                                        ColumnIndex]);
+                              }
+                              widget.onChanged(selectedItems);
+                              setState(() {});
+                            },
                           ),
-                          value: (selectedItems.contains(widget.list[
-                                  widget.crossAxisCount * RowIndex +
-                                      ColumnIndex]))
-                              ? true
-                              : false,
-                          onChanged: (value) {
-                            if (value!&&((widget.maxNumber!=null)?selectedItems.length<widget.maxNumber!:true)) {
-                              selectedItems.add(widget.list[
-                                  widget.crossAxisCount * RowIndex +
-                                      ColumnIndex]);
-                            } else {
-                              selectedItems.remove(widget.list[
-                                  widget.crossAxisCount * RowIndex +
-                                      ColumnIndex]);
-                            }
-                            widget.onChanged(selectedItems);
-                            setState(() {});
-                          },
-                        ),),
+                        ),
                       );
               }),
         );
@@ -1034,7 +1049,7 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
-    int PageIndex = 0;
+  int PageIndex = 0;
   @override
   Widget build(BuildContext context) {
     late Widget BarBody;
@@ -1092,7 +1107,8 @@ class _NavBarState extends State<NavBar> {
                                       color: (PageIndex == index)
                                           ? widget.iconBackgroundColor ??
                                               Color.fromARGB(255, 0, 0, 0)
-                                          : widget.unselectedIconColor??Colors.transparent,
+                                          : widget.unselectedIconColor ??
+                                              Colors.transparent,
                                       child: Icon(
                                         widget.iconsList[index],
                                         color: (PageIndex == index)
@@ -1209,8 +1225,9 @@ class _NavBarState extends State<NavBar> {
 }
 
 class NowClock extends StatefulWidget {
-  NowClock({super.key, this.BackGroundColor});
+  NowClock({super.key, this.BackGroundColor,this.textFontFamily});
   Color? BackGroundColor;
+  String? textFontFamily;
   @override
   State<NowClock> createState() => _NowClockState();
 }
@@ -1255,6 +1272,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     Widget HourTW = TMaker(
+      fontFamily: widget.textFontFamily,
         text: (DateTime.now().hour.toInt() > 11)
             ? DateTime.now().add(Duration(hours: -11)).hour.toString()
             : DateTime.now().add(Duration(hours: 1)).hour.toString(),
@@ -1262,11 +1280,13 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
         fontWeight: FontWeight.w800,
         color: Colors.white);
     Widget MinutesTW = TMaker(
+      fontFamily: widget.textFontFamily,
         text: DateTime.now().minute.toString(),
         fontSize: 50,
         fontWeight: FontWeight.w800,
         color: Colors.white);
     Widget SecondsTW = TMaker(
+      fontFamily: widget.textFontFamily,
         text: DateTime.now().second.toString(),
         fontSize: 50,
         fontWeight: FontWeight.w800,
@@ -1307,6 +1327,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
           ),
           Expanded(child: Container()),
           TMaker(
+            fontFamily: widget.textFontFamily,
               text: ":",
               fontSize: 50,
               fontWeight: FontWeight.w800,
@@ -1343,6 +1364,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
           ),
           Expanded(child: Container()),
           TMaker(
+            fontFamily: widget.textFontFamily,
               text: ":",
               fontSize: 50,
               fontWeight: FontWeight.w800,
@@ -1400,7 +1422,8 @@ class MyButton extends StatefulWidget {
       this.gradient,
       this.margin,
       this.padding,
-      this.onTap});
+      this.onTap,
+      this.textFontFamily});
   String text;
   void Function()? onTap;
   double? textFont;
@@ -1415,6 +1438,7 @@ class MyButton extends StatefulWidget {
   EdgeInsetsGeometry? margin;
   Gradient? gradient;
   BoxBorder? border;
+  String? textFontFamily;
   @override
   State<MyButton> createState() => _MyButtonState();
 }
@@ -1447,6 +1471,7 @@ class _MyButtonState extends State<MyButton> {
                 ]
               : null,
           child: TMaker(
+              fontFamily: widget.textFontFamily,
               text: widget.text,
               fontSize: widget.textFont ?? 20,
               fontWeight: widget.textFontWeight ?? FontWeight.w500,
@@ -1456,6 +1481,174 @@ class _MyButtonState extends State<MyButton> {
     );
   }
 }
+
+class PMaker extends StatelessWidget {
+  PMaker({
+    super.key,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+  });
+  double? top;
+  double? bottom;
+  double? left;
+  double? right;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.only(
+            top: top ?? 0,
+            bottom: bottom ?? 0,
+            left: left ?? 0,
+            right: right ?? 0));
+  }
+}
+
+class CenterHorizontal extends StatelessWidget {
+  CenterHorizontal({super.key, required this.child});
+  Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return CMaker(
+      width: double.infinity,
+      child: Row(
+        children: [
+          Expanded(child: Container()),
+          child,
+          Expanded(child: Container()),
+        ],
+      ),
+    );
+  }
+}
+
+class CenterVertical extends StatelessWidget {
+  CenterVertical({super.key, required this.child});
+  Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: CMaker(
+        child: Column(
+          children: [
+            Expanded(child: Container()),
+            child,
+            Expanded(child: Container()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// class TBMaker extends StatefulWidget {
+//   TBMaker(
+//       {super.key,
+//       required this.tabsList,
+//       required this.pagesList,
+//       this.onChanged,
+//       this.initIndex,
+//       this.tabsAlignment,
+//       this.tabsBackGroundimage,
+//       this.tabsBorder,
+//       this.tabsBoxShadow,
+//       this.tabsCircularRadius,
+//       this.tabsColor,
+//       this.tabsGradient,
+//       this.tabsHeight,
+//       this.tabsMargin,
+//       this.tabsPadding,
+//       this.tabsWidth,
+//       this.Scrollable,
+//       this.tabsRowPadding,
+//       required this.height,
+//       this.width,
+//       this.indicatorWeight,
+//       this.selectedTabDecoration,
+//       this.indicatorColor});
+//   Function(int Index)? onChanged;
+//   List<Widget> tabsList;
+//   List<Widget> pagesList;
+//   double? height;
+//   double? width;
+//   int? initIndex;
+//   Color? tabsColor;
+//   double? tabsHeight;
+//   double? tabsWidth;
+//   AlignmentGeometry? tabsAlignment;
+//   EdgeInsetsGeometry? tabsPadding;
+//   EdgeInsetsGeometry? tabsMargin;
+//   DecorationImage? tabsBackGroundimage;
+//   List<BoxShadow>? tabsBoxShadow;
+//   Gradient? tabsGradient;
+//   BoxBorder? tabsBorder;
+//   double? tabsCircularRadius;
+//   bool? Scrollable;
+//   EdgeInsetsGeometry? tabsRowPadding;
+//   BoxDecoration? selectedTabDecoration;
+//   double? indicatorWeight;
+//   Color? indicatorColor;
+//   @override
+//   State<TBMaker> createState() => _TBMakerState();
+// }
+
+// class _TBMakerState extends State<TBMaker> {
+//   TabController? controller;
+//   @override
+//   Widget build(BuildContext context) {
+//     return CMaker(
+//       height: widget.height ?? 400,
+//       width: widget.width ?? double.infinity,
+//       child: DefaultTabController(
+//           initialIndex: widget.initIndex ?? 0,
+//           animationDuration: Duration(milliseconds: 600),
+//           length: widget.tabsList.length,
+//           child: Scaffold(
+//             appBar: AppBar(
+//               toolbarHeight: ((widget.tabsHeight) ?? 60) - 46,
+//               bottom: TabBar(
+//                   onTap: (value) {
+//                     widget.onChanged!(value);
+//                   },
+//                   indicatorColor: widget.indicatorColor,
+//                   indicator: widget.selectedTabDecoration,
+//                   indicatorWeight: widget.indicatorWeight ?? 1,
+//                   indicatorSize: TabBarIndicatorSize.label,
+//                   isScrollable: widget.Scrollable ?? false,
+//                   padding: widget.tabsRowPadding,
+//                   tabs: () {
+//                     List<Widget>? list = [];
+//                     for (int i = 0; i < widget.tabsList.length; i++) {
+//                       list.add(CMaker(
+//                           BackGroundimage: widget.tabsBackGroundimage,
+//                           alignment: widget.tabsAlignment ?? Alignment.center,
+//                           boxShadow: widget.tabsBoxShadow,
+//                           circularRadius: widget.tabsCircularRadius ?? 20,
+//                           color: widget.tabsColor,
+//                           gradient: widget.tabsGradient,
+//                           height: widget.tabsHeight ?? 60,
+//                           width: widget.tabsWidth ??
+//                               PageWidth(context) / widget.tabsList.length,
+//                           margin: widget.tabsMargin,
+//                           padding: widget.tabsPadding,
+//                           border: widget.tabsBorder ?? Border.all(),
+//                           child: widget.tabsList[i]));
+//                     }
+//                     return list;
+//                   }()),
+//             ),
+//             body: TabBarView(children: () {
+//               List<Widget>? list = [];
+//               for (int i = 0; i < widget.tabsList.length; i++) {
+//                 list.add(widget.pagesList[i]);
+//               }
+//               return list;
+//             }()),
+//           )),
+//     );
+//   }
+// }
 
 List<Widget>? WidgetListMaker(int number, Widget widget) {
   List<Widget>? list = [];
