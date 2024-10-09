@@ -208,7 +208,6 @@ class TFFMaker extends StatefulWidget {
     this.onChanged,
     this.onSaved,
     this.lines,
-    
   });
   Widget? prefix;
   bool? enabled;
@@ -328,8 +327,7 @@ class SplashViewPage extends StatefulWidget {
       this.afterAnimationDurationInMilliseconds,
       this.reverseAnimation,
       required this.afterAnimationIsDone,
-      this.textFontFamily
-      });
+      this.textFontFamily});
   Gradient? backgroundGradient;
   Color? backgroundColor;
   Color? poweredByColor;
@@ -1024,26 +1022,24 @@ class NavBar extends StatefulWidget {
       required this.height,
       required this.width,
       this.barColor,
-      this.sectedIconColor,
+      this.sectedBackgeoundIconColor,
       this.pageBackgroundColor,
-      this.iconBackgroundColor,
-      this.unselectedIconColor,
-      this.iconSize,
+      this.unselectedBackgeoundIconColor,
       this.iconFrameHeight,
-      this.iconFrameWidth});
-  List pages;
-  List iconsList;
+      this.iconFrameWidth,
+      this.iconFramePadding});
+  List<Widget> pages;
+  List<Widget> iconsList;
   String? orientation;
   double height;
   double width;
   double? iconFrameHeight;
   double? iconFrameWidth;
+  double? iconFramePadding;
   Color? barColor;
-  Color? sectedIconColor;
-  Color? unselectedIconColor;
-  Color? iconBackgroundColor;
+  Color? sectedBackgeoundIconColor;
+  Color? unselectedBackgeoundIconColor;
   Color? pageBackgroundColor;
-  double? iconSize;
   @override
   State<NavBar> createState() => _NavBarState();
 }
@@ -1051,6 +1047,9 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int PageIndex = 0;
   @override
+  PageController _pageController = PageController(
+    initialPage: 0,
+  );
   Widget build(BuildContext context) {
     late Widget BarBody;
     if (widget.orientation == "V") {
@@ -1059,7 +1058,17 @@ class _NavBarState extends State<NavBar> {
           CMaker(
               color: widget.pageBackgroundColor ?? Colors.white,
               width: double.infinity,
-              child: widget.pages[PageIndex]),
+              child:
+                  // widget.pages[_pageController.],
+                  PageView(
+                onPageChanged: (value) {
+                  setState(() {
+                    PageIndex = value;
+                  });
+                },
+                controller: _pageController,
+                children: widget.pages,
+              )),
           Positioned(
             top: (PageHeight(context) - widget.height) / 2,
             left: 20,
@@ -1092,32 +1101,25 @@ class _NavBarState extends State<NavBar> {
                           children: [
                             InkWell(
                               onTap: () {
-                                setState(() {
-                                  print(index);
-                                  PageIndex = index;
-                                });
+                                  _pageController.animateToPage(index,
+                                      curve: Curves.linear,
+                                      duration: Duration(milliseconds: 200));
                               },
                               child: CMaker(
                                   alignment: Alignment.center,
                                   child: CMaker(
+                                      padding: EdgeInsets.all(
+                                          widget.iconFramePadding ?? 0),
                                       alignment: Alignment.center,
                                       height: widget.iconFrameHeight ?? 60,
                                       width: widget.iconFrameWidth ?? 60,
                                       circularRadius: 15,
                                       color: (PageIndex == index)
-                                          ? widget.iconBackgroundColor ??
+                                          ? widget.sectedBackgeoundIconColor ??
                                               Color.fromARGB(255, 0, 0, 0)
-                                          : widget.unselectedIconColor ??
+                                          : widget.unselectedBackgeoundIconColor ??
                                               Colors.transparent,
-                                      child: Icon(
-                                        widget.iconsList[index],
-                                        color: (PageIndex == index)
-                                            ? widget.sectedIconColor ??
-                                                Colors.white
-                                            : widget.unselectedIconColor ??
-                                                Colors.black,
-                                        size: widget.iconSize,
-                                      ))),
+                                      child: widget.iconsList[index])),
                             ),
                             Container(
                               height: (widget.height -
@@ -1143,7 +1145,15 @@ class _NavBarState extends State<NavBar> {
               height: double.infinity,
               color: widget.pageBackgroundColor ?? Colors.white,
               width: double.infinity,
-              child: widget.pages[PageIndex]),
+              child: PageView(
+                onPageChanged: (value) {
+                  setState(() {
+                    PageIndex = value;
+                  });
+                },
+                controller: _pageController,
+                children: widget.pages,
+              )),
           Positioned(
             left: (PageWidth(context) - widget.width) / 2,
             bottom: 20,
@@ -1176,31 +1186,26 @@ class _NavBarState extends State<NavBar> {
                           children: [
                             InkWell(
                               onTap: () {
-                                setState(() {
-                                  print(index);
                                   PageIndex = index;
-                                });
+                                  _pageController.animateToPage(index,
+                                      curve: Curves.linear,
+                                      duration: Duration(milliseconds: 200));
                               },
                               child: CMaker(
                                   alignment: Alignment.center,
                                   child: CMaker(
+                                      padding: EdgeInsets.all(
+                                          widget.iconFramePadding ?? 0),
                                       alignment: Alignment.center,
                                       height: widget.iconFrameHeight ?? 60,
                                       width: widget.iconFrameWidth ?? 60,
                                       circularRadius: 15,
                                       color: (PageIndex == index)
-                                          ? widget.iconBackgroundColor ??
+                                          ? widget.sectedBackgeoundIconColor ??
                                               Color.fromARGB(255, 0, 0, 0)
-                                          : widget.unselectedIconColor,
-                                      child: Icon(
-                                        widget.iconsList[index],
-                                        color: (PageIndex == index)
-                                            ? widget.sectedIconColor ??
-                                                Colors.white
-                                            : widget.unselectedIconColor ??
-                                                Colors.black,
-                                        size: widget.iconSize,
-                                      ))),
+                                          : widget.unselectedBackgeoundIconColor ??
+                                              Colors.transparent,
+                                      child: widget.iconsList[index])),
                             ),
                             Container(
                               width: (widget.width -
@@ -1225,7 +1230,7 @@ class _NavBarState extends State<NavBar> {
 }
 
 class NowClock extends StatefulWidget {
-  NowClock({super.key, this.BackGroundColor,this.textFontFamily});
+  NowClock({super.key, this.BackGroundColor, this.textFontFamily});
   Color? BackGroundColor;
   String? textFontFamily;
   @override
@@ -1272,7 +1277,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     Widget HourTW = TMaker(
-      fontFamily: widget.textFontFamily,
+        fontFamily: widget.textFontFamily,
         text: (DateTime.now().hour.toInt() > 11)
             ? DateTime.now().add(Duration(hours: -11)).hour.toString()
             : DateTime.now().add(Duration(hours: 1)).hour.toString(),
@@ -1280,13 +1285,13 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
         fontWeight: FontWeight.w800,
         color: Colors.white);
     Widget MinutesTW = TMaker(
-      fontFamily: widget.textFontFamily,
+        fontFamily: widget.textFontFamily,
         text: DateTime.now().minute.toString(),
         fontSize: 50,
         fontWeight: FontWeight.w800,
         color: Colors.white);
     Widget SecondsTW = TMaker(
-      fontFamily: widget.textFontFamily,
+        fontFamily: widget.textFontFamily,
         text: DateTime.now().second.toString(),
         fontSize: 50,
         fontWeight: FontWeight.w800,
@@ -1327,7 +1332,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
           ),
           Expanded(child: Container()),
           TMaker(
-            fontFamily: widget.textFontFamily,
+              fontFamily: widget.textFontFamily,
               text: ":",
               fontSize: 50,
               fontWeight: FontWeight.w800,
@@ -1364,7 +1369,7 @@ class _NowClockState extends State<NowClock> with TickerProviderStateMixin {
           ),
           Expanded(child: Container()),
           TMaker(
-            fontFamily: widget.textFontFamily,
+              fontFamily: widget.textFontFamily,
               text: ":",
               fontSize: 50,
               fontWeight: FontWeight.w800,
