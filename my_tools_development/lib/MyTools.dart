@@ -1022,12 +1022,14 @@ class NavBar extends StatefulWidget {
       required this.height,
       required this.width,
       this.barColor,
-      this.sectedBackgeoundIconColor,
+      this.selectedBackgeoundIconColor,
       this.pageBackgroundColor,
       this.unselectedBackgeoundIconColor,
       this.iconFrameHeight,
       this.iconFrameWidth,
-      this.iconFramePadding});
+      this.iconFramePadding,
+      this.BackgroundImage
+      });
   List<Widget> pages;
   List<Widget> iconsList;
   String? orientation;
@@ -1037,9 +1039,10 @@ class NavBar extends StatefulWidget {
   double? iconFrameWidth;
   double? iconFramePadding;
   Color? barColor;
-  Color? sectedBackgeoundIconColor;
+  Color? selectedBackgeoundIconColor;
   Color? unselectedBackgeoundIconColor;
   Color? pageBackgroundColor;
+  Widget? BackgroundImage;
   @override
   State<NavBar> createState() => _NavBarState();
 }
@@ -1052,22 +1055,26 @@ class _NavBarState extends State<NavBar> {
   );
   Widget build(BuildContext context) {
     late Widget BarBody;
-    if (widget.orientation == "V") {
+    if (widget.orientation == "H") {
       BarBody = Stack(
         children: [
           CMaker(
+              height: double.infinity,
               color: widget.pageBackgroundColor ?? Colors.white,
               width: double.infinity,
-              child:
-                  // widget.pages[_pageController.],
+              child: Stack(
+                children: [
+                  (widget.BackgroundImage!=null)?Container(height: double.infinity,width: double.infinity,child:widget.BackgroundImage!):Container(),
                   PageView(
-                onPageChanged: (value) {
-                  setState(() {
-                    PageIndex = value;
-                  });
-                },
-                controller: _pageController,
-                children: widget.pages,
+                    onPageChanged: (value) {
+                      setState(() {
+                        PageIndex = value;
+                      });
+                    },
+                    controller: _pageController,
+                    children: widget.pages,
+                  ),
+                ],
               )),
           Positioned(
             top: (PageHeight(context) - widget.height) / 2,
@@ -1101,9 +1108,9 @@ class _NavBarState extends State<NavBar> {
                           children: [
                             InkWell(
                               onTap: () {
-                                  _pageController.animateToPage(index,
-                                      curve: Curves.linear,
-                                      duration: Duration(milliseconds: 200));
+                                _pageController.animateToPage(index,
+                                    curve: Curves.linear,
+                                    duration: Duration(milliseconds: 200));
                               },
                               child: CMaker(
                                   alignment: Alignment.center,
@@ -1115,7 +1122,7 @@ class _NavBarState extends State<NavBar> {
                                       width: widget.iconFrameWidth ?? 60,
                                       circularRadius: 15,
                                       color: (PageIndex == index)
-                                          ? widget.sectedBackgeoundIconColor ??
+                                          ? widget.selectedBackgeoundIconColor ??
                                               Color.fromARGB(255, 0, 0, 0)
                                           : widget.unselectedBackgeoundIconColor ??
                                               Colors.transparent,
@@ -1145,14 +1152,19 @@ class _NavBarState extends State<NavBar> {
               height: double.infinity,
               color: widget.pageBackgroundColor ?? Colors.white,
               width: double.infinity,
-              child: PageView(
-                onPageChanged: (value) {
-                  setState(() {
-                    PageIndex = value;
-                  });
-                },
-                controller: _pageController,
-                children: widget.pages,
+              child: Stack(
+                children: [
+                  (widget.BackgroundImage!=null)?Container(height: double.infinity,width: double.infinity,child:widget.BackgroundImage!):Container(),
+                  PageView(
+                    onPageChanged: (value) {
+                      setState(() {
+                        PageIndex = value;
+                      });
+                    },
+                    controller: _pageController,
+                    children: widget.pages,
+                  ),
+                ],
               )),
           Positioned(
             left: (PageWidth(context) - widget.width) / 2,
@@ -1186,10 +1198,10 @@ class _NavBarState extends State<NavBar> {
                           children: [
                             InkWell(
                               onTap: () {
-                                  PageIndex = index;
-                                  _pageController.animateToPage(index,
-                                      curve: Curves.linear,
-                                      duration: Duration(milliseconds: 200));
+                                PageIndex = index;
+                                _pageController.animateToPage(index,
+                                    curve: Curves.linear,
+                                    duration: Duration(milliseconds: 200));
                               },
                               child: CMaker(
                                   alignment: Alignment.center,
@@ -1201,7 +1213,7 @@ class _NavBarState extends State<NavBar> {
                                       width: widget.iconFrameWidth ?? 60,
                                       circularRadius: 15,
                                       color: (PageIndex == index)
-                                          ? widget.sectedBackgeoundIconColor ??
+                                          ? widget.selectedBackgeoundIconColor ??
                                               Color.fromARGB(255, 0, 0, 0)
                                           : widget.unselectedBackgeoundIconColor ??
                                               Colors.transparent,
@@ -1490,23 +1502,18 @@ class _MyButtonState extends State<MyButton> {
 class PMaker extends StatelessWidget {
   PMaker({
     super.key,
-    this.top,
-    this.bottom,
-    this.left,
-    this.right,
+    this.horizontal,
+    this.vertical,
   });
-  double? top;
-  double? bottom;
-  double? left;
-  double? right;
+  double? horizontal;
+  double? vertical;
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: EdgeInsets.only(
-            top: top ?? 0,
-            bottom: bottom ?? 0,
-            left: left ?? 0,
-            right: right ?? 0));
+            top: vertical ?? 0,
+            left:  horizontal ?? 0,
+            ));
   }
 }
 
