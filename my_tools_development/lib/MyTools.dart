@@ -485,22 +485,61 @@ class _DDButtonState extends State<DDButton> {
 }
 
 class MultiRButton extends StatefulWidget {
-  MultiRButton({
-    super.key,
-    required this.list,
-    required this.crossAxisCount,
-    required this.onChanged,
-    this.mainAxisSpacing,
-    this.rowSpaces,
-    this.columnSpaces,
-    this.crossAxisSpacing,
-  });
+  MultiRButton(
+      {super.key,
+      required this.list,
+      required this.crossAxisCount,
+      required this.onChanged,
+      this.mainAxisSpacing,
+      this.rowSpaces,
+      this.columnSpaces,
+      this.crossAxisSpacing,
+      this.childAlignment,
+      this.childBackGroundimage,
+      this.childBorder,
+      this.childBoxShadow,
+      this.childCircularRadius,
+      this.childColor,
+      this.childGradient,
+      this.childHeight,
+      this.childPadding,
+      this.childWidth,
+      this.textAlign,
+      this.textColor,
+      this.textFontFamily,
+      this.textFontSize,
+      this.textFontWeight,
+      this.activeColor,
+      this.fillColor,
+      this.hoverColor,
+      this.overlayColor,
+      this.tileColor});
   List list;
   int crossAxisCount;
   double? mainAxisSpacing;
   double? rowSpaces;
   double? columnSpaces;
   double? crossAxisSpacing;
+  double? childWidth;
+  double? childHeight;
+  Color? childColor;
+  AlignmentGeometry? childAlignment;
+  EdgeInsetsGeometry? childPadding;
+  DecorationImage? childBackGroundimage;
+  List<BoxShadow>? childBoxShadow;
+  Gradient? childGradient;
+  BoxBorder? childBorder;
+  double? childCircularRadius;
+  double? textFontSize;
+  FontWeight? textFontWeight;
+  Color? textColor;
+  TextAlign? textAlign;
+  String? textFontFamily;
+  WidgetStateProperty<Color?>? fillColor;
+  Color? hoverColor;
+  Color? tileColor;
+  WidgetStateProperty<Color?>? overlayColor;
+  Color? activeColor;
   Function(dynamic SelectedValue) onChanged;
   @override
   State<MultiRButton> createState() => _MultiRButtonState();
@@ -522,8 +561,8 @@ class _MultiRButtonState extends State<MultiRButton> {
                       (widget.list.length / widget.crossAxisCount).round())
                   ? (widget.rowSpaces ?? 0)
                   : (((widget.rowSpaces) ?? 0) / 2)),
-          height: 60,
-          width: 150.0 * widget.crossAxisCount,
+          height: widget.childHeight ?? 60,
+          width: widget.childWidth ?? 150.0 * widget.crossAxisCount,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: widget.crossAxisCount,
@@ -531,10 +570,12 @@ class _MultiRButtonState extends State<MultiRButton> {
                 return ((widget.list.length % widget.crossAxisCount) != 0 &&
                         widget.list.length ==
                             ((widget.crossAxisCount * RowIndex + ColumnIndex)))
-                    ? Container(
-                        width: 150,
+                    ? CMaker(
+                        height: widget.childHeight ?? 60,
+                        width:
+                            widget.childWidth ?? 150.0 * widget.crossAxisCount,
                       )
-                    : Container(
+                    : CMaker(
                         margin: EdgeInsets.only(
                             left: (ColumnIndex == 0)
                                 ? widget.columnSpaces ?? 0
@@ -542,18 +583,32 @@ class _MultiRButtonState extends State<MultiRButton> {
                             right: ((ColumnIndex + 1) == widget.crossAxisCount)
                                 ? (widget.columnSpaces ?? 0)
                                 : (((widget.columnSpaces) ?? 0) / 2)),
-                        width: 150,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: const Color.fromARGB(96, 216, 216, 216),
-                        ),
+                        padding: widget.childPadding,
+                        boxShadow: widget.childBoxShadow,
+                        BackGroundimage: widget.childBackGroundimage,
+                        alignment: widget.childAlignment ?? Alignment.center,
+                        border: widget.childBorder,
+                        gradient: widget.childGradient,
+                        width: widget.childWidth ?? 150,
+                        circularRadius: widget.childCircularRadius ?? 20,
+                        color: widget.childColor ??
+                            Color.fromARGB(96, 216, 216, 216),
                         child: RadioListTile(
-                            activeColor: Color.fromARGB(255, 74, 193, 241),
-                            title: Text(
-                              widget.list[widget.crossAxisCount * RowIndex +
-                                  ColumnIndex],
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w500),
+                            hoverColor: widget.hoverColor,
+                            tileColor: widget.tileColor,
+                            fillColor: widget.fillColor,
+                            overlayColor: widget.overlayColor,
+                            activeColor: widget.activeColor,
+                            title: TMaker(
+                              text: widget.list[
+                                  widget.crossAxisCount * RowIndex +
+                                      ColumnIndex],
+                              color: widget.textColor ?? Colors.black,
+                              fontSize: widget.textFontSize ?? 17,
+                              fontWeight:
+                                  widget.textFontWeight ?? FontWeight.w500,
+                              fontFamily: widget.textFontFamily,
+                              textAlign: widget.textAlign,
                             ),
                             value: widget.list[
                                 widget.crossAxisCount * RowIndex + ColumnIndex],
@@ -573,26 +628,32 @@ class _MultiRButtonState extends State<MultiRButton> {
 }
 
 class MultiCBox extends StatefulWidget {
-  MultiCBox(
-      {super.key,
-      required this.list,
-      required this.crossAxisCount,
-      required this.onChanged,
-      this.mainAxisSpacing,
-      this.rowSpaces,
-      this.columnSpaces,
-      this.crossAxisSpacing,
-      this.maxNumber,
-      this.childAlignment,
-      this.childBackGroundimage,
-      this.childBorder,
-      this.childBoxShadow,
-      this.childCircularRadius,
-      this.childColor,
-      this.childGradient,
-      this.childHeight,
-      this.childWidth,
-      this.childPadding});
+  MultiCBox({
+    super.key,
+    required this.list,
+    required this.crossAxisCount,
+    required this.onChanged,
+    this.mainAxisSpacing,
+    this.rowSpaces,
+    this.columnSpaces,
+    this.crossAxisSpacing,
+    this.maxNumber,
+    this.childAlignment,
+    this.childBackGroundimage,
+    this.childBorder,
+    this.childBoxShadow,
+    this.childCircularRadius,
+    this.childColor,
+    this.childGradient,
+    this.childHeight,
+    this.childWidth,
+    this.childPadding,
+    this.textAlign,
+    this.textColor,
+    this.textFontFamily,
+    this.textFontSize,
+    this.textFontWeight,
+  });
   List list;
   int crossAxisCount;
   double? mainAxisSpacing;
@@ -610,6 +671,11 @@ class MultiCBox extends StatefulWidget {
   Gradient? childGradient;
   BoxBorder? childBorder;
   double? childCircularRadius;
+  double? textFontSize;
+  FontWeight? textFontWeight;
+  Color? textColor;
+  TextAlign? textAlign;
+  String? textFontFamily;
   Function(List SelectedValues) onChanged;
   @override
   State<MultiCBox> createState() => _MultiCBoxState();
@@ -665,11 +731,16 @@ class _MultiCBoxState extends State<MultiCBox> {
                               Color.fromARGB(96, 216, 216, 216),
                           child: CheckboxListTile(
                             activeColor: Color.fromARGB(255, 74, 193, 241),
-                            title: Text(
-                              widget.list[widget.crossAxisCount * RowIndex +
-                                  ColumnIndex],
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w500),
+                            title: TMaker(
+                              text: widget.list[
+                                  widget.crossAxisCount * RowIndex +
+                                      ColumnIndex],
+                              color: widget.textColor ?? Colors.black,
+                              fontSize: widget.textFontSize ?? 17,
+                              fontWeight:
+                                  widget.textFontWeight ?? FontWeight.w500,
+                              fontFamily: widget.textFontFamily,
+                              textAlign: widget.textAlign,
                             ),
                             value: (selectedItems.contains(widget.list[
                                     widget.crossAxisCount * RowIndex +
@@ -817,7 +888,7 @@ class WGridBuilder extends StatefulWidget {
       required this.itemCount,
       required this.crossAxisCount,
       this.onSelected,
-      this.childHeight,
+      required this.childHeight,
       this.childWidth,
       this.rowSpaces,
       this.columnSpaces,
@@ -828,7 +899,8 @@ class WGridBuilder extends StatefulWidget {
       this.childCircularRadius,
       this.childColor,
       this.childGradient,
-      this.childPadding});
+      this.childPadding,
+      this.Scroll});
   int crossAxisCount;
   Widget Function(int Index) builder;
   int itemCount;
@@ -843,7 +915,8 @@ class WGridBuilder extends StatefulWidget {
   double? childCircularRadius;
   double? rowSpaces;
   double? columnSpaces;
-  double? childHeight;
+  double childHeight;
+  bool? Scroll;
   Function(int SelectedIndex)? onSelected;
   @override
   State<WGridBuilder> createState() => _WGridBuilderState();
@@ -860,68 +933,85 @@ class _WGridBuilderState extends State<WGridBuilder> {
       }
       return list;
     }();
-    return ListView.builder(
-      itemCount: (widget.itemCount / widget.crossAxisCount).round(),
-      itemBuilder: (context, RowIndex) {
-        return CMaker(
-          margin: EdgeInsets.only(
-              top: (RowIndex == 0)
-                  ? widget.rowSpaces ?? 0
-                  : (((widget.rowSpaces) ?? 0) / 2),
-              bottom: ((RowIndex + 1) ==
-                      (widget.itemCount / widget.crossAxisCount).round())
-                  ? (widget.rowSpaces ?? 0)
-                  : (((widget.rowSpaces) ?? 0) / 2)),
-          height: widget.childHeight ?? 150,
-          width: widget.childWidth ?? 150.0 * widget.crossAxisCount,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.crossAxisCount,
-              itemBuilder: (context, ColumnIndex) {
-                return ((widget.itemCount % widget.crossAxisCount) != 0 &&
-                        widget.itemCount ==
-                            ((widget.crossAxisCount * RowIndex + ColumnIndex)))
-                    ? Container(
-                        width: widget.childWidth ?? 150,
-                      )
-                    : CMaker(
-                        margin: EdgeInsets.only(
-                            left: (ColumnIndex == 0)
-                                ? widget.columnSpaces ?? 0
-                                : (((widget.columnSpaces) ?? 0) / 2),
-                            right: ((ColumnIndex + 1) == widget.crossAxisCount)
-                                ? (widget.columnSpaces ?? 0)
-                                : (((widget.columnSpaces) ?? 0) / 2)),
-                        child: InkWell(
-                          onTap: (widget.onSelected != null)
-                              ? () {
-                                  widget.onSelected!(
-                                      (widget.crossAxisCount * RowIndex +
-                                          ColumnIndex));
-                                }
-                              : null,
-                          child: CMaker(
-                              padding: widget.childPadding,
-                              boxShadow: widget.childBoxShadow,
-                              BackGroundimage: widget.childBackGroundimage,
-                              alignment: widget.childAlignment,
-                              border: widget.childBorder,
-                              gradient: widget.childGradient,
-                              width: widget.childWidth ?? 150,
-                              circularRadius: widget.childCircularRadius ?? 20,
-                              color: widget.childColor ??
-                                  Color.fromARGB(96, 216, 216, 216),
-                              child: (list != [])
-                                  ? list[(widget.crossAxisCount * RowIndex +
-                                      ColumnIndex)]
-                                  : Container(
-                                      width: widget.childWidth ?? 150,
-                                    )),
-                        ),
-                      );
-              }),
-        );
-      },
+    return Container(
+      height: (widget.itemCount.isEven)
+          ? ((widget.childHeight * widget.itemCount) / 2) +
+              ((widget.rowSpaces ?? 0 * widget.itemCount) +
+                  ((widget.rowSpaces ?? 0) * (widget.itemCount / 2.0) + 0.0))
+          : (((widget.childHeight * widget.itemCount) / 2) +
+                  widget.childHeight / 2) +
+              ((widget.rowSpaces ?? 0 * widget.itemCount) +
+                  ((widget.rowSpaces ?? 0) * (widget.itemCount / 2.0).round() +
+                      0.0)),
+      child: ListView.builder(
+        physics:
+            (widget.Scroll == false) ? NeverScrollableScrollPhysics() : null,
+        shrinkWrap: widget.Scroll ?? true,
+        itemCount: (widget.itemCount / widget.crossAxisCount).round(),
+        itemBuilder: (context, RowIndex) {
+          return CMaker(
+            margin: EdgeInsets.only(
+                top: (RowIndex == 0)
+                    ? widget.rowSpaces ?? 0
+                    : (((widget.rowSpaces) ?? 0) / 2),
+                bottom: ((RowIndex + 1) ==
+                        (widget.itemCount / widget.crossAxisCount).round())
+                    ? (widget.rowSpaces ?? 0)
+                    : (((widget.rowSpaces) ?? 0) / 2)),
+            height: widget.childHeight ?? 150,
+            width: widget.childWidth ?? 150.0 * widget.crossAxisCount,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.crossAxisCount,
+                itemBuilder: (context, ColumnIndex) {
+                  return ((widget.itemCount % widget.crossAxisCount) != 0 &&
+                          widget.itemCount ==
+                              ((widget.crossAxisCount * RowIndex +
+                                  ColumnIndex)))
+                      ? Container(
+                          width: widget.childWidth ?? 150,
+                        )
+                      : CMaker(
+                          margin: EdgeInsets.only(
+                              left: (ColumnIndex == 0)
+                                  ? widget.columnSpaces ?? 0
+                                  : (((widget.columnSpaces) ?? 0) / 2),
+                              right:
+                                  ((ColumnIndex + 1) == widget.crossAxisCount)
+                                      ? (widget.columnSpaces ?? 0)
+                                      : (((widget.columnSpaces) ?? 0) / 2)),
+                          child: InkWell(
+                            onTap: (widget.onSelected != null)
+                                ? () {
+                                    widget.onSelected!(
+                                        (widget.crossAxisCount * RowIndex +
+                                            ColumnIndex));
+                                  }
+                                : null,
+                            child: CMaker(
+                                padding: widget.childPadding,
+                                boxShadow: widget.childBoxShadow,
+                                BackGroundimage: widget.childBackGroundimage,
+                                alignment: widget.childAlignment,
+                                border: widget.childBorder,
+                                gradient: widget.childGradient,
+                                width: widget.childWidth ?? 150,
+                                circularRadius:
+                                    widget.childCircularRadius ?? 20,
+                                color: widget.childColor ??
+                                    Color.fromARGB(96, 216, 216, 216),
+                                child: (list != [])
+                                    ? list[(widget.crossAxisCount * RowIndex +
+                                        ColumnIndex)]
+                                    : Container(
+                                        width: widget.childWidth ?? 150,
+                                      )),
+                          ),
+                        );
+                }),
+          );
+        },
+      ),
     );
   }
 }
@@ -1028,8 +1118,8 @@ class NavBar extends StatefulWidget {
       this.iconFrameHeight,
       this.iconFrameWidth,
       this.iconFramePadding,
-      this.BackgroundImage
-      });
+      this.BackgroundImage,
+      this.BarShadow});
   List<Widget> pages;
   List<Widget> iconsList;
   String? orientation;
@@ -1043,6 +1133,7 @@ class NavBar extends StatefulWidget {
   Color? unselectedBackgeoundIconColor;
   Color? pageBackgroundColor;
   Widget? BackgroundImage;
+  List<BoxShadow>? BarShadow;
   @override
   State<NavBar> createState() => _NavBarState();
 }
@@ -1064,7 +1155,12 @@ class _NavBarState extends State<NavBar> {
               width: double.infinity,
               child: Stack(
                 children: [
-                  (widget.BackgroundImage!=null)?Container(height: double.infinity,width: double.infinity,child:widget.BackgroundImage!):Container(),
+                  (widget.BackgroundImage != null)
+                      ? Container(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: widget.BackgroundImage!)
+                      : Container(),
                   PageView(
                     onPageChanged: (value) {
                       setState(() {
@@ -1093,6 +1189,7 @@ class _NavBarState extends State<NavBar> {
                         (widget.iconsList.length + 1),
                   ),
                   CMaker(
+                    boxShadow: widget.BarShadow,
                     height: widget.height -
                         (widget.height -
                                 (widget.iconsList.length *
@@ -1154,7 +1251,12 @@ class _NavBarState extends State<NavBar> {
               width: double.infinity,
               child: Stack(
                 children: [
-                  (widget.BackgroundImage!=null)?Container(height: double.infinity,width: double.infinity,child:widget.BackgroundImage!):Container(),
+                  (widget.BackgroundImage != null)
+                      ? Container(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: widget.BackgroundImage!)
+                      : Container(),
                   PageView(
                     onPageChanged: (value) {
                       setState(() {
@@ -1170,6 +1272,7 @@ class _NavBarState extends State<NavBar> {
             left: (PageWidth(context) - widget.width) / 2,
             bottom: 20,
             child: CMaker(
+              boxShadow: widget.BarShadow,
               circularRadius: 20,
               color: widget.barColor ?? Colors.white,
               height: widget.height,
@@ -1511,9 +1614,9 @@ class PMaker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: EdgeInsets.only(
-            top: vertical ?? 0,
-            left:  horizontal ?? 0,
-            ));
+      top: vertical ?? 0,
+      left: horizontal ?? 0,
+    ));
   }
 }
 
