@@ -183,38 +183,39 @@ class _TFMakerState extends State<TFMaker> {
 }
 
 class TFFMaker extends StatefulWidget {
-  TFFMaker({
-    super.key,
-    this.FormKey,
-    this.enabled,
-    this.validator,
-    this.prefix,
-    this.enabledBorderwidth,
-    this.errorBorderwidth,
-    this.focusedBorderwidth,
-    this.enabledBorderColor,
-    this.errorBorderColor,
-    this.focusedBorderColor,
-    this.suffix,
-    this.focusedCircularRadius,
-    this.enabledCircularRadius,
-    this.errorCircularRadius,
-    this.hintText,
-    this.hintStyle,
-    this.label,
-    this.disabledBorderColor,
-    this.disabledBorderwidth,
-    this.disabledCircularRadius,
-    this.onChanged,
-    this.onSaved,
-    this.lines,
-  });
+  TFFMaker(
+      {super.key,
+      this.FormKey,
+      this.enabled,
+      this.validator,
+      this.prefix,
+      this.enabledBorderwidth,
+      this.errorBorderwidth,
+      this.focusedBorderwidth,
+      this.enabledBorderColor,
+      this.errorBorderColor,
+      this.focusedBorderColor,
+      this.suffix,
+      this.focusedCircularRadius,
+      this.enabledCircularRadius,
+      this.errorCircularRadius,
+      this.hintText,
+      this.hintStyle,
+      this.label,
+      this.disabledBorderColor,
+      this.disabledBorderwidth,
+      this.disabledCircularRadius,
+      this.onChanged,
+      this.onSaved,
+      this.lines,
+      this.initialValue});
   Widget? prefix;
   bool? enabled;
   Widget? suffix;
   String? hintText;
   Widget? label;
   TextStyle? hintStyle;
+  String? initialValue;
   double? enabledCircularRadius;
   double? errorCircularRadius;
   double? disabledCircularRadius;
@@ -240,6 +241,7 @@ class _TFFMakerState extends State<TFFMaker> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      initialValue: widget.initialValue ?? "",
       minLines: widget.lines ?? 1,
       maxLines: widget.lines ?? 1,
       onChanged: (value) {
@@ -442,19 +444,20 @@ class _SplashViewPageState extends State<SplashViewPage>
 }
 
 class DDButton extends StatefulWidget {
-  DDButton({super.key, required this.values, this.onChanged});
+  DDButton({super.key, required this.values, this.onChanged,this.initValueIndex});
   Function(dynamic value)? onChanged;
   List values = [];
-  var commonVar;
+  int? initValueIndex;
   @override
   State<DDButton> createState() => _DDButtonState();
 }
 
 class _DDButtonState extends State<DDButton> {
-  int indexChosen = 0;
+  int? indexChosen ;
+  var commonVar;
   @override
   Widget build(BuildContext context) {
-    widget.commonVar = widget.values[indexChosen];
+    commonVar = widget.values[indexChosen??widget.initValueIndex??0];
     List<DropdownMenuItem<Object?>>? t(List values) {
       List<DropdownMenuItem<Object?>>? list = [];
       for (int i = 0; i < values.length; i++) {
@@ -474,12 +477,12 @@ class _DDButtonState extends State<DDButton> {
     return DropdownButton(
         onChanged: (val) {
           setState(() {
-            widget.commonVar = val;
+            commonVar = val;
             widget.onChanged!(val);
           });
         },
         underline: Container(),
-        value: widget.commonVar,
+        value: commonVar,
         items: t(widget.values));
   }
 }
@@ -1566,10 +1569,7 @@ class MyButton extends StatefulWidget {
 class _MyButtonState extends State<MyButton> {
   @override
   Widget build(BuildContext context) {
-    return CMaker(
-      width: double.infinity,
-      alignment: Alignment.center,
-      child: InkWell(
+    return InkWell(
         onTap: widget.onTap,
         child: CMaker(
           gradient: widget.gradient,
@@ -1596,9 +1596,7 @@ class _MyButtonState extends State<MyButton> {
               fontSize: widget.textFont ?? 20,
               fontWeight: widget.textFontWeight ?? FontWeight.w500,
               color: widget.textColor ?? Colors.white),
-        ),
-      ),
-    );
+        ));
   }
 }
 
