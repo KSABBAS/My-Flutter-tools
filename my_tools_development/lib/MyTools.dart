@@ -2,7 +2,8 @@ import 'dart:async';
 // import 'package:get/get.dart';
 // import 'package:http/http.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
+
 // import 'package:http/http.dart' as http;
 // import 'package:html/parser.dart' as Parser;
 // import 'package:html/dom.dart' as dom;
@@ -10,8 +11,6 @@ import 'package:image_picker/image_picker.dart';
 // import 'package:html/html_escape.dart';
 // import 'package:beautiful_soup_dart/beautiful_soup.dart';
 // import 'package:geolocator/geolocator.dart';
-// import 'package:lottie/lottie.dart';
-// import 'package:connectivity_plus/connectivity_plus.dart';
 
 class CMaker extends StatefulWidget {
   CMaker(
@@ -1017,6 +1016,22 @@ class _WGridBuilderState extends State<WGridBuilder> {
   }
 }
 
+
+//----------------------------------------------------------
+
+
+//============================================
+
+// import 'package:http/http.dart' as http;
+// import 'package:html/parser.dart' as Parser;
+// import 'package:html/dom.dart' as dom;
+// import 'package:html/dom_parsing.dart';
+// import 'package:html/html_escape.dart';
+// import 'package:beautiful_soup_dart/beautiful_soup.dart';
+
+
+//  package : http 1.2.2 , html ??
+
 // Future<List> getjasonData(String link) async {
 //   var res = await get(Uri.parse("$link"));
 //   List resDecoded = jsonDecode(res.body);
@@ -1101,9 +1116,225 @@ class _WGridBuilderState extends State<WGridBuilder> {
 //   }
 //   return true;
 // }
-// Future PhotoImageFromGalary() async {
-//   return await ImagePicker().pickImage(source: ImageSource.gallery);
-// }
+
+//===========================================
+
+//----------------------------------------------------------
+
+
+//===========================================
+  // import 'package:geolocator/geolocator.dart';
+  // package : geolocator 13.0.2
+
+
+
+
+  // GetCoordinates(){
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+
+
+//===========================================
+
+
+  // DisplayVideo(){
+
+
+
+
+  // }
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+
+  // DisplayImage(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+//===========================================
+
+
+  // PlayAudio(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+//===========================================
+
+
+  // SendNotification(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+
+
+
+//===========================================
+
+
+  // ViewPdf(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+
+//===========================================
+
+
+  // DownloadFile(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+
+//===========================================
+
+
+  // VibrateTheDevice(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+
+//===========================================
+
+
+  // RecordVideo(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+
+//===========================================
+
+
+  // RecordAudio(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+
+//===========================================
+
+
+  // GetAproximitySensorData(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+
+//===========================================
+
+
+
+  // TurnAudioIntoVoice(){
+
+
+
+
+  // }
+
+//===========================================
+
+
+//----------------------------------------------------------
+
+
+//===========================================
+// Prevent taking screenshots
+
+//===========================================
+
+
+
+//----------------------------------------------------------
+
+
+
 class NavBar extends StatefulWidget {
   NavBar(
       {super.key,
@@ -1761,16 +1992,22 @@ class CenterVertical extends StatelessWidget {
 //   }
 // }
 
-List<Widget>? WidgetListMaker(int number, Widget widget) {
-  List<Widget>? list = [];
-  for (int i = 0; i < number; i++) {
-    list.add(widget);
-  }
-  return list;
-}
-Future PhotoImageFromGalary() async {
-  return await ImagePicker().pickImage(source: ImageSource.gallery);
-}
-Future PhotoImageFromCamera() async {
-  return await ImagePicker().pickImage(source: ImageSource.camera);
-}
+// List<Widget>? WidgetListMaker(int number, Widget widget) {
+//   List<Widget>? list = [];
+//   for (int i = 0; i < number; i++) {
+//     list.add(widget);
+//   }
+//   return list;
+// }
+
+//=================================================
+// import 'package:image_picker/image_picker.dart';
+// package : image_picker: ^1.1.2
+// in terminal : flutter pub add image_picker
+// Future PhotoImageFromGalary() async {
+//   return await ImagePicker().pickImage(source: ImageSource.gallery);
+// }
+// Future PhotoImageFromCamera() async {
+//   return await ImagePicker().pickImage(source: ImageSource.camera);
+// }
+//=================================================
