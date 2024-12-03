@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:my_tools_development/MyTools.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
+import 'package:my_tools_development/MyTools/MyTools.dart';
 
 void main() {
   runApp(App());
@@ -13,35 +16,30 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
+XFile? Img;
+Uint8List? file;
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-            body: Container(
-      alignment: Alignment.center,
-      child: Container(
-        height: 420,
-        child: Column(
-          children: [
-            Container(
-              height: 150,
-              width: 400,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: LinearGradient(colors: [Colors.amber,Colors.pink])),
-            ),
-            PMaker(vertical: 20,),
-            Container(
-              height: 250,
-              width: 400,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: LinearGradient(colors: [Colors.amber,Colors.pink])),
-            ),
-          ],
-        ),
-      ),
-    )));
+            body: Center(
+                child: CMaker(
+                  height: 250,
+                  child: Column(
+                    children: [
+                      MyButton(
+                            text: "Pick",
+                            onTap: () async {
+                              Img = await PickMediaFromGalary();
+                              file =await Img!.readAsBytes();
+                              setState(() {
+                              });
+                            },
+                          ),
+                      SizedBox(height: 200,width: 200,child: ViewImage(bytes:file,),)
+                    ],
+                  ),
+                ))));
   }
 }
