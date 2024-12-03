@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -16,8 +17,8 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-XFile? Img;
-Uint8List? file;
+XFile? Vid;
+File? file;
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
@@ -31,13 +32,13 @@ class _AppState extends State<App> {
                       MyButton(
                             text: "Pick",
                             onTap: () async {
-                              Img = await PickMediaFromGalary();
-                              file =await Img!.readAsBytes();
+                              Vid = await PickVideoFromCamera();
+                              file = File( Vid!.path);
                               setState(() {
                               });
                             },
                           ),
-                      SizedBox(height: 200,width: 200,child: ViewImage(bytes:file,),)
+                      (file!=null)?SizedBox(height: 200,width: 200,child: ChewieVideoPlayer(file:file,),):SizedBox(height: 200,width: 200)
                     ],
                   ),
                 ))));

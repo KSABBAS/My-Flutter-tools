@@ -1034,16 +1034,14 @@ class _WGridBuilderState extends State<WGridBuilder> {
 // works on : Android
 // link type : direct mp4 link
 class ChewieVideoPlayer extends StatefulWidget {
-  ChewieVideoPlayer({
-    super.key,
-    required this.url,
-    this.height,
-    this.width,
-  });
+  ChewieVideoPlayer(
+      {super.key, this.url, this.height, this.width, this.path, this.file});
 
   final double? height;
   final double? width;
-  final String url;
+  final String? url;
+  final String? path;
+  final File? file;
 
   @override
   State<ChewieVideoPlayer> createState() => _ChewieVideoPlayerState();
@@ -1060,9 +1058,14 @@ class _ChewieVideoPlayerState extends State<ChewieVideoPlayer> {
   }
 
   Future<void> _initializeVideoPlayer() async {
-    _videoPlayerController = VideoPlayerController.networkUrl(
-      Uri.parse(widget.url),
-    );
+    _videoPlayerController = (widget.path != null)
+        ? VideoPlayerController.asset(widget.path!,)
+        : (widget.file != null)
+            ? VideoPlayerController.file(widget.file!)
+            : VideoPlayerController.networkUrl(
+                Uri.parse(widget.url ??
+                    "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4"),
+              );
 
     await _videoPlayerController!.initialize();
 
@@ -1257,7 +1260,6 @@ class ViewImage extends StatelessWidget {
 //===========================================
 
 //----------------------------------------------------------
-
 
 //===========================================
 

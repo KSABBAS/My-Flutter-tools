@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 //===========================================
 // import 'package:geolocator/geolocator.dart';
 // package : geolocator 13.0.2
@@ -69,7 +70,7 @@ GetLocationPermmision() async {
   if (permission == LocationPermission.deniedForever) {
     // Permissions are denied forever, handle appropriately.
     return Future.error(
-      'Location permissions are permanently denied, we cannot request permissions.');
+        'Location permissions are permanently denied, we cannot request permissions.');
   }
 }
 
@@ -98,7 +99,6 @@ GetLocationPermmision() async {
 // import 'package:html/dom.dart' as dom;
 // import 'package:html/dom_parsing.dart';
 // import 'package:html/html_escape.dart';
-
 
 // // Future<List> ScrapeByClass(String link, String tag, String class_) async {
 // //   String html = "";
@@ -158,21 +158,27 @@ double PageWidth(BuildContext context) {
 Future PickImageFromGalary() async {
   return await ImagePicker().pickImage(source: ImageSource.gallery);
 }
+
 Future PickImageFromCamera() async {
   return await ImagePicker().pickImage(source: ImageSource.camera);
 }
+
 Future PickVideoFromCamera() async {
   return await ImagePicker().pickVideo(source: ImageSource.camera);
 }
+
 Future PickVideoFromGalary() async {
   return await ImagePicker().pickVideo(source: ImageSource.gallery);
 }
-Future PickPhotoMultiImageFromGalary() async {
+
+Future PickMultiImageFromGalary() async {
   return await ImagePicker().pickMultiImage();
 }
+
 Future PickMediaFromGalary() async {
   return await ImagePicker().pickMedia();
 }
+
 Future PickMultiMediaFromGalary() async {
   return await ImagePicker().pickMultipleMedia();
 }
@@ -182,7 +188,27 @@ Future PickMultiMediaFromGalary() async {
 //----------------------------------------------------------
 
 //===========================================
-
+// import 'package:file_picker/file_picker.dart';
+// Package : file_picker 8.1.4
+// add : flutter pub add file_picker
+Future PickAudioFile() async {
+  return await FilePicker.platform.pickFiles(
+    allowMultiple: false,
+    type: FileType.audio
+  );
+}
+Future PickMultiAudioFiles() async {
+  return await FilePicker.platform.pickFiles(
+    allowMultiple: true,
+    type: FileType.audio,
+  );
+}
+Future PickMultiTypeFiles() async {
+  return await FilePicker.platform.pickFiles(
+    allowMultiple: true,
+    type: FileType.any
+  );
+}
 
 
 //===========================================
