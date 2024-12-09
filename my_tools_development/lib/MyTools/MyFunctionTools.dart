@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 //===========================================
 // import 'package:geolocator/geolocator.dart';
 // package : geolocator 13.0.2
@@ -42,37 +42,37 @@ import 'package:file_picker/file_picker.dart';
 // }
 // ==
 
-GetLocationPermmision() async {
-  bool serviceEnabled;
-  LocationPermission permission;
+// GetLocationPermmision() async {
+//   bool serviceEnabled;
+//   LocationPermission permission;
 
-  // Test if location services are enabled.
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    // Location services are not enabled don't continue
-    // accessing the position and request users of the
-    // App to enable the location services.
-    return Future.error('Location services are disabled.');
-  }
+//   // Test if location services are enabled.
+//   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+//   if (!serviceEnabled) {
+//     // Location services are not enabled don't continue
+//     // accessing the position and request users of the
+//     // App to enable the location services.
+//     return Future.error('Location services are disabled.');
+//   }
 
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      // Permissions are denied, next time you could try
-      // requesting permissions again (this is also where
-      // Android's shouldShowRequestPermissionRationale
-      // returned true. According to Android guidelines
-      // your App should show an explanatory UI now.
-      return Future.error('Location permissions are denied');
-    }
-  }
-  if (permission == LocationPermission.deniedForever) {
-    // Permissions are denied forever, handle appropriately.
-    return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
-  }
-}
+//   permission = await Geolocator.checkPermission();
+//   if (permission == LocationPermission.denied) {
+//     permission = await Geolocator.requestPermission();
+//     if (permission == LocationPermission.denied) {
+//       // Permissions are denied, next time you could try
+//       // requesting permissions again (this is also where
+//       // Android's shouldShowRequestPermissionRationale
+//       // returned true. According to Android guidelines
+//       // your App should show an explanatory UI now.
+//       return Future.error('Location permissions are denied');
+//     }
+//   }
+//   if (permission == LocationPermission.deniedForever) {
+//     // Permissions are denied forever, handle appropriately.
+//     return Future.error(
+//         'Location permissions are permanently denied, we cannot request permissions.');
+//   }
+// }
 
 //===========================================
 
@@ -118,19 +118,92 @@ GetLocationPermmision() async {
 //===========================================
 // import 'package:flutter/material.dart';
 
+// double PageHeight(BuildContext context) {
+//   List l = [2.2];
+//   final Sheigt = MediaQuery.of(context).size.height;
+//   l.add(Sheigt);
+//   return l[1];
+// }
+// double PageWidth(BuildContext context) {
+//   List l = [2.2];
+//   final Sheigt = MediaQuery.of(context).size.width;
+//   l.add(Sheigt);
+//   return l[1];
+// }
 double PageHeight(BuildContext context) {
-  List l = [2.2];
-  final Sheigt = MediaQuery.of(context).size.height;
-  l.add(Sheigt);
-  return l[1];
+  return MediaQuery.of(context).size.height;
 }
 
 double PageWidth(BuildContext context) {
-  List l = [2.2];
-  final Swidth = MediaQuery.of(context).size.width;
-  l.add(Swidth);
-  return l[1];
+  return MediaQuery.of(context).size.width;
 }
+
+double? _referenceFontScreenWidth;
+
+// Responsive Font Size by Width
+double ResponsiveFontSizeByWidth(BuildContext context, double fontSize, { double designScreenWidth=1536}) {
+  final screenWidth = MediaQuery.of(context).size.width;
+
+  // Set the reference screen width for font size scaling
+  _referenceFontScreenWidth ??= designScreenWidth;
+
+  // Calculate the scaling factor
+  final scaleFactor = screenWidth / _referenceFontScreenWidth!;
+
+  // Calculate and return the responsive font size
+  return fontSize * scaleFactor;
+}
+
+double? _referenceFontScreenHeight;
+// Responsive Font Size by Height
+double ResponsiveFontSizeByHeight(BuildContext context, double fontSize, {double designScreenHeight=792}) {
+  final screenHeight = MediaQuery.of(context).size.height;
+
+  // Set the reference screen height for font size scaling
+  _referenceFontScreenHeight ??= designScreenHeight;
+
+  // Calculate the scaling factor
+  final scaleFactor = screenHeight / _referenceFontScreenHeight!;
+
+  // Calculate and return the responsive font size
+  return fontSize * scaleFactor;
+}
+
+
+
+double? _referenceScreenWidth;
+
+// Responsive Width Function
+double ResponsiveWidth(BuildContext context, double containerWidth, {double designScreenWidth=1536}) {
+  final screenWidth = MediaQuery.of(context).size.width;
+
+  // Set the reference screen width once
+  _referenceScreenWidth ??= designScreenWidth;
+
+  // Calculate the scaling factor
+  final scaleFactor = screenWidth / _referenceScreenWidth!;
+
+  // Calculate and return the responsive width
+  return containerWidth * scaleFactor;
+}
+
+double? _referenceScreenHeight;
+// Responsive Height Function
+double ResponsiveHeight(BuildContext context, double containerHeight, {double designScreenHeight=792}) {
+  final screenHeight = MediaQuery.of(context).size.height;
+
+  // Set the reference screen height once
+  _referenceScreenHeight ??= designScreenHeight;
+
+  // Calculate the scaling factor
+  final scaleFactor = screenHeight / _referenceScreenHeight!;
+
+  // Calculate and return the responsive height
+  return containerHeight * scaleFactor;
+}
+
+
+
 
 //===========================================
 
@@ -155,33 +228,33 @@ double PageWidth(BuildContext context) {
 // import 'package:image_picker/image_picker.dart';
 // package : image_picker: ^1.1.2
 // in terminal : flutter pub add image_picker
-Future PickImageFromGalary() async {
-  return await ImagePicker().pickImage(source: ImageSource.gallery);
-}
+// Future PickImageFromGalary() async {
+//   return await ImagePicker().pickImage(source: ImageSource.gallery);
+// }
 
-Future PickImageFromCamera() async {
-  return await ImagePicker().pickImage(source: ImageSource.camera);
-}
+// Future PickImageFromCamera() async {
+//   return await ImagePicker().pickImage(source: ImageSource.camera);
+// }
 
-Future PickVideoFromCamera() async {
-  return await ImagePicker().pickVideo(source: ImageSource.camera);
-}
+// Future PickVideoFromCamera() async {
+//   return await ImagePicker().pickVideo(source: ImageSource.camera);
+// }
 
-Future PickVideoFromGalary() async {
-  return await ImagePicker().pickVideo(source: ImageSource.gallery);
-}
+// Future PickVideoFromGalary() async {
+//   return await ImagePicker().pickVideo(source: ImageSource.gallery);
+// }
 
-Future PickMultiImageFromGalary() async {
-  return await ImagePicker().pickMultiImage();
-}
+// Future PickMultiImageFromGalary() async {
+//   return await ImagePicker().pickMultiImage();
+// }
 
-Future PickMediaFromGalary() async {
-  return await ImagePicker().pickMedia();
-}
+// Future PickMediaFromGalary() async {
+//   return await ImagePicker().pickMedia();
+// }
 
-Future PickMultiMediaFromGalary() async {
-  return await ImagePicker().pickMultipleMedia();
-}
+// Future PickMultiMediaFromGalary() async {
+//   return await ImagePicker().pickMultipleMedia();
+// }
 
 //===========================================
 
@@ -191,24 +264,24 @@ Future PickMultiMediaFromGalary() async {
 // import 'package:file_picker/file_picker.dart';
 // Package : file_picker 8.1.4
 // add : flutter pub add file_picker
-Future PickAudioFile() async {
-  return await FilePicker.platform.pickFiles(
-    allowMultiple: false,
-    type: FileType.audio
-  );
-}
-Future PickMultiAudioFiles() async {
-  return await FilePicker.platform.pickFiles(
-    allowMultiple: true,
-    type: FileType.audio,
-  );
-}
-Future PickMultiTypeFiles() async {
-  return await FilePicker.platform.pickFiles(
-    allowMultiple: true,
-    type: FileType.any
-  );
-}
+// Future PickAudioFile() async {
+//   return await FilePicker.platform.pickFiles(
+//     allowMultiple: false,
+//     type: FileType.audio
+//   );
+// }
+// Future PickMultiAudioFiles() async {
+//   return await FilePicker.platform.pickFiles(
+//     allowMultiple: true,
+//     type: FileType.audio,
+//   );
+// }
+// Future PickMultiTypeFiles() async {
+//   return await FilePicker.platform.pickFiles(
+//     allowMultiple: true,
+//     type: FileType.any
+//   );
+// }
 
 
 //===========================================
