@@ -1,10 +1,15 @@
 // import 'package:chewie/chewie.dart';
 import 'dart:async';
-
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:chewie/chewie.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
+import 'package:codeveloper_portfolio/MyTools/MyFunctionTools.dart';
 import 'package:flutter/material.dart';
 
 // import 'package:insta_image_viewer/insta_image_viewer.dart';
-// import 'package:video_player/video_player.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_player/video_player.dart';
 // import 'package:beautiful_soup_dart/beautiful_soup.dart';
 
 class CMaker extends StatefulWidget {
@@ -21,7 +26,8 @@ class CMaker extends StatefulWidget {
       this.alignment,
       this.color,
       this.gradient,
-      this.circularRadius});
+      this.circularRadius,
+      this.transform});
   Color? color;
   double? height;
   double? width;
@@ -31,6 +37,7 @@ class CMaker extends StatefulWidget {
   DecorationImage? BackGroundimage;
   List<BoxShadow>? boxShadow;
   Gradient? gradient;
+  Matrix4? transform;
   BoxBorder? border;
   double? circularRadius;
   Widget? child;
@@ -42,6 +49,7 @@ class _CMakerState extends State<CMaker> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      transform: widget.transform,
       alignment: widget.alignment,
       padding: widget.padding,
       margin: widget.margin,
@@ -76,7 +84,8 @@ class ACMaker extends StatefulWidget {
       this.color,
       this.gradient,
       this.circularRadius,
-      this.duration});
+      this.duration,
+      this.transform});
   Color? color;
   Duration? duration;
   double? height;
@@ -84,6 +93,7 @@ class ACMaker extends StatefulWidget {
   AlignmentGeometry? alignment;
   EdgeInsetsGeometry? padding;
   EdgeInsetsGeometry? margin;
+  Matrix4? transform;
   DecorationImage? BackGroundimage;
   List<BoxShadow>? boxShadow;
   Gradient? gradient;
@@ -98,6 +108,7 @@ class _ACMakerState extends State<ACMaker> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
+      transform: widget.transform,
       duration: widget.duration ?? Duration(milliseconds: 300),
       alignment: widget.alignment,
       padding: widget.padding,
@@ -965,16 +976,11 @@ class WGridBuilder extends StatefulWidget {
 }
 
 class _WGridBuilderState extends State<WGridBuilder> {
-  var selected = "";
   @override
   Widget build(BuildContext context) {
-    List<Widget> list = () {
-      List<Widget>? list = [];
-      for (int i = 0; i < widget.itemCount; i++) {
-        list.add(widget.builder(i));
-      }
-      return list;
-    }();
+    int adjustedItemCount = (widget.itemCount + widget.crossAxisCount - 1) ~/
+        widget.crossAxisCount *
+        widget.crossAxisCount;
     return Container(
       height: (widget.itemCount.isEven)
           ? ((widget.childHeight * widget.itemCount) / 2) +
@@ -989,7 +995,7 @@ class _WGridBuilderState extends State<WGridBuilder> {
         physics:
             (widget.Scroll == false) ? NeverScrollableScrollPhysics() : null,
         shrinkWrap: widget.Scroll ?? true,
-        itemCount: (widget.itemCount / widget.crossAxisCount).round(),
+        itemCount: (adjustedItemCount / widget.crossAxisCount).round(),
         itemBuilder: (context, RowIndex) {
           return CMaker(
             margin: EdgeInsets.only(
@@ -997,7 +1003,7 @@ class _WGridBuilderState extends State<WGridBuilder> {
                     ? widget.rowSpaces ?? 0
                     : (((widget.rowSpaces) ?? 0) / 2),
                 bottom: ((RowIndex + 1) ==
-                        (widget.itemCount / widget.crossAxisCount).round())
+                        (adjustedItemCount / widget.crossAxisCount).round())
                     ? (widget.rowSpaces ?? 0)
                     : (((widget.rowSpaces) ?? 0) / 2)),
             height: widget.childHeight ?? 150,
@@ -1006,13 +1012,10 @@ class _WGridBuilderState extends State<WGridBuilder> {
                 scrollDirection: Axis.horizontal,
                 itemCount: widget.crossAxisCount,
                 itemBuilder: (context, ColumnIndex) {
-                  return ((widget.itemCount % widget.crossAxisCount) != 0 &&
-                          widget.itemCount ==
-                              ((widget.crossAxisCount * RowIndex +
-                                  ColumnIndex)))
-                      ? Container(
-                          width: widget.childWidth ?? 150,
-                        )
+                  int currentIndex =
+                      (widget.crossAxisCount * RowIndex) + ColumnIndex;
+                  return (currentIndex >= widget.itemCount)
+                      ? SizedBox.shrink() // Placeholder for empty slot
                       : CMaker(
                           margin: EdgeInsets.only(
                               left: (ColumnIndex == 0)
@@ -1025,9 +1028,7 @@ class _WGridBuilderState extends State<WGridBuilder> {
                           child: InkWell(
                             onTap: (widget.onSelected != null)
                                 ? () {
-                                    widget.onSelected!(
-                                        (widget.crossAxisCount * RowIndex +
-                                            ColumnIndex));
+                                    widget.onSelected!(currentIndex);
                                   }
                                 : null,
                             child: CMaker(
@@ -1042,12 +1043,7 @@ class _WGridBuilderState extends State<WGridBuilder> {
                                     widget.childCircularRadius ?? 20,
                                 color: widget.childColor ??
                                     Color.fromARGB(96, 216, 216, 216),
-                                child: (list != [])
-                                    ? list[(widget.crossAxisCount * RowIndex +
-                                        ColumnIndex)]
-                                    : Container(
-                                        width: widget.childWidth ?? 150,
-                                      )),
+                                child: widget.builder(currentIndex)),
                           ),
                         );
                 }),
@@ -1087,75 +1083,77 @@ class _WGridBuilderState extends State<WGridBuilder> {
 // ==
 // works on : Android
 // link type : direct mp4 link
-// class ChewieVideoPlayer extends StatefulWidget {
-//   ChewieVideoPlayer(
-//       {super.key, this.url, this.height, this.width, this.path, this.file});
+class ChewieVideoPlayer extends StatefulWidget {
+  ChewieVideoPlayer(
+      {super.key, this.url, this.height, this.width, this.path, this.file});
 
-//   final double? height;
-//   final double? width;
-//   final String? url;
-//   final String? path;
-//   final File? file;
+  final double? height;
+  final double? width;
+  final String? url;
+  final String? path;
+  final File? file;
 
-//   @override
-//   State<ChewieVideoPlayer> createState() => _ChewieVideoPlayerState();
-// }
+  @override
+  State<ChewieVideoPlayer> createState() => _ChewieVideoPlayerState();
+}
 
-// class _ChewieVideoPlayerState extends State<ChewieVideoPlayer> {
-//   VideoPlayerController? _videoPlayerController;
-//   ChewieController? _chewieController;
+class _ChewieVideoPlayerState extends State<ChewieVideoPlayer> {
+  VideoPlayerController? _videoPlayerController;
+  ChewieController? _chewieController;
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _initializeVideoPlayer();
-//   }
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideoPlayer();
+  }
 
-//   Future<void> _initializeVideoPlayer() async {
-//     _videoPlayerController = (widget.path != null)
-//         ? VideoPlayerController.asset(widget.path!,)
-//         : (widget.file != null)
-//             ? VideoPlayerController.file(widget.file!)
-//             : VideoPlayerController.networkUrl(
-//                 Uri.parse(widget.url ??
-//                     "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4"),
-//               );
+  Future<void> _initializeVideoPlayer() async {
+    _videoPlayerController = (widget.path != null)
+        ? VideoPlayerController.asset(
+            widget.path!,
+          )
+        : (widget.file != null)
+            ? VideoPlayerController.file(widget.file!)
+            : VideoPlayerController.networkUrl(
+                Uri.parse(widget.url ??
+                    "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4"),
+              );
 
-//     await _videoPlayerController!.initialize();
+    await _videoPlayerController!.initialize();
 
-//     setState(() {
-//       _chewieController = ChewieController(
-//         videoPlayerController: _videoPlayerController!,
-//         autoPlay: false,
-//         looping: false,
-//       );
-//     });
-//   }
+    setState(() {
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController!,
+        autoPlay: false,
+        looping: false,
+      );
+    });
+  }
 
-//   @override
-//   void dispose() {
-//     _chewieController?.dispose();
-//     _videoPlayerController?.dispose();
-//     super.dispose();
-//   }
+  @override
+  void dispose() {
+    _chewieController?.dispose();
+    _videoPlayerController?.dispose();
+    super.dispose();
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     if (_chewieController == null) {
-//       return SizedBox(
-//         height: widget.height ?? 235,
-//         width: widget.width ?? double.infinity,
-//         child: const Center(child: CircularProgressIndicator()),
-//       );
-//     }
+  @override
+  Widget build(BuildContext context) {
+    if (_chewieController == null) {
+      return SizedBox(
+        height: widget.height ?? 235,
+        width: widget.width ?? double.infinity,
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
 
-//     return SizedBox(
-//       height: widget.height ?? 235,
-//       width: widget.width ?? double.infinity,
-//       child: Chewie(controller: _chewieController!),
-//     );
-//   }
-// }
+    return SizedBox(
+      height: widget.height ?? 235,
+      width: widget.width ?? double.infinity,
+      child: Chewie(controller: _chewieController!),
+    );
+  }
+}
 
 //===========================================
 
@@ -1165,71 +1163,71 @@ class _WGridBuilderState extends State<WGridBuilder> {
 // import 'package:insta_image_viewer/insta_image_viewer.dart';
 // package: insta_image_viewer 1.0.4
 // add : flutter pub add insta_image_viewer
-// class ViewImage extends StatelessWidget {
-//   const ViewImage(
-//       {super.key,
-//       this.ImageLink,
-//       this.ImagePath,
-//       this.file,
-//       this.bytes,
-//       this.Height,
-//       this.Width});
-//   final String? ImageLink;
-//   final String? ImagePath;
-//   final File? file;
-//   final Uint8List? bytes;
-//   final double? Height;
-//   final double? Width;
-//   @override
-//   Widget build(BuildContext context) {
-//     if (ImagePath != null &&
-//         ImageLink == null &&
-//         file == null &&
-//         bytes == null) {
-//       return SizedBox(
-//         width: Width ?? 100,
-//         height: Height ?? 100,
-//         child: InstaImageViewer(
-//           child: Image(
-//             image: Image.asset(ImagePath!).image,
-//           ),
-//         ),
-//       );
-//     } else if (ImageLink == null && file != null && bytes == null) {
-//       return SizedBox(
-//         width: Width ?? double.infinity,
-//         height: Height ?? double.infinity,
-//         child: InstaImageViewer(
-//           child: Image(
-//             image: Image.file(file!).image,
-//           ),
-//         ),
-//       );
-//     } else if (ImageLink == null && bytes != null) {
-//       return SizedBox(
-//         width: Width ?? double.infinity,
-//         height: Height ?? double.infinity,
-//         child: InstaImageViewer(
-//           child: Image(
-//             image: Image.memory(bytes!).image,
-//           ),
-//         ),
-//       );
-//     } else {
-//       return SizedBox(
-//         width: Width ?? double.infinity,
-//         height: Height ?? double.infinity,
-//         child: InstaImageViewer(
-//           child: Image(
-//             image:
-//                 Image.network(ImageLink ?? "https://picsum.photos/id/507/1000")
-//                     .image,
-//           ),
-//         ),
-//       );
-//     }
-//   }
-// }
+class ViewImage extends StatelessWidget {
+  const ViewImage(
+      {super.key,
+      this.ImageLink,
+      this.ImagePath,
+      this.file,
+      this.bytes,
+      this.Height,
+      this.Width});
+  final String? ImageLink;
+  final String? ImagePath;
+  final File? file;
+  final Uint8List? bytes;
+  final double? Height;
+  final double? Width;
+  @override
+  Widget build(BuildContext context) {
+    if (ImagePath != null &&
+        ImageLink == null &&
+        file == null &&
+        bytes == null) {
+      return SizedBox(
+        width: Width ?? 100,
+        height: Height ?? 100,
+        child: InstaImageViewer(
+          child: Image(
+            image: Image.asset(ImagePath!).image,
+          ),
+        ),
+      );
+    } else if (ImageLink == null && file != null && bytes == null) {
+      return SizedBox(
+        width: Width ?? double.infinity,
+        height: Height ?? double.infinity,
+        child: InstaImageViewer(
+          child: Image(
+            image: Image.file(file!).image,
+          ),
+        ),
+      );
+    } else if (ImageLink == null && bytes != null) {
+      return SizedBox(
+        width: Width ?? double.infinity,
+        height: Height ?? double.infinity,
+        child: InstaImageViewer(
+          child: Image(
+            image: Image.memory(bytes!).image,
+          ),
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: Width ?? double.infinity,
+        height: Height ?? double.infinity,
+        child: InstaImageViewer(
+          child: Image(
+            image:
+                Image.network(ImageLink ?? "https://picsum.photos/id/507/1000")
+                    .image,
+          ),
+        ),
+      );
+    }
+  }
+}
 
 //===========================================
 
@@ -2027,6 +2025,339 @@ class _PopAndVanishNavBarState extends State<PopAndVanishNavBar> {
   }
 }
 
+class PopAndVanishLAyerBetweenNavBar extends StatefulWidget {
+  PopAndVanishLAyerBetweenNavBar(
+      {super.key,
+      required this.pages,
+      required this.iconsList,
+      this.orientation,
+      required this.height,
+      required this.width,
+      this.barColor,
+      this.selectedContainerColor,
+      this.pageBackgroundColor,
+      this.unselectedContainerColor,
+      this.SelectionContainerHeight,
+      this.unSelectionContainerHeight,
+      this.SelectionContainerWidth,
+      this.unSelectionContainerWidth,
+      this.SelectionContainerPadding,
+      this.unSelectionContainerPadding,
+      this.BackgroundImage,
+      this.BarShadow,
+      this.BarBorder,
+      this.BarCircularRadius,
+      this.BarGradient,
+      this.SelectedContainerBorder,
+      this.unSelectedContainerBorder,
+      this.SelectionContainerCircularRadius,
+      this.unSelectionContainerCircularRadius,
+      this.SelectionContainerGradient,
+      this.unSelectionContainerGradient,
+      this.onPageChange,
+      this.NavBarPositionBottom,
+      this.NavBarPositionLeft,
+      this.NavBarPositionRight,
+      this.NavBarPositionTop,
+      this.vanishDuration,
+      this.LayerBetween
+      });
+  List<Widget> pages;
+  List<Widget> iconsList;
+  String? orientation;
+  Function(int index)? onPageChange;
+  double height;
+  double width;
+  Widget? LayerBetween;
+  double? NavBarPositionTop;
+  double? NavBarPositionBottom;
+  double? NavBarPositionLeft;
+  double? NavBarPositionRight;
+  double? SelectionContainerHeight;
+  double? unSelectionContainerHeight;
+  double? SelectionContainerWidth;
+  double? unSelectionContainerWidth;
+  double? SelectionContainerPadding;
+  double? unSelectionContainerPadding;
+  double? SelectionContainerCircularRadius;
+  double? unSelectionContainerCircularRadius;
+  double? BarCircularRadius;
+  BoxBorder? SelectedContainerBorder;
+  BoxBorder? unSelectedContainerBorder;
+  Gradient? SelectionContainerGradient;
+  Gradient? unSelectionContainerGradient;
+  BoxBorder? BarBorder;
+  Gradient? BarGradient;
+  Duration? vanishDuration;
+  Color? barColor;
+  Color? selectedContainerColor;
+  Color? unselectedContainerColor;
+  Color? pageBackgroundColor;
+  Widget? BackgroundImage;
+  List<BoxShadow>? BarShadow;
+  @override
+  State<PopAndVanishLAyerBetweenNavBar> createState() =>
+      _PopAndVanishLAyerBetweenNavBarState();
+}
+
+class _PopAndVanishLAyerBetweenNavBarState
+    extends State<PopAndVanishLAyerBetweenNavBar> {
+  int PageIndex = 0;
+  bool VanishIsOn = false;
+  @override
+  Widget build(BuildContext context) {
+    late Widget BarBody;
+    if (widget.orientation == "H") {
+      BarBody = Stack(
+        children: [
+          CMaker(
+              height: double.infinity,
+              color: widget.pageBackgroundColor ?? Colors.transparent,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  (widget.BackgroundImage != null)
+                      ? Container(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: widget.BackgroundImage!)
+                      : Container(),
+                  AnimatedOpacity(
+                    opacity: (VanishIsOn) ? 0 : 1,
+                    duration:
+                        widget.vanishDuration ?? Duration(milliseconds: 200),
+                    child: widget.pages[PageIndex],
+                  ),
+                ],
+              )),
+          widget.LayerBetween??CMaker(),
+          Positioned(
+            top: widget.NavBarPositionTop,
+            left: widget.NavBarPositionLeft,
+            bottom: widget.NavBarPositionBottom,
+            right: widget.NavBarPositionRight,
+            child: CMaker(
+              boxShadow: widget.BarShadow,
+              circularRadius: widget.BarCircularRadius ?? 20,
+              border: widget.BarBorder,
+              alignment: Alignment.center,
+              gradient: widget.BarGradient,
+              color: widget.barColor ?? Colors.white,
+              height: widget.height,
+              width: widget.width,
+              child: Container(
+                width: widget.SelectionContainerWidth,
+                child: Column(
+                  children: [
+                    Container(
+                      height: (widget.height -
+                              (widget.iconsList.length *
+                                  (widget.SelectionContainerHeight ?? 60))) /
+                          (widget.iconsList.length + 1),
+                    ),
+                    CMaker(
+                      boxShadow: widget.BarShadow,
+                      height: widget.height -
+                          (widget.height -
+                                  (widget.iconsList.length *
+                                      (widget.SelectionContainerHeight ??
+                                          60))) /
+                              (widget.iconsList.length + 1),
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: false,
+                        itemCount: widget.iconsList.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              InkWell(
+                                  onTap: () async {
+                                    if (index != PageIndex) {
+                                      setState(() => VanishIsOn = true);
+                                      await Future.delayed(widget
+                                              .vanishDuration ??
+                                          const Duration(milliseconds: 200));
+                                      setState(() {
+                                        PageIndex = index;
+                                        widget.onPageChange?.call(PageIndex);
+                                        VanishIsOn = false;
+                                      });
+                                    }
+                                  },
+                                  child: CMaker(
+                                      padding: EdgeInsets.all(
+                                          widget.SelectionContainerPadding ??
+                                              0),
+                                      alignment: Alignment.center,
+                                      height:
+                                          widget.SelectionContainerHeight ?? 60,
+                                      width:
+                                          widget.SelectionContainerWidth ?? 60,
+                                      circularRadius: widget
+                                              .SelectionContainerCircularRadius ??
+                                          15,
+                                      border: (PageIndex == index)
+                                          ? widget.SelectedContainerBorder ??
+                                              null
+                                          : widget.unSelectedContainerBorder ??
+                                              null,
+                                      gradient:
+                                          widget.SelectionContainerGradient,
+                                      color: (PageIndex == index)
+                                          ? widget.selectedContainerColor ??
+                                              Color.fromARGB(255, 0, 0, 0)
+                                          : widget.unselectedContainerColor ??
+                                              Colors.transparent,
+                                      child: widget.iconsList[index])),
+                              Container(
+                                height: (widget.height -
+                                        (widget.iconsList.length *
+                                            (widget.SelectionContainerHeight ??
+                                                60))) /
+                                    (widget.iconsList.length + 1),
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      BarBody = Stack(
+        children: [
+          CMaker(
+              height: double.infinity,
+              color: widget.pageBackgroundColor ?? Colors.transparent,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  (widget.BackgroundImage != null)
+                      ? Container(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: widget.BackgroundImage!)
+                      : Container(),
+                  AnimatedOpacity(
+                    opacity: (VanishIsOn) ? 0 : 1,
+                    duration:
+                        widget.vanishDuration ?? Duration(milliseconds: 200),
+                    child: widget.pages[PageIndex],
+                  ),
+                ],
+              )),
+              widget.LayerBetween??CMaker(),
+          Positioned(
+              top: widget.NavBarPositionTop,
+              left: widget.NavBarPositionLeft,
+              bottom: widget.NavBarPositionBottom,
+              right: widget.NavBarPositionRight,
+              child: CMaker(
+                boxShadow: widget.BarShadow,
+                circularRadius: widget.BarCircularRadius ?? 20,
+                border: widget.BarBorder,
+                alignment: Alignment.center,
+                gradient: widget.BarGradient,
+                color: widget.barColor ?? Colors.white,
+                height: widget.height,
+                width: widget.width,
+                child: Container(
+                  height: widget.SelectionContainerHeight,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: (widget.width -
+                                (widget.iconsList.length *
+                                    (widget.SelectionContainerWidth ?? 60))) /
+                            (widget.iconsList.length + 1),
+                      ),
+                      CMaker(
+                        width: widget.width -
+                            (widget.width -
+                                    (widget.iconsList.length *
+                                        (widget.SelectionContainerWidth ??
+                                            60))) /
+                                (widget.iconsList.length + 1),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: false,
+                          itemCount: widget.iconsList.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              children: [
+                                InkWell(
+                                  onTap: () async {
+                                    if (index != PageIndex) {
+                                      setState(() => VanishIsOn = true);
+                                      await Future.delayed(widget
+                                              .vanishDuration ??
+                                          const Duration(milliseconds: 200));
+                                      setState(() {
+                                        PageIndex = index;
+                                        widget.onPageChange?.call(PageIndex);
+                                        VanishIsOn = false;
+                                      });
+                                    }
+                                  },
+                                  child: CMaker(
+                                      alignment: Alignment.center,
+                                      child: CMaker(
+                                          padding: EdgeInsets.all(
+                                              widget.SelectionContainerPadding ??
+                                                  0),
+                                          alignment: Alignment.center,
+                                          height:
+                                              widget.SelectionContainerHeight ??
+                                                  60,
+                                          width: widget.SelectionContainerWidth ??
+                                              60,
+                                          circularRadius:
+                                              widget.SelectionContainerCircularRadius ??
+                                                  15,
+                                          border: (PageIndex == index)
+                                              ? widget.SelectedContainerBorder ??
+                                                  null
+                                              : widget.unSelectedContainerBorder ??
+                                                  null,
+                                          gradient:
+                                              widget.SelectionContainerGradient,
+                                          color: (PageIndex == index)
+                                              ? widget.selectedContainerColor ??
+                                                  Color.fromARGB(255, 0, 0, 0)
+                                              : widget.unselectedContainerColor ??
+                                                  Colors.transparent,
+                                          child: widget.iconsList[index])),
+                                ),
+                                Container(
+                                  width: (widget.width -
+                                          (widget.iconsList.length *
+                                              (widget.SelectionContainerWidth ??
+                                                  60))) /
+                                      (widget.iconsList.length + 1),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+        ],
+      );
+    }
+    return BarBody;
+  }
+}
+
 // class NowClock extends StatefulWidget {
 //   NowClock({super.key, this.BackGroundColor, this.textFontFamily});
 //   Color? BackGroundColor;
@@ -2294,6 +2625,30 @@ class PMaker extends StatelessWidget {
         padding: EdgeInsets.only(
       top: vertical ?? 0,
       left: horizontal ?? 0,
+    ));
+  }
+}
+
+class ResponsivePMaker extends StatelessWidget {
+  ResponsivePMaker(
+      {super.key,
+      this.horizontal,
+      this.vertical,
+      this.designScreenHeight,
+      this.designScreenWidth});
+  double? horizontal;
+  double? vertical;
+  double? designScreenHeight;
+  double? designScreenWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.only(
+      top: ResponsiveHeight(context, vertical ?? 0,
+          designScreenHeight: designScreenHeight),
+      left: ResponsiveWidth(context, horizontal ?? 0,
+          designScreenWidth: designScreenWidth),
     ));
   }
 }

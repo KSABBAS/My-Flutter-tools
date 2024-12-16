@@ -142,7 +142,7 @@ double PageWidth(BuildContext context) {
 double? _referenceFontScreenWidth;
 
 // Responsive Font Size by Width
-double ResponsiveFontSizeByWidth(BuildContext context, double fontSize, { double designScreenWidth=1536}) {
+double ResponsiveFontSizeByWidth(BuildContext context, double fontSize, { double? designScreenWidth=1536}) {
   final screenWidth = MediaQuery.of(context).size.width;
 
   // Set the reference screen width for font size scaling
@@ -157,7 +157,7 @@ double ResponsiveFontSizeByWidth(BuildContext context, double fontSize, { double
 
 double? _referenceFontScreenHeight;
 // Responsive Font Size by Height
-double ResponsiveFontSizeByHeight(BuildContext context, double fontSize, {double designScreenHeight=792}) {
+double ResponsiveFontSizeByHeight(BuildContext context, double fontSize, {double? designScreenHeight=792}) {
   final screenHeight = MediaQuery.of(context).size.height;
 
   // Set the reference screen height for font size scaling
@@ -175,7 +175,7 @@ double ResponsiveFontSizeByHeight(BuildContext context, double fontSize, {double
 double? _referenceScreenWidth;
 
 // Responsive Width Function
-double ResponsiveWidth(BuildContext context, double containerWidth, {double designScreenWidth=1536}) {
+double ResponsiveWidth(BuildContext context, double containerWidth, {double? designScreenWidth=1536}) {
   final screenWidth = MediaQuery.of(context).size.width;
 
   // Set the reference screen width once
@@ -190,7 +190,7 @@ double ResponsiveWidth(BuildContext context, double containerWidth, {double desi
 
 double? _referenceScreenHeight;
 // Responsive Height Function
-double ResponsiveHeight(BuildContext context, double containerHeight, {double designScreenHeight=792}) {
+double ResponsiveHeight(BuildContext context, double containerHeight, {double? designScreenHeight=792}) {
   final screenHeight = MediaQuery.of(context).size.height;
 
   // Set the reference screen height once
