@@ -24,6 +24,7 @@ class _AppState extends State<App> {
             MyVideoPlayer(
                   url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+              allowFullScreen: true,
                 ),
             Container(height: 200,width: 200,color: Colors.green,)
           ],

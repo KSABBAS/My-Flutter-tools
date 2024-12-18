@@ -1165,16 +1165,15 @@ class _ChewieVideoPlayerState extends State<ChewieVideoPlayer> {
 // package: insta_image_viewer 1.0.4
 // add : flutter pub add insta_image_viewer
 class ViewImage extends StatelessWidget {
-  const ViewImage({
-    super.key,
-    this.ImageLink,
-    this.ImagePath,
-    this.file,
-    this.bytes,
-    this.Height,
-    this.Width,
-    this.borderRadius
-  });
+  const ViewImage(
+      {super.key,
+      this.ImageLink,
+      this.ImagePath,
+      this.file,
+      this.bytes,
+      this.Height,
+      this.Width,
+      this.borderRadius});
   final String? ImageLink;
   final String? ImagePath;
   final File? file;
@@ -1189,7 +1188,7 @@ class ViewImage extends StatelessWidget {
         file == null &&
         bytes == null) {
       return ClipRRect(
-        borderRadius:borderRadius?? BorderRadius.circular(20),
+        borderRadius: borderRadius ?? BorderRadius.circular(20),
         child: SizedBox(
           width: Width ?? 100,
           height: Height ?? 100,
@@ -1202,42 +1201,42 @@ class ViewImage extends StatelessWidget {
       );
     } else if (ImageLink == null && file != null && bytes == null) {
       return ClipRRect(
-        borderRadius:borderRadius?? BorderRadius.circular(20),
-        child: SizedBox(
-        width: Width ?? double.infinity,
-        height: Height ?? double.infinity,
-        child: InstaImageViewer(
-          child: Image(
-            image: Image.file(file!).image,
-          ),
-        ),
-      ));
+          borderRadius: borderRadius ?? BorderRadius.circular(20),
+          child: SizedBox(
+            width: Width ?? double.infinity,
+            height: Height ?? double.infinity,
+            child: InstaImageViewer(
+              child: Image(
+                image: Image.file(file!).image,
+              ),
+            ),
+          ));
     } else if (ImageLink == null && bytes != null) {
       return ClipRRect(
-        borderRadius:borderRadius?? BorderRadius.circular(20),
-        child: SizedBox(
-        width: Width ?? double.infinity,
-        height: Height ?? double.infinity,
-        child: InstaImageViewer(
-          child: Image(
-            image: Image.memory(bytes!).image,
-          ),
-        ),
-      ));
+          borderRadius: borderRadius ?? BorderRadius.circular(20),
+          child: SizedBox(
+            width: Width ?? double.infinity,
+            height: Height ?? double.infinity,
+            child: InstaImageViewer(
+              child: Image(
+                image: Image.memory(bytes!).image,
+              ),
+            ),
+          ));
     } else {
       return ClipRRect(
-        borderRadius:borderRadius?? BorderRadius.circular(20),
-        child: SizedBox(
-        width: Width ?? double.infinity,
-        height: Height ?? double.infinity,
-        child: InstaImageViewer(
-          child: Image(
-            image:
-                Image.network(ImageLink ?? "https://picsum.photos/id/507/1000")
+          borderRadius: borderRadius ?? BorderRadius.circular(20),
+          child: SizedBox(
+            width: Width ?? double.infinity,
+            height: Height ?? double.infinity,
+            child: InstaImageViewer(
+              child: Image(
+                image: Image.network(
+                        ImageLink ?? "https://picsum.photos/id/507/1000")
                     .image,
-          ),
-        ),
-      ));
+              ),
+            ),
+          ));
     }
   }
 }
@@ -2822,11 +2821,20 @@ class MyVideoPlayer extends StatefulWidget {
     this.url,
     this.height,
     this.width,
+    this.allowFullScreen,
+    this.allowSettrings,
+    this.asset,
+    this.uri,
+    this.file
   });
   String? url;
+  Uri? uri;
+  String? asset;
   double? height;
   double? width;
+  File? file;
   bool? allowFullScreen;
+  bool? allowSettrings;
   @override
   State<MyVideoPlayer> createState() => _MyVideoPlayerState();
 }
@@ -2840,6 +2848,20 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
       _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url ??
           'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
         ..initialize().then((_) {
+          setState(() {}); // Rebuild when the video is initialized
+        });
+    } else if (widget.asset != null) {
+      _controller = VideoPlayerController.asset(widget.asset!)
+        ..initialize().then((_) {
+          setState(() {}); // Rebuild when the video is initialized
+        });
+    } else if (widget.uri != null) {
+      _controller = VideoPlayerController.contentUri(widget.uri!)
+        ..initialize().then((_) {
+          setState(() {}); // Rebuild when the video is initialized
+        });
+    } else if (widget.file != null) {
+      _controller = VideoPlayerController.file(widget.file!)..initialize().then((_) {
           setState(() {}); // Rebuild when the video is initialized
         });
     }
@@ -2861,16 +2883,45 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
       color: Colors.black,
       child: Stack(
         children: [
-          Center(
-            child: AspectRatio(
-              aspectRatio: _controller!.value.aspectRatio,
-              child: VideoPlayer(_controller!),
-            ),
-          ),
-          _PortraitControls(
+          Center(child: _VideoPlayer(controller: _controller!)),
+          _Controls(
             controller: _controller!,
             onChange: (newController) {
               _controller = newController;
+            },
+            allowSettrings: widget.allowSettrings ?? false,
+            allowFullScreen: widget.allowFullScreen ?? false,
+            onScreanModeChange: (fullScrean) {
+              if (fullScrean) {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return Scaffold(
+                      body: Stack(
+                        children: [
+                          Center(
+                            child: _VideoPlayer(controller: _controller!),
+                          ),
+                          CMaker(
+                            height: PageHeight(context),
+                            width: PageWidth(context),
+                            child: _Controls(
+                              controller: _controller!,
+                              onChange: (newController) {
+                                _controller = newController;
+                              },
+                              allowFullScreen: widget.allowFullScreen ?? false,
+                              onScreanModeChange: (fullScrean) {
+                                Navigator.of(context).pop();
+                              },
+                              allowSettrings: widget.allowSettrings ?? false,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ));
+              }
             },
           ),
         ],
@@ -2879,25 +2930,26 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
   }
 }
 
-class _PortraitControls extends StatefulWidget {
-  _PortraitControls({
+class _Controls extends StatefulWidget {
+  _Controls({
     super.key,
     required this.controller,
     required this.onChange,
-    this.allowFullScreen,
-    this.height,
-    this.width,
+    required this.allowFullScreen,
+    required this.onScreanModeChange,
+    required this.allowSettrings,
   });
   VideoPlayerController controller;
   final Function(VideoPlayerController newController) onChange;
-  double? height;
-  double? width;
-  bool? allowFullScreen;
+  bool allowFullScreen;
+  Function(bool fullScrean) onScreanModeChange;
+  bool allowSettrings;
   @override
-  State<_PortraitControls> createState() => __PortraitControlsState();
+  State<_Controls> createState() => __ControlsState();
 }
 
-class __PortraitControlsState extends State<_PortraitControls> {
+class __ControlsState extends State<_Controls> {
+  bool fullScreenIsOn = false;
   @override
   Widget build(BuildContext context) {
     return (!widget.controller.value.isInitialized)
@@ -2911,8 +2963,8 @@ class __PortraitControlsState extends State<_PortraitControls> {
             child: ACMaker(
               padding: EdgeInsets.symmetric(vertical: 10),
               color: const Color.fromARGB(100, 52, 52, 52),
-              height: widget.height ?? 200,
-              width: widget.width ?? MediaQuery.of(context).size.width,
+              height: 200,
+              width: MediaQuery.of(context).size.width,
               child: InkWell(
                 onTap: () {
                   widget.controller.value.isPlaying
@@ -2923,94 +2975,74 @@ class __PortraitControlsState extends State<_PortraitControls> {
                 },
                 child: Column(
                   children: [
-                    CMaker(
-                      width: widget.width ?? MediaQuery.of(context).size.width,
-                      height: widget.height ?? 200 / 6,
-                      child: Row(
-                        children: [
-                          Spacer(),
-                          CMaker(
-                            width: 50,
-                            height: 30,
-                            child: IconButton(
-                                onPressed: () {
-                                  (MediaQuery.of(context).orientation ==
-                                          Orientation.portrait)
-                                      ? SystemChrome.setPreferredOrientations(
-                                          [DeviceOrientation.landscapeLeft])
-                                      : SystemChrome.setPreferredOrientations(
-                                          [DeviceOrientation.portraitUp]);
-                                },
-                                icon: Icon(
-                                  Icons.settings,
-                                  color: Colors.white,
-                                  size: 30,
-                                )),
-                          ),
-                        ],
+                    Expanded(
+                      child: CMaker(
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            (widget.allowSettrings)
+                                ? CMaker(
+                                    width: 50,
+                                    height: 30,
+                                    child: IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(
+                                          Icons.settings,
+                                          color: Colors.white,
+                                          size: 30,
+                                        )),
+                                  )
+                                : CMaker(),
+                          ],
+                        ),
                       ),
                     ),
-                    Spacer(),
-                    CMaker(
-                      alignment: Alignment.center,
-                      child: Icon(
-                        widget.controller.value.isPlaying
-                            ? Icons.pause
-                            : Icons.play_arrow,
-                        color: Colors.white,
-                        size: 60,
+                    Expanded(
+                      flex: 4,
+                      child: Center(
+                        child: Icon(
+                          widget.controller.value.isPlaying
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                          color: Colors.white,
+                          size: 60,
+                        ),
                       ),
                     ),
-                    Spacer(),
-                    CMaker(
-                      width: widget.width ?? MediaQuery.of(context).size.width,
-                      height: widget.height ?? 200 / 6,
-                      child: Row(
-                        children: [
-                          Spacer(),
-                          (widget.allowFullScreen ?? false)
-                              ? CMaker(
-                                  width: 50,
-                                  height: 30,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        (MediaQuery.of(context).orientation ==
-                                                Orientation.portrait)
-                                            ? SystemChrome
-                                                .setPreferredOrientations([
-                                                DeviceOrientation.landscapeLeft
-                                              ])
-                                            : SystemChrome
-                                                .setPreferredOrientations([
-                                                DeviceOrientation.portraitUp
-                                              ]);
-                                        Navigator.of(context)
-                                            .push(MaterialPageRoute(
-                                          builder: (context) {
-                                            return _LandscapeControls(
-                                              controller: widget.controller,
-                                              onChange: (newController) {
-                                                widget.controller =
-                                                    newController;
-                                                    setState(() {
-                                                      // you are including the landscape view 
-                                                    });
-                                              },
-                                            );
-                                          },
-                                        ));
-                                      },
-                                      icon: Icon(
-                                        (MediaQuery.of(context).orientation ==
-                                                Orientation.portrait)
-                                            ? Icons.fullscreen
-                                            : Icons.fullscreen_exit,
-                                        color: Colors.white,
-                                        size: 30,
-                                      )),
-                                )
-                              : CMaker(),
-                        ],
+                    Expanded(
+                      child: CMaker(
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            (widget.allowFullScreen)
+                                ? IconButton(
+                                    onPressed: () {
+                                      (MediaQuery.of(context).orientation ==
+                                              Orientation.portrait)
+                                          ? SystemChrome
+                                              .setPreferredOrientations([
+                                              DeviceOrientation.landscapeLeft
+                                            ])
+                                          : SystemChrome
+                                              .setPreferredOrientations([
+                                              DeviceOrientation.portraitUp
+                                            ]);
+                                      widget
+                                          .onScreanModeChange(!fullScreenIsOn);
+                                    },
+                                    icon: Icon(
+                                      (MediaQuery.of(context).orientation ==
+                                              Orientation.portrait)
+                                          ? Icons.fullscreen
+                                          : Icons.fullscreen_exit,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  )
+                                : CMaker(),
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -3020,132 +3052,24 @@ class __PortraitControlsState extends State<_PortraitControls> {
   }
 }
 
-class _LandscapeControls extends StatefulWidget {
-  _LandscapeControls({
-    super.key,
-    required this.controller,
-    required this.onChange,
-    this.allowFullScreen,
-    this.height,
-    this.width,
-  });
-  VideoPlayerController controller;
-  final Function(VideoPlayerController newController) onChange;
-  double? height;
-  double? width;
-  bool? allowFullScreen;
-  @override
-  State<_LandscapeControls> createState() => __LandscapeControlsState();
-}
+class _VideoPlayer extends StatelessWidget {
+  final VideoPlayerController controller;
+  _VideoPlayer({required this.controller});
 
-class __LandscapeControlsState extends State<_LandscapeControls> {
   @override
   Widget build(BuildContext context) {
-    return (!widget.controller.value.isInitialized)
-        ? Center(
-            child: CircularProgressIndicator(
-            color: Colors.white,
-          ))
-        : AnimatedOpacity(
-            opacity: widget.controller.value.isPlaying ? 0 : 1,
-            duration: Duration(milliseconds: 300),
-            child: ACMaker(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              color: const Color.fromARGB(100, 52, 52, 52),
-              height: widget.height ?? 200,
-              width: widget.width ?? MediaQuery.of(context).size.width,
-              child: InkWell(
-                onTap: () {
-                  widget.controller.value.isPlaying
-                      ? widget.controller.pause()
-                      : widget.controller.play();
-                  widget.onChange(widget.controller);
-                  setState(() {});
-                },
-                child: Column(
-                  children: [
-                    CMaker(
-                      width: widget.width ?? MediaQuery.of(context).size.width,
-                      height: widget.height ?? 200 / 6,
-                      child: Row(
-                        children: [
-                          Spacer(),
-                          CMaker(
-                            width: 50,
-                            height: 30,
-                            child: IconButton(
-                                onPressed: () {
-                                  (MediaQuery.of(context).orientation ==
-                                          Orientation.portrait)
-                                      ? SystemChrome.setPreferredOrientations(
-                                          [DeviceOrientation.landscapeLeft])
-                                      : SystemChrome.setPreferredOrientations(
-                                          [DeviceOrientation.portraitUp]);
-                                },
-                                icon: Icon(
-                                  Icons.settings,
-                                  color: Colors.white,
-                                  size: 30,
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Spacer(),
-                    CMaker(
-                      alignment: Alignment.center,
-                      child: Icon(
-                        widget.controller.value.isPlaying
-                            ? Icons.pause
-                            : Icons.play_arrow,
-                        color: Colors.white,
-                        size: 60,
-                      ),
-                    ),
-                    Spacer(),
-                    CMaker(
-                      width: widget.width ?? MediaQuery.of(context).size.width,
-                      height: widget.height ?? 200 / 6,
-                      child: Row(
-                        children: [
-                          Spacer(),
-                          (widget.allowFullScreen ?? false)
-                              ? CMaker(
-                                  width: 50,
-                                  height: 30,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        (MediaQuery.of(context).orientation ==
-                                                Orientation.portrait)
-                                            ? SystemChrome
-                                                .setPreferredOrientations([
-                                                DeviceOrientation.landscapeLeft
-                                              ])
-                                            : SystemChrome
-                                                .setPreferredOrientations([
-                                                DeviceOrientation.portraitUp
-                                              ]);
-                                      },
-                                      icon: Icon(
-                                        (MediaQuery.of(context).orientation ==
-                                                Orientation.portrait)
-                                            ? Icons.fullscreen
-                                            : Icons.fullscreen_exit,
-                                        color: Colors.white,
-                                        size: 30,
-                                      )),
-                                )
-                              : CMaker(),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ));
+    return AspectRatio(
+      aspectRatio: controller.value.aspectRatio,
+      child: VideoPlayer(controller),
+    );
   }
 }
 
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
 
 //===========================================
 
@@ -3153,6 +3077,11 @@ class __LandscapeControlsState extends State<_LandscapeControls> {
 
 //===========================================
 
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
 
 //===========================================
 
@@ -3160,6 +3089,11 @@ class __LandscapeControlsState extends State<_LandscapeControls> {
 
 //===========================================
 
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
 
 //===========================================
 
@@ -3167,34 +3101,11 @@ class __LandscapeControlsState extends State<_LandscapeControls> {
 
 //===========================================
 
-
 //===========================================
 
 //----------------------------------------------------------
 
 //===========================================
-
-
-//===========================================
-
-//----------------------------------------------------------
-
-//===========================================
-
-
-//===========================================
-
-//----------------------------------------------------------
-
-//===========================================
-
-
-//===========================================
-
-//----------------------------------------------------------
-
-//===========================================
-
 
 //===========================================
 
