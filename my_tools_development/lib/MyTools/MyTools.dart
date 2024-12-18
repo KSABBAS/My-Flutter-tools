@@ -3,12 +3,13 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:chewie/chewie.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
-import 'package:codeveloper_portfolio/MyTools/MyFunctionTools.dart';
 import 'package:flutter/material.dart';
+import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 
 // import 'package:insta_image_viewer/insta_image_viewer.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_player/video_player.dart';
 // import 'package:beautiful_soup_dart/beautiful_soup.dart';
 
@@ -2060,8 +2061,7 @@ class PopAndVanishLAyerBetweenNavBar extends StatefulWidget {
       this.NavBarPositionRight,
       this.NavBarPositionTop,
       this.vanishDuration,
-      this.LayerBetween
-      });
+      this.LayerBetween});
   List<Widget> pages;
   List<Widget> iconsList;
   String? orientation;
@@ -2130,7 +2130,7 @@ class _PopAndVanishLAyerBetweenNavBarState
                   ),
                 ],
               )),
-          widget.LayerBetween??CMaker(),
+          widget.LayerBetween ?? CMaker(),
           Positioned(
             top: widget.NavBarPositionTop,
             left: widget.NavBarPositionLeft,
@@ -2252,7 +2252,7 @@ class _PopAndVanishLAyerBetweenNavBarState
                   ),
                 ],
               )),
-              widget.LayerBetween??CMaker(),
+          widget.LayerBetween ?? CMaker(),
           Positioned(
               top: widget.NavBarPositionTop,
               left: widget.NavBarPositionLeft,
@@ -2798,8 +2798,392 @@ class ResponsivePMaker extends StatelessWidget {
 //   }
 // }
 
+//----------------------------------------------------------
+
+//===========================================
+// import 'package:video_player/video_player.dart';
+// package : video_player: ^2.9.2;
+// add : flutter pub add video_player
+class MyVideoPlayer extends StatefulWidget {
+  MyVideoPlayer({
+    super.key,
+    this.url,
+    this.height,
+    this.width,
+  });
+  String? url;
+  double? height;
+  double? width;
+  bool? allowFullScreen;
+  @override
+  State<MyVideoPlayer> createState() => _MyVideoPlayerState();
+}
+
+class _MyVideoPlayerState extends State<MyVideoPlayer> {
+  VideoPlayerController? _controller;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.url != null) {
+      _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url ??
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
+        ..initialize().then((_) {
+          setState(() {}); // Rebuild when the video is initialized
+        });
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller!.dispose();
+    super.dispose();
+  }
+
+  // bool isFullScreen = false;
+  @override
+  Widget build(BuildContext context) {
+    return ACMaker(
+      duration: Duration(milliseconds: 300),
+      height: widget.height ?? 200,
+      width: widget.width ?? MediaQuery.of(context).size.width,
+      color: Colors.black,
+      child: Stack(
+        children: [
+          Center(
+            child: AspectRatio(
+              aspectRatio: _controller!.value.aspectRatio,
+              child: VideoPlayer(_controller!),
+            ),
+          ),
+          _PortraitControls(
+            controller: _controller!,
+            onChange: (newController) {
+              _controller = newController;
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PortraitControls extends StatefulWidget {
+  _PortraitControls({
+    super.key,
+    required this.controller,
+    required this.onChange,
+    this.allowFullScreen,
+    this.height,
+    this.width,
+  });
+  VideoPlayerController controller;
+  final Function(VideoPlayerController newController) onChange;
+  double? height;
+  double? width;
+  bool? allowFullScreen;
+  @override
+  State<_PortraitControls> createState() => __PortraitControlsState();
+}
+
+class __PortraitControlsState extends State<_PortraitControls> {
+  @override
+  Widget build(BuildContext context) {
+    return (!widget.controller.value.isInitialized)
+        ? Center(
+            child: CircularProgressIndicator(
+            color: Colors.white,
+          ))
+        : AnimatedOpacity(
+            opacity: widget.controller.value.isPlaying ? 0 : 1,
+            duration: Duration(milliseconds: 300),
+            child: ACMaker(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              color: const Color.fromARGB(100, 52, 52, 52),
+              height: widget.height ?? 200,
+              width: widget.width ?? MediaQuery.of(context).size.width,
+              child: InkWell(
+                onTap: () {
+                  widget.controller.value.isPlaying
+                      ? widget.controller.pause()
+                      : widget.controller.play();
+                  widget.onChange(widget.controller);
+                  setState(() {});
+                },
+                child: Column(
+                  children: [
+                    CMaker(
+                      width: widget.width ?? MediaQuery.of(context).size.width,
+                      height: widget.height ?? 200 / 6,
+                      child: Row(
+                        children: [
+                          Spacer(),
+                          CMaker(
+                            width: 50,
+                            height: 30,
+                            child: IconButton(
+                                onPressed: () {
+                                  (MediaQuery.of(context).orientation ==
+                                          Orientation.portrait)
+                                      ? SystemChrome.setPreferredOrientations(
+                                          [DeviceOrientation.landscapeLeft])
+                                      : SystemChrome.setPreferredOrientations(
+                                          [DeviceOrientation.portraitUp]);
+                                },
+                                icon: Icon(
+                                  Icons.settings,
+                                  color: Colors.white,
+                                  size: 30,
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    CMaker(
+                      alignment: Alignment.center,
+                      child: Icon(
+                        widget.controller.value.isPlaying
+                            ? Icons.pause
+                            : Icons.play_arrow,
+                        color: Colors.white,
+                        size: 60,
+                      ),
+                    ),
+                    Spacer(),
+                    CMaker(
+                      width: widget.width ?? MediaQuery.of(context).size.width,
+                      height: widget.height ?? 200 / 6,
+                      child: Row(
+                        children: [
+                          Spacer(),
+                          (widget.allowFullScreen ?? false)
+                              ? CMaker(
+                                  width: 50,
+                                  height: 30,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        (MediaQuery.of(context).orientation ==
+                                                Orientation.portrait)
+                                            ? SystemChrome
+                                                .setPreferredOrientations([
+                                                DeviceOrientation.landscapeLeft
+                                              ])
+                                            : SystemChrome
+                                                .setPreferredOrientations([
+                                                DeviceOrientation.portraitUp
+                                              ]);
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (context) {
+                                            return _LandscapeControls(
+                                              controller: widget.controller,
+                                              onChange: (newController) {
+                                                widget.controller =
+                                                    newController;
+                                                    setState(() {
+                                                      // you are including the landscape view 
+                                                    });
+                                              },
+                                            );
+                                          },
+                                        ));
+                                      },
+                                      icon: Icon(
+                                        (MediaQuery.of(context).orientation ==
+                                                Orientation.portrait)
+                                            ? Icons.fullscreen
+                                            : Icons.fullscreen_exit,
+                                        color: Colors.white,
+                                        size: 30,
+                                      )),
+                                )
+                              : CMaker(),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ));
+  }
+}
+
+class _LandscapeControls extends StatefulWidget {
+  _LandscapeControls({
+    super.key,
+    required this.controller,
+    required this.onChange,
+    this.allowFullScreen,
+    this.height,
+    this.width,
+  });
+  VideoPlayerController controller;
+  final Function(VideoPlayerController newController) onChange;
+  double? height;
+  double? width;
+  bool? allowFullScreen;
+  @override
+  State<_LandscapeControls> createState() => __LandscapeControlsState();
+}
+
+class __LandscapeControlsState extends State<_LandscapeControls> {
+  @override
+  Widget build(BuildContext context) {
+    return (!widget.controller.value.isInitialized)
+        ? Center(
+            child: CircularProgressIndicator(
+            color: Colors.white,
+          ))
+        : AnimatedOpacity(
+            opacity: widget.controller.value.isPlaying ? 0 : 1,
+            duration: Duration(milliseconds: 300),
+            child: ACMaker(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              color: const Color.fromARGB(100, 52, 52, 52),
+              height: widget.height ?? 200,
+              width: widget.width ?? MediaQuery.of(context).size.width,
+              child: InkWell(
+                onTap: () {
+                  widget.controller.value.isPlaying
+                      ? widget.controller.pause()
+                      : widget.controller.play();
+                  widget.onChange(widget.controller);
+                  setState(() {});
+                },
+                child: Column(
+                  children: [
+                    CMaker(
+                      width: widget.width ?? MediaQuery.of(context).size.width,
+                      height: widget.height ?? 200 / 6,
+                      child: Row(
+                        children: [
+                          Spacer(),
+                          CMaker(
+                            width: 50,
+                            height: 30,
+                            child: IconButton(
+                                onPressed: () {
+                                  (MediaQuery.of(context).orientation ==
+                                          Orientation.portrait)
+                                      ? SystemChrome.setPreferredOrientations(
+                                          [DeviceOrientation.landscapeLeft])
+                                      : SystemChrome.setPreferredOrientations(
+                                          [DeviceOrientation.portraitUp]);
+                                },
+                                icon: Icon(
+                                  Icons.settings,
+                                  color: Colors.white,
+                                  size: 30,
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    CMaker(
+                      alignment: Alignment.center,
+                      child: Icon(
+                        widget.controller.value.isPlaying
+                            ? Icons.pause
+                            : Icons.play_arrow,
+                        color: Colors.white,
+                        size: 60,
+                      ),
+                    ),
+                    Spacer(),
+                    CMaker(
+                      width: widget.width ?? MediaQuery.of(context).size.width,
+                      height: widget.height ?? 200 / 6,
+                      child: Row(
+                        children: [
+                          Spacer(),
+                          (widget.allowFullScreen ?? false)
+                              ? CMaker(
+                                  width: 50,
+                                  height: 30,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        (MediaQuery.of(context).orientation ==
+                                                Orientation.portrait)
+                                            ? SystemChrome
+                                                .setPreferredOrientations([
+                                                DeviceOrientation.landscapeLeft
+                                              ])
+                                            : SystemChrome
+                                                .setPreferredOrientations([
+                                                DeviceOrientation.portraitUp
+                                              ]);
+                                      },
+                                      icon: Icon(
+                                        (MediaQuery.of(context).orientation ==
+                                                Orientation.portrait)
+                                            ? Icons.fullscreen
+                                            : Icons.fullscreen_exit,
+                                        color: Colors.white,
+                                        size: 30,
+                                      )),
+                                )
+                              : CMaker(),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ));
+  }
+}
 
 
-//=================================================
+//===========================================
 
-//=================================================
+//----------------------------------------------------------
+
+//===========================================
+
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+
+//===========================================
+
+//----------------------------------------------------------
