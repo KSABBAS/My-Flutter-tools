@@ -1165,37 +1165,45 @@ class _ChewieVideoPlayerState extends State<ChewieVideoPlayer> {
 // package: insta_image_viewer 1.0.4
 // add : flutter pub add insta_image_viewer
 class ViewImage extends StatelessWidget {
-  const ViewImage(
-      {super.key,
-      this.ImageLink,
-      this.ImagePath,
-      this.file,
-      this.bytes,
-      this.Height,
-      this.Width});
+  const ViewImage({
+    super.key,
+    this.ImageLink,
+    this.ImagePath,
+    this.file,
+    this.bytes,
+    this.Height,
+    this.Width,
+    this.borderRadius
+  });
   final String? ImageLink;
   final String? ImagePath;
   final File? file;
   final Uint8List? bytes;
   final double? Height;
   final double? Width;
+  final BorderRadius? borderRadius;
   @override
   Widget build(BuildContext context) {
     if (ImagePath != null &&
         ImageLink == null &&
         file == null &&
         bytes == null) {
-      return SizedBox(
-        width: Width ?? 100,
-        height: Height ?? 100,
-        child: InstaImageViewer(
-          child: Image(
-            image: Image.asset(ImagePath!).image,
+      return ClipRRect(
+        borderRadius:borderRadius?? BorderRadius.circular(20),
+        child: SizedBox(
+          width: Width ?? 100,
+          height: Height ?? 100,
+          child: InstaImageViewer(
+            child: Image(
+              image: Image.asset(ImagePath!).image,
+            ),
           ),
         ),
       );
     } else if (ImageLink == null && file != null && bytes == null) {
-      return SizedBox(
+      return ClipRRect(
+        borderRadius:borderRadius?? BorderRadius.circular(20),
+        child: SizedBox(
         width: Width ?? double.infinity,
         height: Height ?? double.infinity,
         child: InstaImageViewer(
@@ -1203,9 +1211,11 @@ class ViewImage extends StatelessWidget {
             image: Image.file(file!).image,
           ),
         ),
-      );
+      ));
     } else if (ImageLink == null && bytes != null) {
-      return SizedBox(
+      return ClipRRect(
+        borderRadius:borderRadius?? BorderRadius.circular(20),
+        child: SizedBox(
         width: Width ?? double.infinity,
         height: Height ?? double.infinity,
         child: InstaImageViewer(
@@ -1213,9 +1223,11 @@ class ViewImage extends StatelessWidget {
             image: Image.memory(bytes!).image,
           ),
         ),
-      );
+      ));
     } else {
-      return SizedBox(
+      return ClipRRect(
+        borderRadius:borderRadius?? BorderRadius.circular(20),
+        child: SizedBox(
         width: Width ?? double.infinity,
         height: Height ?? double.infinity,
         child: InstaImageViewer(
@@ -1225,7 +1237,7 @@ class ViewImage extends StatelessWidget {
                     .image,
           ),
         ),
-      );
+      ));
     }
   }
 }
