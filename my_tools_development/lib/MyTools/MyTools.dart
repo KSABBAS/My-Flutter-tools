@@ -6,7 +6,9 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 // import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:hyper_services/MyTools/MyFunctionTools.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
+// import 'package:qr_code_scanner/qr_code_scanner.dart';
 // import 'package:media_kit/media_kit.dart';
 // import 'package:media_kit_video/media_kit_video.dart';
 // import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
@@ -3160,6 +3162,99 @@ class ResponsivePMaker extends StatelessWidget {
 
 //===========================================
 
+// import 'package:pretty_qr_code/pretty_qr_code.dart';
+// package : pretty_qr_code 3.3.0
+// add : flutter pub add pretty_qr_code
+
+// Widget generateQRCode(String data, {double size = 200}) {
+//   return PrettyQr(
+//     data: data,
+//     size: size,
+//     roundEdges: true, // Makes the QR code edges rounded
+//     elementColor: Colors.black, // Customize QR code color
+//     errorCorrectLevel: QrErrorCorrectLevel.M, // Adjust error correction
+//   );
+// }
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+// import 'package:flutter/material.dart';
+// import 'package:qr_code_scanner/qr_code_scanner.dart';
+// import 'dart:async';
+// package : qr_code_scanner: ^1.0.0
+
+// Future<String?> scanQRCode(BuildContext context) async {
+//   final Completer<String?> resultCompleter = Completer();
+
+//   Navigator.of(context).push(
+//     MaterialPageRoute(
+//       builder: (context) => _QRCodeScanner(
+//         onResult: (result) {
+//           if (!resultCompleter.isCompleted) {
+//             resultCompleter.complete(result);
+//           }
+//           Navigator.of(context).pop();
+//         },
+//       ),
+//     ),
+//   );
+
+//   return resultCompleter.future;
+// }
+
+// class _QRCodeScanner extends StatefulWidget {
+//   final Function(String?) onResult;
+
+//   const _QRCodeScanner({Key? key, required this.onResult})
+//       : super(key: key);
+
+//   @override
+//   State<StatefulWidget> createState() => _QRCodeScannerState();
+// }
+
+// class _QRCodeScannerState extends State<_QRCodeScanner> {
+//   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+//   QRViewController? controller;
+
+//   @override
+//   void reassemble() {
+//     super.reassemble();
+//     if (controller != null) {
+//       if (Platform.isAndroid) {
+//         controller!.pauseCamera();
+//       } else if (Platform.isIOS) {
+//         controller!.resumeCamera();
+//       }
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: QRView(
+//         key: qrKey,
+//         onQRViewCreated: _onQRViewCreated,
+//       ),
+//     );
+//   }
+
+//   void _onQRViewCreated(QRViewController controller) {
+//     this.controller = controller;
+//     controller.scannedDataStream.listen((scanData) {
+//       widget.onResult(scanData.code);
+//     });
+//   }
+
+//   @override
+//   void dispose() {
+//     controller?.dispose();
+//     super.dispose();
+//   }
+// }
+
 //===========================================
 
 //----------------------------------------------------------
@@ -3189,7 +3284,35 @@ class ResponsivePMaker extends StatelessWidget {
 //----------------------------------------------------------
 
 //===========================================
+// import 'package:mobile_scanner/mobile_scanner.dart';
+// package: mobile_scanner: ^3.5.6
+// add: flutter pub add mobile_scanner
+
+Future<String?> scanQR(BuildContext context) async {
+  String? scannedCode = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => Scaffold(
+        appBar: AppBar(
+          title: Text('Scan QR Code'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: MobileScanner(
+          onDetect: (capture) {
+            final List<Barcode> barcodes = capture.barcodes;
+            if (barcodes.isNotEmpty && barcodes[0].rawValue != null) {
+              Navigator.pop(context, barcodes[0].rawValue);
+            }
+          },
+        ),
+      ),
+    ),
+  );
+  
+  return scannedCode;
+}
 
 //===========================================
-
-//----------------------------------------------------------

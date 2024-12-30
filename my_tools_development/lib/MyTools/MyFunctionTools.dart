@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
 // import 'package:url_launcher/url_launcher.dart';
 // import 'package:geolocator/geolocator.dart';
 // import 'package:image_picker/image_picker.dart';
@@ -403,18 +406,62 @@ Future PickImageFromGalary() async {
 //----------------------------------------------------------
 
 //===========================================
+
+
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
 // import : import 'package:url_launcher/url_launcher.dart';
 // package : url_launcher: ^6.3.1
 // add : flutter pub add url_launcher
-// Future<void> LaunchURL({required String url}) async {
-//     try {
-//       if (!await launchUrl(Uri.parse(url), browserConfiguration: BrowserConfiguration(),mode: LaunchMode.platformDefault)) {
-//         throw 'Could not launch $url';
-//       }
-//     } catch (e) {
-//       //mj
-//     }
-//   }
+Future<void> LaunchURL({required String url}) async {
+    try {
+      if (!await launchUrl(Uri.parse(url), browserConfiguration: BrowserConfiguration(),mode: LaunchMode.platformDefault)) {
+        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      //mj
+    }
+  }
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+// import 'package:mobile_scanner/mobile_scanner.dart';
+// package : mobile_scanner: ^2.0.0
+// add : flutter pub add mobile_scanner
+
+// Universal QR Code Scanner
+// Future<String?> scanQRCode(BuildContext context) async {
+//   String? result; // Variable to store the scanned result
+
+//   // Open a dialog to scan the QR code
+//   await showDialog(
+//     context: context,
+//     builder: (context) => Scaffold(
+//       appBar: AppBar(
+//         title: const Text("Scan QR Code"),
+//         backgroundColor: Colors.black,
+//       ),
+//       body: MobileScanner(
+//         onDetect:(barcode) {
+//           if (barcode.raw != null) {
+//             result = barcode.raw; // Store the scanned result
+//             Navigator.of(context).pop(); // Close the scanner
+//           }
+//         },
+//       ),
+//     ),
+//   );
+
+//   return result; // Return the scanned result
+// }
+
 
 //===========================================
 
