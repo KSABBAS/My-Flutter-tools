@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:io' show Platform;
 // import 'package:url_launcher/url_launcher.dart';
 // import 'package:geolocator/geolocator.dart';
 // import 'package:image_picker/image_picker.dart';
@@ -247,14 +245,14 @@ class MyResponsive {
 // import 'package:image_picker/image_picker.dart';
 // package : image_picker: ^1.1.2
 // in terminal : flutter pub add image_picker
-Future PickImageFromGalary() async {
-  try {
-    return ImagePicker().pickImage(source: ImageSource.gallery);
-  } catch (e) {
-    print("Error picking image: $e");
-    return null;
-  }
-}
+// Future PickImageFromGalary() async {
+//   try {
+//     return ImagePicker().pickImage(source: ImageSource.gallery);
+//   } catch (e) {
+//     print("Error picking image: $e");
+//     return null;
+//   }
+// }
 
 // Future PickImageFromCamera() async {
 //   try {
@@ -419,7 +417,7 @@ Future PickImageFromGalary() async {
 // add : flutter pub add url_launcher
 Future<void> LaunchURL({required String url}) async {
     try {
-      if (!await launchUrl(Uri.parse(url), browserConfiguration: BrowserConfiguration(),mode: LaunchMode.platformDefault)) {
+      if (!await launchUrl(Uri.parse(url), browserConfiguration: const BrowserConfiguration(),mode: LaunchMode.platformDefault)) {
         throw 'Could not launch $url';
       }
     } catch (e) {

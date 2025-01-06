@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:my_tools_development/MyTools/MyTools.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
-  runApp(MaterialApp(home: App(),debugShowCheckedModeBanner: false,));
+  runApp(MaterialApp(
+    home: Scaffold(
+      body: App(),
+    ),
+    debugShowCheckedModeBanner: false,
+  ));
 }
 
 class App extends StatefulWidget {
@@ -20,31 +26,30 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MyButton(
-              text: 'Scan QR Code',
-              onTap: () async {
-                final result = await scanQR(context);
-                if (result != null) {
-                  setState(() {
-                    qrResult = result;
-                  });
-                  print('Scanned QR Code: $result');
-                }
-              },
-            ),
-            if (qrResult != null)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text('Scanned Result: $qrResult'),
-              ),
-          ],
-        ),
-      ),
+    return NavBar(
+      NavBarPositionBottom: 30,
+      NavBarPositionLeft: (PageWidth(context) - (PageWidth(context) * .85)) / 2,
+      pages: [
+        Center(child: Text("1")),
+        Center(child: Text("2")),
+        Center(child: Text("3")),
+        Center(child: Text("4")),
+        Center(child: Text("2")),
+        Center(child: Text("3")),
+        Center(child: Text("4")),
+      ],
+      iconsList: [
+        Icon(Icons.home),
+        Icon(Icons.search),
+        Icon(Icons.add_box_outlined),
+        Icon(Icons.person),
+        Icon(Icons.search),
+        Icon(Icons.add_box_outlined),
+        Icon(Icons.person),
+      ],
+      height: 80,
+      width: PageWidth(context) * .85,
+      onPageChange: (index) {},
     );
   }
 }
