@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
-import 'package:my_tools_development/main.dart';
 import 'package:video_player/video_player.dart';
 
 class CMaker extends StatefulWidget {
@@ -129,17 +128,6 @@ class _ACMakerState extends State<ACMaker> {
   }
 }
 
-//----------------------------------------------------------
-
-//===========================================
-
-// AnimatedCMaker(){
-
-// }
-
-//===========================================
-
-//----------------------------------------------------------
 class TMaker extends StatelessWidget {
   TMaker(
       {super.key,
@@ -503,50 +491,50 @@ class _TFFMakerState extends State<TFFMaker> {
 //   }
 // }
 
-// class DDButton extends StatefulWidget {
-//   DDButton(
-//       {super.key, required this.values, this.onChanged, this.initValueIndex});
-//   Function(dynamic value)? onChanged;
-//   List values = [];
-//   int? initValueIndex;
-//   @override
-//   State<DDButton> createState() => _DDButtonState();
-// }
+class DDButton extends StatefulWidget {
+  DDButton(
+      {super.key, required this.values, this.onChanged, this.initValueIndex});
+  Function(dynamic value)? onChanged;
+  List values = [];
+  int? initValueIndex;
+  @override
+  State<DDButton> createState() => _DDButtonState();
+}
 
-// class _DDButtonState extends State<DDButton> {
-//   int? indexChosen;
-//   var commonVar;
-//   @override
-//   Widget build(BuildContext context) {
-//     commonVar = widget.values[indexChosen ?? widget.initValueIndex ?? 0];
-//     List<DropdownMenuItem<Object?>>? t(List values) {
-//       List<DropdownMenuItem<Object?>>? list = [];
-//       for (int i = 0; i < values.length; i++) {
-//         list.add(
-//           DropdownMenuItem(
-//             child: Text(values[i].toString()),
-//             value: values[i],
-//             onTap: () {
-//               indexChosen = i;
-//             },
-//           ),
-//         );
-//       }
-//       return list;
-//     }
+class _DDButtonState extends State<DDButton> {
+  int? indexChosen;
+  var commonVar;
+  @override
+  Widget build(BuildContext context) {
+    commonVar = widget.values[indexChosen ?? widget.initValueIndex ?? 0];
+    List<DropdownMenuItem<Object?>>? t(List values) {
+      List<DropdownMenuItem<Object?>>? list = [];
+      for (int i = 0; i < values.length; i++) {
+        list.add(
+          DropdownMenuItem(
+            child: Text(values[i].toString()),
+            value: values[i],
+            onTap: () {
+              indexChosen = i;
+            },
+          ),
+        );
+      }
+      return list;
+    }
 
-//     return DropdownButton(
-//         onChanged: (val) {
-//           setState(() {
-//             commonVar = val;
-//             widget.onChanged!(val);
-//           });
-//         },
-//         underline: Container(),
-//         value: commonVar,
-//         items: t(widget.values));
-//   }
-// }
+    return DropdownButton(
+        onChanged: (val) {
+          setState(() {
+            commonVar = val;
+            widget.onChanged!(val);
+          });
+        },
+        underline: Container(),
+        value: commonVar,
+        items: t(widget.values));
+  }
+}
 
 class MultiRButton extends StatefulWidget {
   MultiRButton(
@@ -1407,8 +1395,8 @@ class ViewImage extends StatelessWidget {
 //===========================================
 
 //----------------------------------------------------------
+//===========================================
 
-// ===========================================
 class MySwitch extends StatefulWidget {
   MySwitch({
     super.key,
@@ -1507,386 +1495,147 @@ class _MySwitchState extends State<MySwitch> {
 }
 // ===========================================
 
-// class MySwitchTitleBuilder extends StatefulWidget {
-//   MySwitchTitleBuilder({
-//     super.key,
-//     this.SwitchHeight,
-//     this.SwitchWidth,
-//     required this.BackLayerColorOn,
-//     required this.dataList,
-//     required this.BackLayerColorOff,
-//     required this.BallColorOff,
-//     required this.BallColorOn,
-//     this.OffIconBall,
-//     this.ONIconBall,
-//     this.SwitchHeight2,
-//     this.SwitchWidth2,
-//     this.colorcmaker2,
-//     this.onChange,
-//     this.Cardcolorincmaker2,
-//     this.style,
-//     this.marginInRowCard,
-//     this.paddingInRowCard,
-//     this.paddingInRowCard2,
-//   });
-
-//   double? SwitchHeight;
-//   List dataList;
-//   double? SwitchWidth;
-//   double? SwitchHeight2;
-//   double? SwitchWidth2;
-//   Color? BackLayerColorOff;
-//   Color? colorcmaker2;
-//   Color? BackLayerColorOn;
-//   Color? BallColorOn;
-//   Color? BallColorOff;
-//   Color? Cardcolorincmaker2;
-//   Icon? OffIconBall;
-//   Icon? ONIconBall;
-//   EdgeInsetsGeometry? paddingInRowCard;
-//   EdgeInsetsGeometry? paddingInRowCard2;
-//   TextStyle? style;
-//   EdgeInsetsGeometry? marginInRowCard;
-
-//   Function(List NewList)? onChange;
-
-//   @override
-//   State<MySwitchTitleBuilder> createState() => _MySwitchBuilderState();
-// }
-
-// class _MySwitchBuilderState extends State<MySwitchTitleBuilder> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return CMaker(
-//       height: 300,
-//       width: double.infinity,
-//       child: ListView.builder(
-//         itemCount: data.length,
-//         itemBuilder: (context, index) {
-//           return InkWell(
-//               onTap: () {
-//                 if (widget.dataList[index][1]) {
-//                   widget.dataList[index][1] = false;
-//                   widget.OffIconBall;
-//                   widget.onChange!(data);
-//                   widget.BackLayerColorOff;
-//                   widget.BallColorOff;
-//                 } else {
-//                   print(widget.dataList[index][2]);
-//                   widget.dataList[index][1] = true;
-//                   widget.ONIconBall;
-//                   widget.onChange!(data);
-//                   widget.BackLayerColorOn;
-//                   widget.BallColorOn;
-//                 }
-//                 setState(() {});
-//               },
-//               child: Card(
-//                 color: widget.Cardcolorincmaker2,
-//                 child: CMaker(
-//                   color: widget.colorcmaker2,
-//                   width: widget.SwitchWidth2,
-//                   height: widget.SwitchHeight2,
-//                   child: Row(
-//                     children: [
-//                       CMaker(
-//                         padding: widget.paddingInRowCard2,
-//                         child: widget.dataList[index][3],
-//                       ),
-//                       Padding(
-//                         padding: widget.paddingInRowCard ?? EdgeInsets.only(),
-//                         child: CMaker(
-//                           width: widget.SwitchWidth2,
-//                           child: Text(
-//                             widget.dataList[index][0] ?? "",
-//                             style: widget.style,
-//                           ),
-//                         ),
-//                       ),
-//                       CMaker(
-//                           alignment: Alignment.center,
-//                           height: widget.SwitchHeight ?? 80,
-//                           width: widget.SwitchWidth ?? 70,
-//                           child: Stack(
-//                             children: [
-//                               CMaker(
-//                                 margin: EdgeInsets.symmetric(
-//                                     horizontal: 15, vertical: 10),
-//                                 height: (widget.SwitchHeight ?? 40) - 20,
-//                                 width: (widget.SwitchWidth ?? 50) - 2,
-//                                 color: (widget.dataList[index][1])
-//                                     ? widget.BackLayerColorOn
-//                                     : widget.BackLayerColorOff,
-//                                 circularRadius: 50,
-//                               ),
-//                               ACMaker(
-//                                 duration: Duration(milliseconds: 280),
-//                                 height: widget.SwitchHeight ?? 50,
-//                                 width: widget.SwitchWidth ?? 100,
-//                                 alignment: (widget.dataList[index][1])
-//                                     ? Alignment.centerRight
-//                                     : Alignment.centerLeft,
-//                                 child: CMaker(
-//                                   child: (widget.dataList[index][1])
-//                                       ? widget.ONIconBall
-//                                       : widget.OffIconBall,
-//                                   margin: EdgeInsets.only(bottom: 8),
-
-//                                       color: (widget.dataList[index][1])
-//                                           ? widget.BallColorOn
-//                                           : widget.BallColorOff,
-//                                       circularRadius: 500,
-//                                   height: 35,
-//                                   width: 35,
-//                                 ),
-//                               ),
-//                             ],
-//                           )),
-//                     ],
-//                   ),
-//                 ),
-//               ));
-//         },
-//       ),
-//     );
-//   }
-// }
-
-//===========================================
-
-// class MySwitchTitle extends StatefulWidget {
-//   MySwitchTitle({
-//     super.key,
-//     this.SwitchHeight,
-//     this.SwitchWidth,
-//     this.BackLayerColorOn,
-//     required this.BackLayerColorOff,
-//     required this.BallColorOff,
-//     required this.BallColorOn,
-//     this.OffIconBall,
-//     this.ONIconBall,
-//     this.SwitchHeight2,
-//     this.SwitchWidth2,
-//     this.colorcmaker2,
-//     this.onChange,
-//     this.child,
-//     this.Cardcolorincmaker2,
-//     this.text,
-//     this.IconInRowCard,
-//     this.style,
-//     this.marginInRowCard,
-//     this.paddingInRowCard,
-//     this.paddingInRowCard2,
-//   });
-
-//   double? SwitchHeight;
-
-//   double? SwitchWidth;
-//   double? SwitchHeight2;
-//   double? SwitchWidth2;
-//   Color? BackLayerColorOff;
-//   Color? colorcmaker2;
-//   Color? BackLayerColorOn;
-//   Color? BallColorOn;
-//   Color? BallColorOff;
-//   Color? Cardcolorincmaker2;
-//   Icon? OffIconBall;
-//   Icon? IconInRowCard;
-//   Icon? ONIconBall;
-//   Widget? child;
-//   EdgeInsetsGeometry? paddingInRowCard;
-//   EdgeInsetsGeometry? paddingInRowCard2;
-//   TextStyle? style;
-//   EdgeInsetsGeometry? marginInRowCard;
-//   String? text;
-//   Function(bool value)? onChange;
-
-//   @override
-//   State<MySwitchTitle> createState() => _MySwitchTitle();
-// }
-
-// class _MySwitchTitle extends State<MySwitchTitle> {
-//   bool state = false;
-//   @override
-//   Widget build(BuildContext context) {
-//     return InkWell(
-//         onTap: () {
-//           if (state) {
-//             state = false;
-//             widget.OffIconBall;
-//             widget.onChange!(state);
-//             widget.BackLayerColorOff;
-//             widget.BallColorOff;
-//           } else {
-//             print(widget.text);
-//             state = true;
-//             widget.ONIconBall;
-//             widget.onChange!(state);
-//             widget.BackLayerColorOn;
-//             widget.BallColorOn;
-//           }
-//           setState(() {});
-//         },
-//         child: Card(
-//           color: widget.Cardcolorincmaker2,
-//           child: CMaker(
-//             color: widget.colorcmaker2,
-//             width: widget.SwitchWidth2,
-//             height: widget.SwitchHeight2,
-//             child: Row(
-//               children: [
-//                 CMaker(
-//                   padding: widget.paddingInRowCard2,
-//                   child: widget.IconInRowCard,
-//                 ),
-//                 Padding(
-//                   padding: widget.paddingInRowCard ?? EdgeInsets.only(),
-//                   child: Text(
-//                     widget.text ?? "",
-//                     style: widget.style,
-//                   ),
-//                 ),
-//                 CMaker(
-//                     alignment: Alignment.center,
-//                     height: widget.SwitchHeight ?? 80,
-//                     width: widget.SwitchWidth ?? 70,
-//                     child: Stack(
-//                       children: [
-//                         CMaker(
-//                           margin: EdgeInsets.symmetric(
-//                               horizontal: 15, vertical: 10),
-//                           height: (widget.SwitchHeight ?? 40) - 20,
-//                           width: (widget.SwitchWidth ?? 50) - 2,
-//                           color: (state)
-//                               ? widget.BackLayerColorOn
-//                               : widget.BackLayerColorOff,
-//                           circularRadius: 50,
-//                         ),
-//                         ACMaker(
-//                           duration: Duration(milliseconds: 280),
-//                           height: widget.SwitchHeight ?? 50,
-//                           width: widget.SwitchWidth ?? 100,
-//                           alignment: (state)
-//                               ? Alignment.centerRight
-//                               : Alignment.centerLeft,
-//                           child: Container(
-//                             child: (state)
-//                                 ? widget.ONIconBall
-//                                 : widget.OffIconBall,
-//                             margin: EdgeInsets.only(bottom: 8),
-//                             decoration: BoxDecoration(
-//                                 color: (state)
-//                                     ? widget.BallColorOn
-//                                     : widget.BallColorOff,
-//                                 borderRadius: BorderRadius.circular(500)),
-//                             height: 35,
-//                             width: 35,
-//                           ),
-//                         ),
-//                       ],
-//                     )),
-//               ],
-//             ),
-//           ),
-//         ));
-//   }
-// }
-
-//===========================================
-class CustomNavigationBar extends StatefulWidget {
-  CustomNavigationBar({
+class MySwitchTitleBuilder extends StatefulWidget {
+  MySwitchTitleBuilder({
     super.key,
-    required this.HightBigcontaner,
-    required this.WidthFristPading,
-    this.MargenFristPading,
-    required this.Colors,
-     this.Alignment2,
-    required this.Alignment1,
-    required this.fontWeightIntext,
-    required this.circularRadiusLineContaner,
-    required this.MargenSoucndPading,
-    this.HightSmallcontaner,
-    this.WidthSmallcontaner,
-    this.ColorsSmallContaner,
+    this.SwitchHeight,
+    this.SwitchWidth,
+    required this.BackLayerColorOn,
+    required this.dataList,
+    required this.BackLayerColorOff,
+    required this.BallColorOff,
+    required this.BallColorOn,
+    this.OffIconBall,
+    this.ONIconBall,
+    this.SwitchHeight2,
+    this.SwitchWidth2,
+    this.colorcmaker2,
+    this.onChange,
+    this.Cardcolorincmaker2,
+    this.style,
+    this.marginInRowCard,
+    this.paddingInRowCard,
+    this.paddingInRowCard2,
   });
-  double? HightBigcontaner;
-  double? HightSmallcontaner;
-  double? WidthSmallcontaner;
-  double WidthFristPading;
-  Color? Colors;
-  Color? ColorsSmallContaner;
-  double? MargenFristPading;
-  double MargenSoucndPading;
-  AlignmentGeometry? Alignment1;
-  AlignmentGeometry? Alignment2;
-  FontWeight? fontWeightIntext;
-  double? circularRadiusLineContaner;
+
+  double? SwitchHeight;
+  List dataList;
+  double? SwitchWidth;
+  double? SwitchHeight2;
+  double? SwitchWidth2;
+  Color? BackLayerColorOff;
+  Color? colorcmaker2;
+  Color? BackLayerColorOn;
+  Color? BallColorOn;
+  Color? BallColorOff;
+  Color? Cardcolorincmaker2;
+  Icon? OffIconBall;
+  Icon? ONIconBall;
+  EdgeInsetsGeometry? paddingInRowCard;
+  EdgeInsetsGeometry? paddingInRowCard2;
+  TextStyle? style;
+  EdgeInsetsGeometry? marginInRowCard;
+
+  Function(List NewList)? onChange;
 
   @override
-  State<CustomNavigationBar> createState() => _CustomNavigationBarState();
+  State<MySwitchTitleBuilder> createState() => _MySwitchBuilderState();
 }
 
-class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  int Index1 = 0;
-  final List<String> Menu = [
-    "the menu",
-    "films list",
-    "Anime list",
-    "films list",
-    "Anime list",
-  ];
+class _MySwitchBuilderState extends State<MySwitchTitleBuilder> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          alignment: widget.Alignment1,
-          height: widget.HightBigcontaner,
-          padding: EdgeInsets.symmetric(horizontal: widget.WidthFristPading),
-          color: widget.Colors,
-          child: Container(
-            margin: EdgeInsets.only(top: widget.MargenFristPading??10),
-            alignment: widget.Alignment2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: Menu.asMap().entries.map((entry) {
-                int index2 = entry.key;
-                String text = entry.value;
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      Index1 = index2;
-                    });
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+    return CMaker(
+      height: 300,
+      width: double.infinity,
+      child: ListView.builder(
+        itemCount: widget.dataList.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+              onTap: () {
+                if (widget.dataList[index][1]) {
+                  widget.dataList[index][1] = false;
+                  widget.OffIconBall;
+                  widget.onChange!(widget.dataList);
+                  widget.BackLayerColorOff;
+                  widget.BallColorOff;
+                } else {
+                  print(widget.dataList[index][2]);
+                  widget.dataList[index][1] = true;
+                  widget.ONIconBall;
+                  widget.onChange!(widget.dataList);
+                  widget.BackLayerColorOn;
+                  widget.BallColorOn;
+                }
+                setState(() {});
+              },
+              child: Card(
+                color: widget.Cardcolorincmaker2,
+                child: CMaker(
+                  color: widget.colorcmaker2,
+                  width: widget.SwitchWidth2,
+                  height: widget.SwitchHeight2,
+                  child: Row(
                     children: [
-                      Text(
-                        text,
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          fontWeight: widget.fontWeightIntext,
+                      CMaker(
+                        padding: widget.paddingInRowCard2,
+                        child: widget.dataList[index][3],
+                      ),
+                      Padding(
+                        padding: widget.paddingInRowCard ?? EdgeInsets.only(),
+                        child: CMaker(
+                          width: widget.SwitchWidth2,
+                          child: Text(
+                            widget.dataList[index][0] ?? "",
+                            style: widget.style,
+                          ),
                         ),
                       ),
-                      if (Index1 == index2)
-                        CMaker(
-                          circularRadius: widget.circularRadiusLineContaner,
-                          margin:
-                              EdgeInsets.only(top: widget.MargenSoucndPading),
-                          height: widget.HightSmallcontaner ?? 5,
-                          width: widget.WidthSmallcontaner ?? 15,
-                          color: widget.ColorsSmallContaner ?? Colors.white,
-                        ),
+                      CMaker(
+                          alignment: Alignment.center,
+                          height: widget.SwitchHeight ?? 80,
+                          width: widget.SwitchWidth ?? 70,
+                          child: Stack(
+                            children: [
+                              CMaker(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                height: (widget.SwitchHeight ?? 40) - 20,
+                                width: (widget.SwitchWidth ?? 50) - 2,
+                                color: (widget.dataList[index][1])
+                                    ? widget.BackLayerColorOn
+                                    : widget.BackLayerColorOff,
+                                circularRadius: 50,
+                              ),
+                              ACMaker(
+                                duration: Duration(milliseconds: 280),
+                                height: widget.SwitchHeight ?? 50,
+                                width: widget.SwitchWidth ?? 100,
+                                alignment: (widget.dataList[index][1])
+                                    ? Alignment.centerRight
+                                    : Alignment.centerLeft,
+                                child: CMaker(
+                                  child: (widget.dataList[index][1])
+                                      ? widget.ONIconBall
+                                      : widget.OffIconBall,
+                                  margin: EdgeInsets.only(bottom: 8),
+
+                                      color: (widget.dataList[index][1])
+                                          ? widget.BallColorOn
+                                          : widget.BallColorOff,
+                                      circularRadius: 500,
+                                  height: 35,
+                                  width: 35,
+                                ),
+                              ),
+                            ],
+                          )),
                     ],
                   ),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-      ],
+                ),
+              ));
+        },
+      ),
     );
   }
 }
@@ -1895,355 +1644,939 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
 //----------------------------------------------------------
 
-// class NavBar extends StatefulWidget {
-//   NavBar(
-//       {super.key,
-//       required this.pages,
-//       required this.iconsList,
-//       this.orientation,
-//       required this.height,
-//       required this.width,
-//       this.barColor,
-//       this.selectedContainerColor,
-//       this.pageBackgroundColor,
-//       this.unselectedContainerColor,
-//       this.SelectionContainerHeight,
-//       this.unSelectionContainerHeight,
-//       this.SelectionContainerWidth,
-//       this.unSelectionContainerWidth,
-//       this.SelectionContainerPadding,
-//       this.unSelectionContainerPadding,
-//       this.BackgroundImage,
-//       this.BarShadow,
-//       this.BarBorder,
-//       this.BarCircularRadius,
-//       this.BarGradient,
-//       this.SelectedContainerBorder,
-//       this.unSelectedContainerBorder,
-//       this.SelectionContainerCircularRadius,
-//       this.unSelectionContainerCircularRadius,
-//       this.SelectionContainerGradient,
-//       this.unSelectionContainerGradient,
-//       required this.onPageChange,
-//       this.ScrollDuration,
-//       this.SelectionContainerAnimationDuration,
-//       this.NavBarPositionBottom,
-//       this.NavBarPositionLeft,
-//       this.NavBarPositionRight,
-//       this.NavBarPositionTop,
-//       this.BetweenSpaces});
-//   List<Widget> pages;
-//   List<Widget> iconsList;
-//   String? orientation;
-//   Function(int? index) onPageChange;
-//   double height;
-//   double width;
-//   double? NavBarPositionTop;
-//   double? NavBarPositionBottom;
-//   double? NavBarPositionLeft;
-//   double? NavBarPositionRight;
-//   double? SelectionContainerHeight;
-//   double? unSelectionContainerHeight;
-//   Duration? SelectionContainerAnimationDuration;
-//   double? SelectionContainerWidth;
-//   double? unSelectionContainerWidth;
-//   double? SelectionContainerPadding;
-//   double? unSelectionContainerPadding;
-//   double? SelectionContainerCircularRadius;
-//   double? unSelectionContainerCircularRadius;
-//   double? BarCircularRadius;
-//   BoxBorder? SelectedContainerBorder;
-//   BoxBorder? unSelectedContainerBorder;
-//   Gradient? SelectionContainerGradient;
-//   Gradient? unSelectionContainerGradient;
-//   BoxBorder? BarBorder;
-//   Gradient? BarGradient;
-//   Duration? ScrollDuration;
-//   Color? barColor;
-//   Color? selectedContainerColor;
-//   Color? unselectedContainerColor;
-//   Color? pageBackgroundColor;
-//   Widget? BackgroundImage;
-//   List<BoxShadow>? BarShadow;
-//   double? BetweenSpaces;
-//   @override
-//   State<NavBar> createState() => _NavBarState();
-// }
+// ===========================================
+class SearchAppBar extends StatefulWidget {
+  SearchAppBar(
+      {super.key,
+      required this.data,
+      required this.crossAxisCount,
+      required this.childHeight,
+      this.appBarHeight,
+      this.appBarColor,
+      this.body,
+      this.Scroll,
+      this.childAlignment,
+      this.childBackGroundimage,
+      this.childBorder,
+      this.childBoxShadow,
+      this.childCircularRadius,
+      this.childColor,
+      this.childGradient,
+      this.childPadding,
+      this.childWidth,
+      this.columnSpaces,
+      required this.onSelected,
+      this.rowSpaces,
+      required this.builder,
+      required this.itemCount
+      });
+  double? appBarHeight;
+  Color? appBarColor;
+  Widget? body;
+  Map data;
+  int crossAxisCount;
+  double childHeight;
+  double? childWidth;
+  Color? childColor;
+  AlignmentGeometry? childAlignment;
+  EdgeInsetsGeometry? childPadding;
+  DecorationImage? childBackGroundimage;
+  List<BoxShadow>? childBoxShadow;
+  Gradient? childGradient;
+  BoxBorder? childBorder;
+  double? childCircularRadius;
+  double? rowSpaces;
+  double? columnSpaces;
+  bool? Scroll;
+  Widget Function(int Index) builder;
+  int itemCount;
+  Function(int SelectedIndex) onSelected;
+  @override
+  State<SearchAppBar> createState() => _SearchAppBarState();
+}
 
-// class _NavBarState extends State<NavBar> {
-//   int PageIndex = 0;
-//   PageController? _pageController;
-//   @override
-//   void initState() {
-//     super.initState();
-//     _pageController = PageController(
-//       initialPage: 0,
-//     );
-//   }
+class _SearchAppBarState extends State<SearchAppBar> {
+  bool inSearch = false;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      height: double.infinity,
+      width: double.infinity,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            color: widget.appBarColor ?? Colors.blue,
+            height: widget.appBarHeight ?? 100,
+            width: double.infinity,
+            child: Column(
+              children: [
+                Spacer(),
+                Row(
+                  children: [
+                    (inSearch)
+                        ? IconButton(
+                            onPressed: () {
+                              inSearch = false;
+                              setState(() {});
+                            },
+                            icon: Icon(Icons.arrow_back))
+                        : Container(),
+                    (inSearch)
+                        ? Padding(padding: EdgeInsets.only(left: 10))
+                        : Container(),
+                    Expanded(
+                      child: CMaker(
+                        circularRadius: 5,
+                        color: Colors.white,
+                        child: TextFormField(
+                          onChanged: (value) {},
+                          onFieldSubmitted: (value) {
+                            inSearch = true;
+                            setState(() {});
+                          },
+                          onTap: () {
+                            print("tapped");
+                          },
+                          decoration: InputDecoration(
+                              prefixIcon: InkWell(
+                                  onTap: () {
+                                    inSearch = true;
+                                    setState(() {});
+                                  },
+                                  child:
+                                      Icon(Icons.search, color: Colors.black)),
+                              hintText: "بحث",
+                              enabledBorder: OutlineInputBorder(),
+                              border: OutlineInputBorder(),
+                              disabledBorder: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(),
+              ],
+            ),
+          ),
+          Expanded(
+              child: Container(
+            width: double.infinity,
+            child: (inSearch)
+                ? _SearchPage(
+                    builder: widget.builder,
+                    itemCount: widget.itemCount,
+                    crossAxisCount: widget.crossAxisCount,
+                    childHeight: widget.childHeight,
+                    Scroll: widget.Scroll,
+                    childAlignment: widget.childAlignment,
+                    childBackGroundimage: widget.childBackGroundimage,
+                    childBorder: widget.childBorder,
+                    childBoxShadow: widget.childBoxShadow,
+                    childCircularRadius: widget.childCircularRadius,
+                    childColor: widget.childColor,
+                    childGradient: widget.childGradient,
+                    childPadding: widget.childPadding,
+                    childWidth: widget.childWidth,
+                    columnSpaces: widget.columnSpaces,
+                    rowSpaces: widget.rowSpaces,
+                    onSelected: (index) {
+                      
+                        widget.onSelected(index);
+                      
+                    },
+                  )
+                : widget.body ?? Container(),
+          ))
+        ],
+      ),
+    );
+  }
+}
 
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     _pageController!.dispose();
-//   }
+class _SearchPage extends StatefulWidget {
+  _SearchPage(
+      {super.key,
+      required this.crossAxisCount,
+      required this.childHeight,
+      this.Scroll,
+      this.childAlignment,
+      this.childBackGroundimage,
+      this.childBorder,
+      this.childBoxShadow,
+      this.childCircularRadius,
+      this.childColor,
+      this.childGradient,
+      this.childPadding,
+      this.childWidth,
+      this.columnSpaces,
+      this.onSelected,
+      this.rowSpaces,
+      required this.builder,
+      required this.itemCount
+      });
+  Widget Function(int Index) builder;
+  int crossAxisCount;
+  double childHeight;
+  double? childWidth;
+  Color? childColor;
+  AlignmentGeometry? childAlignment;
+  EdgeInsetsGeometry? childPadding;
+  DecorationImage? childBackGroundimage;
+  List<BoxShadow>? childBoxShadow;
+  Gradient? childGradient;
+  BoxBorder? childBorder;
+  double? childCircularRadius;
+  double? rowSpaces;
+  double? columnSpaces;
+  int itemCount;
+  bool? Scroll;
+  Function(int SelectedIndex)? onSelected;
+  @override
+  State<_SearchPage> createState() => __SearchPageState();
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     late Widget BarBody;
-//     if (widget.orientation == "H") {
-//       BarBody = Stack(
-//         children: [
-//           CMaker(
-//               height: double.infinity,
-//               color: widget.pageBackgroundColor ?? Colors.transparent,
-//               width: double.infinity,
-//               child: Stack(
-//                 children: [
-//                   (widget.BackgroundImage != null)
-//                       ? SizedBox(
-//                           height: double.infinity,
-//                           width: double.infinity,
-//                           child: widget.BackgroundImage!)
-//                       : Container(),
-//                   PageView(
-//                     onPageChanged: (value) {
-//                       setState(() {
-//                         PageIndex = value;
-//                         widget.onPageChange(value);
-//                       });
-//                     },
-//                     controller: _pageController,
-//                     children: widget.pages,
-//                   ),
-//                 ],
-//               )),
-//           Positioned(
-//             top: widget.NavBarPositionTop,
-//             left: widget.NavBarPositionLeft,
-//             bottom: widget.NavBarPositionBottom,
-//             right: widget.NavBarPositionRight,
-//             child: CMaker(
-//               boxShadow: widget.BarShadow,
-//               circularRadius: widget.BarCircularRadius ?? 20,
-//               border: widget.BarBorder,
-//               alignment: Alignment.center,
-//               gradient: widget.BarGradient,
-//               color: widget.barColor ?? Colors.white,
-//               height: widget.height,
-//               width: widget.width,
-//               child: SizedBox(
-//                 width: widget.SelectionContainerWidth,
-//                 child: Column(
-//                   children: [
-//                     Container(
-//                       height: widget.BetweenSpaces ??
-//                           (widget.height -
-//                                   (widget.iconsList.length *
-//                                       (widget.SelectionContainerHeight ??
-//                                           60))) /
-//                               (widget.iconsList.length + 1),
-//                     ),
-//                     CMaker(
-//                       boxShadow: widget.BarShadow,
-//                       height: widget.height -
-//                           (widget.height -
-//                                   (widget.iconsList.length *
-//                                       (widget.SelectionContainerHeight ??
-//                                           60))) /
-//                               (widget.iconsList.length + 1),
-//                       child: ListView.builder(
-//                         scrollDirection: Axis.vertical,
-//                         physics: const NeverScrollableScrollPhysics(),
-//                         shrinkWrap: false,
-//                         itemCount: widget.iconsList.length,
-//                         itemBuilder: (context, index) {
-//                           return Column(
-//                             children: [
-//                               InkWell(
-//                                 onTap: () {
-//                                   _pageController!.animateToPage(index,
-//                                       curve: Curves.linear,
-//                                       duration: widget.ScrollDuration ??
-//                                           const Duration(milliseconds: 200));
-//                                 },
-//                                 child: CMaker(
-//                                     alignment: Alignment.center,
-//                                     child: ACMaker(
-//                                         duration: widget
-//                                             .SelectionContainerAnimationDuration,
-//                                         padding: EdgeInsets.all(
-//                                             widget.SelectionContainerPadding ??
-//                                                 0),
-//                                         alignment: Alignment.center,
-//                                         height: widget.SelectionContainerHeight ??
-//                                             60,
-//                                         width: widget.SelectionContainerWidth ??
-//                                             60,
-//                                         circularRadius:
-//                                             widget.SelectionContainerCircularRadius ??
-//                                                 15,
-//                                         border: (PageIndex == index)
-//                                             ? widget.SelectedContainerBorder
-//                                             : widget.unSelectedContainerBorder,
-//                                         gradient:
-//                                             widget.SelectionContainerGradient,
-//                                         color: (PageIndex == index)
-//                                             ? widget.selectedContainerColor ??
-//                                                 const Color.fromARGB(
-//                                                     255, 0, 0, 0)
-//                                             : widget.unselectedContainerColor ??
-//                                                 Colors.transparent,
-//                                         child: widget.iconsList[index])),
-//                               ),
-//                               Container(
-//                                 height: widget.BetweenSpaces ??
-//                                     (widget.height -
-//                                             (widget.iconsList.length *
-//                                                 (widget.SelectionContainerHeight ??
-//                                                     60))) /
-//                                         (widget.iconsList.length + 1),
-//                               )
-//                             ],
-//                           );
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       );
-//     } else {
-//       BarBody = Stack(
-//         children: [
-//           CMaker(
-//               height: double.infinity,
-//               color: widget.pageBackgroundColor ?? Colors.transparent,
-//               width: double.infinity,
-//               child: Stack(
-//                 children: [
-//                   (widget.BackgroundImage != null)
-//                       ? SizedBox(
-//                           height: double.infinity,
-//                           width: double.infinity,
-//                           child: widget.BackgroundImage!)
-//                       : Container(),
-//                   PageView(
-//                     onPageChanged: (value) {
-//                       setState(() {
-//                         PageIndex = value;
-//                       });
-//                       widget.onPageChange(value);
-//                     },
-//                     controller: _pageController,
-//                     children: widget.pages,
-//                   ),
-//                 ],
-//               )),
-//           Positioned(
-//               top: widget.NavBarPositionTop,
-//               left: widget.NavBarPositionLeft,
-//               bottom: widget.NavBarPositionBottom,
-//               right: widget.NavBarPositionRight,
-//               child: CMaker(
-//                 boxShadow: widget.BarShadow,
-//                 circularRadius: widget.BarCircularRadius ?? 20,
-//                 border: widget.BarBorder,
-//                 alignment: Alignment.center,
-//                 gradient: widget.BarGradient,
-//                 color: widget.barColor ?? Colors.white,
-//                 height: widget.height,
-//                 width: widget.width,
-//                 child: SizedBox(
-//                   height: widget.SelectionContainerHeight,
-//                   child: Row(
-//                     children: [
-//                       Container(
-//                         width: widget.BetweenSpaces ??
-//                             (widget.width -
-//                                     (widget.iconsList.length *
-//                                         (widget.SelectionContainerWidth ??
-//                                             60))) /
-//                                 (widget.iconsList.length + 1),
-//                       ),
-//                       CMaker(
-//                         width: widget.width -
-//                             (widget.width -
-//                                     (widget.iconsList.length *
-//                                         (widget.SelectionContainerWidth ??
-//                                             60))) /
-//                                 (widget.iconsList.length + 1),
-//                         child: ListView.builder(
-//                           scrollDirection: Axis.horizontal,
-//                           physics: const NeverScrollableScrollPhysics(),
-//                           shrinkWrap: false,
-//                           itemCount: widget.iconsList.length,
-//                           itemBuilder: (context, index) {
-//                             return Row(
-//                               children: [
-//                                 InkWell(
-//                                   onTap: () {
-//                                     PageIndex = index;
-//                                     _pageController!.animateToPage(index,
-//                                         curve: Curves.linear,
-//                                         duration:
-//                                             const Duration(milliseconds: 200));
-//                                   },
-//                                   child: CMaker(
-//                                       alignment: Alignment.center,
-//                                       child: ACMaker(
-//                                           duration: widget
-//                                               .SelectionContainerAnimationDuration,
-//                                           padding: EdgeInsets.all(
-//                                               widget.SelectionContainerPadding ??
-//                                                   0),
-//                                           alignment: Alignment.center,
-//                                           height:
-//                                               widget.SelectionContainerHeight ??
-//                                                   60,
-//                                           width:
-//                                               widget.SelectionContainerWidth ??
-//                                                   60,
-//                                           circularRadius: widget
-//                                                   .SelectionContainerCircularRadius ??
-//                                               15,
-//                                           border: (PageIndex == index)
-//                                               ? widget.SelectedContainerBorder
-//                                               : widget
-//                                                   .unSelectedContainerBorder,
-//                                           gradient:
-//                                               widget.SelectionContainerGradient,
-//                                           color: (PageIndex == index)
-//                                               ? widget.selectedContainerColor ??
-//                                                   const Color.fromARGB(255, 0, 0, 0)
-//                                               : widget.unselectedContainerColor ?? Colors.transparent,
-//                                           child: widget.iconsList[index])),
-//                                 ),
-//                                 Container(
-//                                   width: widget.BetweenSpaces ??
-//                                       (widget.width -
-//                                               (widget.iconsList.length *
-//                                                   (widget.SelectionContainerWidth ??
-//                                                       60))) /
-//                                           (widget.iconsList.length + 1),
-//                                 )
-//                               ],
-//                             );
-//                           },
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               )),
-//         ],
-//       );
-//     }
-//     return BarBody;
-//   }
-// }
+class __SearchPageState extends State<_SearchPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: WGridBuilder(
+        builder:widget.builder,
+        itemCount: widget.itemCount,
+        crossAxisCount: widget.crossAxisCount,
+        childHeight: widget.childHeight,
+        Scroll: widget.Scroll,
+        childAlignment: widget.childAlignment,
+        childBackGroundimage: widget.childBackGroundimage,
+        childBorder: widget.childBorder,
+        childBoxShadow: widget.childBoxShadow,
+        childCircularRadius: widget.childCircularRadius,
+        childColor: widget.childColor,
+        childGradient: widget.childGradient,
+        childPadding: widget.childPadding,
+        childWidth: widget.childWidth,
+        columnSpaces: widget.columnSpaces,
+        rowSpaces: widget.rowSpaces,
+        onSelected: (index) {
+          if (widget.onSelected != null) {
+            widget.onSelected!(index);
+          }
+        },
+      ),
+    );
+  }
+}
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+class NavBar extends StatefulWidget {
+  NavBar(
+      {super.key,
+      required this.pages,
+      required this.iconsList,
+      this.orientation,
+      required this.height,
+      required this.width,
+      this.barColor,
+      this.selectedContainerColor,
+      this.pageBackgroundColor,
+      this.unselectedContainerColor,
+      this.SelectionContainerHeight,
+      this.unSelectionContainerHeight,
+      this.SelectionContainerWidth,
+      this.unSelectionContainerWidth,
+      this.SelectionContainerPadding,
+      this.unSelectionContainerPadding,
+      this.BackgroundImage,
+      this.BarShadow,
+      this.BarBorder,
+      this.BarCircularRadius,
+      this.BarGradient,
+      this.SelectedContainerBorder,
+      this.unSelectedContainerBorder,
+      this.SelectionContainerCircularRadius,
+      this.unSelectionContainerCircularRadius,
+      this.SelectionContainerGradient,
+      this.unSelectionContainerGradient,
+      required this.onPageChange,
+      this.ScrollDuration,
+      this.SelectionContainerAnimationDuration,
+      this.NavBarPositionBottom,
+      this.NavBarPositionLeft,
+      this.NavBarPositionRight,
+      this.NavBarPositionTop,
+      this.BetweenSpaces});
+  List<Widget> pages;
+  List<Widget> iconsList;
+  String? orientation;
+  Function(int? index) onPageChange;
+  double height;
+  double width;
+  double? NavBarPositionTop;
+  double? NavBarPositionBottom;
+  double? NavBarPositionLeft;
+  double? NavBarPositionRight;
+  double? SelectionContainerHeight;
+  double? unSelectionContainerHeight;
+  Duration? SelectionContainerAnimationDuration;
+  double? SelectionContainerWidth;
+  double? unSelectionContainerWidth;
+  double? SelectionContainerPadding;
+  double? unSelectionContainerPadding;
+  double? SelectionContainerCircularRadius;
+  double? unSelectionContainerCircularRadius;
+  double? BarCircularRadius;
+  BoxBorder? SelectedContainerBorder;
+  BoxBorder? unSelectedContainerBorder;
+  Gradient? SelectionContainerGradient;
+  Gradient? unSelectionContainerGradient;
+  BoxBorder? BarBorder;
+  Gradient? BarGradient;
+  Duration? ScrollDuration;
+  Color? barColor;
+  Color? selectedContainerColor;
+  Color? unselectedContainerColor;
+  Color? pageBackgroundColor;
+  Widget? BackgroundImage;
+  List<BoxShadow>? BarShadow;
+  double? BetweenSpaces;
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
+  int PageIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    late Widget BarBody;
+    if (widget.orientation == "H") {
+      BarBody = Stack(
+        children: [
+          CMaker(
+              height: double.infinity,
+              color: widget.pageBackgroundColor ?? Colors.transparent,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  (widget.BackgroundImage != null)
+                      ? SizedBox(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: widget.BackgroundImage!)
+                      : Container(),
+                  widget.pages[PageIndex],
+                ],
+              )),
+          Positioned(
+            top: widget.NavBarPositionTop,
+            left: widget.NavBarPositionLeft,
+            bottom: widget.NavBarPositionBottom,
+            right: widget.NavBarPositionRight,
+            child: CMaker(
+              boxShadow: widget.BarShadow,
+              circularRadius: widget.BarCircularRadius ?? 20,
+              border: widget.BarBorder,
+              alignment: Alignment.center,
+              gradient: widget.BarGradient,
+              color: widget.barColor ?? Colors.white,
+              height: widget.height,
+              width: widget.width,
+              child: SizedBox(
+                width: widget.SelectionContainerWidth,
+                child: Column(
+                  children: [
+                    Container(
+                      height: widget.BetweenSpaces ??
+                          (widget.height -
+                                  (widget.iconsList.length *
+                                      (widget.SelectionContainerHeight ??
+                                          60))) /
+                              (widget.iconsList.length + 1),
+                    ),
+                    CMaker(
+                      boxShadow: widget.BarShadow,
+                      height: widget.height -
+                          (widget.height -
+                                  (widget.iconsList.length *
+                                      (widget.SelectionContainerHeight ??
+                                          60))) /
+                              (widget.iconsList.length + 1),
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: false,
+                        itemCount: widget.iconsList.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  PageIndex = index;
+                                  setState(() {});
+                                },
+                                child: CMaker(
+                                    alignment: Alignment.center,
+                                    child: ACMaker(
+                                        duration: widget
+                                            .SelectionContainerAnimationDuration,
+                                        padding: EdgeInsets.all(
+                                            widget.SelectionContainerPadding ??
+                                                0),
+                                        alignment: Alignment.center,
+                                        height: widget.SelectionContainerHeight ??
+                                            60,
+                                        width: widget.SelectionContainerWidth ??
+                                            60,
+                                        circularRadius:
+                                            widget.SelectionContainerCircularRadius ??
+                                                15,
+                                        border: (PageIndex == index)
+                                            ? widget.SelectedContainerBorder
+                                            : widget.unSelectedContainerBorder,
+                                        gradient:
+                                            widget.SelectionContainerGradient,
+                                        color: (PageIndex == index)
+                                            ? widget.selectedContainerColor ??
+                                                const Color.fromARGB(
+                                                    255, 0, 0, 0)
+                                            : widget.unselectedContainerColor ??
+                                                Colors.transparent,
+                                        child: widget.iconsList[index])),
+                              ),
+                              Container(
+                                height: widget.BetweenSpaces ??
+                                    (widget.height -
+                                            (widget.iconsList.length *
+                                                (widget.SelectionContainerHeight ??
+                                                    60))) /
+                                        (widget.iconsList.length + 1),
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      BarBody = Stack(
+        children: [
+          CMaker(
+              height: double.infinity,
+              color: widget.pageBackgroundColor ?? Colors.transparent,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  (widget.BackgroundImage != null)
+                      ? SizedBox(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: widget.BackgroundImage!)
+                      : Container(),
+                  widget.pages[PageIndex],
+                ],
+              )),
+          Positioned(
+              top: widget.NavBarPositionTop,
+              left: widget.NavBarPositionLeft,
+              bottom: widget.NavBarPositionBottom,
+              right: widget.NavBarPositionRight,
+              child: CMaker(
+                boxShadow: widget.BarShadow,
+                circularRadius: widget.BarCircularRadius ?? 20,
+                border: widget.BarBorder,
+                alignment: Alignment.center,
+                gradient: widget.BarGradient,
+                color: widget.barColor ?? Colors.white,
+                height: widget.height,
+                width: widget.width,
+                child: SizedBox(
+                  height: widget.SelectionContainerHeight,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: widget.BetweenSpaces ??
+                            (widget.width -
+                                    (widget.iconsList.length *
+                                        (widget.SelectionContainerWidth ??
+                                            60))) /
+                                (widget.iconsList.length + 1),
+                      ),
+                      CMaker(
+                        width: widget.width -
+                            (widget.width -
+                                    (widget.iconsList.length *
+                                        (widget.SelectionContainerWidth ??
+                                            60))) /
+                                (widget.iconsList.length + 1),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: false,
+                          itemCount: widget.iconsList.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    PageIndex = index;
+                                    setState(() {});
+                                  },
+                                  child: CMaker(
+                                      alignment: Alignment.center,
+                                      child: ACMaker(
+                                          duration: widget
+                                              .SelectionContainerAnimationDuration,
+                                          padding: EdgeInsets.all(
+                                              widget.SelectionContainerPadding ??
+                                                  0),
+                                          alignment: Alignment.center,
+                                          height:
+                                              widget.SelectionContainerHeight ??
+                                                  60,
+                                          width:
+                                              widget.SelectionContainerWidth ??
+                                                  60,
+                                          circularRadius: widget
+                                                  .SelectionContainerCircularRadius ??
+                                              15,
+                                          border: (PageIndex == index)
+                                              ? widget.SelectedContainerBorder
+                                              : widget
+                                                  .unSelectedContainerBorder,
+                                          gradient:
+                                              widget.SelectionContainerGradient,
+                                          color: (PageIndex == index)
+                                              ? widget.selectedContainerColor ??
+                                                  const Color.fromARGB(255, 0, 0, 0)
+                                              : widget.unselectedContainerColor ?? Colors.transparent,
+                                          child: widget.iconsList[index])),
+                                ),
+                                Container(
+                                  width: widget.BetweenSpaces ??
+                                      (widget.width -
+                                              (widget.iconsList.length *
+                                                  (widget.SelectionContainerWidth ??
+                                                      60))) /
+                                          (widget.iconsList.length + 1),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+        ],
+      );
+    }
+    return BarBody;
+  }
+}
+
+class PageViewNavBar extends StatefulWidget {
+  PageViewNavBar(
+      {super.key,
+      required this.pages,
+      required this.iconsList,
+      this.orientation,
+      required this.height,
+      required this.width,
+      this.barColor,
+      this.selectedContainerColor,
+      this.pageBackgroundColor,
+      this.unselectedContainerColor,
+      this.SelectionContainerHeight,
+      this.unSelectionContainerHeight,
+      this.SelectionContainerWidth,
+      this.unSelectionContainerWidth,
+      this.SelectionContainerPadding,
+      this.unSelectionContainerPadding,
+      this.BackgroundImage,
+      this.BarShadow,
+      this.BarBorder,
+      this.BarCircularRadius,
+      this.BarGradient,
+      this.SelectedContainerBorder,
+      this.unSelectedContainerBorder,
+      this.SelectionContainerCircularRadius,
+      this.unSelectionContainerCircularRadius,
+      this.SelectionContainerGradient,
+      this.unSelectionContainerGradient,
+      required this.onPageChange,
+      this.ScrollDuration,
+      this.SelectionContainerAnimationDuration,
+      this.NavBarPositionBottom,
+      this.NavBarPositionLeft,
+      this.NavBarPositionRight,
+      this.NavBarPositionTop,
+      this.BetweenSpaces});
+  List<Widget> pages;
+  List<Widget> iconsList;
+  String? orientation;
+  Function(int? index) onPageChange;
+  double height;
+  double width;
+  double? NavBarPositionTop;
+  double? NavBarPositionBottom;
+  double? NavBarPositionLeft;
+  double? NavBarPositionRight;
+  double? SelectionContainerHeight;
+  double? unSelectionContainerHeight;
+  Duration? SelectionContainerAnimationDuration;
+  double? SelectionContainerWidth;
+  double? unSelectionContainerWidth;
+  double? SelectionContainerPadding;
+  double? unSelectionContainerPadding;
+  double? SelectionContainerCircularRadius;
+  double? unSelectionContainerCircularRadius;
+  double? BarCircularRadius;
+  BoxBorder? SelectedContainerBorder;
+  BoxBorder? unSelectedContainerBorder;
+  Gradient? SelectionContainerGradient;
+  Gradient? unSelectionContainerGradient;
+  BoxBorder? BarBorder;
+  Gradient? BarGradient;
+  Duration? ScrollDuration;
+  Color? barColor;
+  Color? selectedContainerColor;
+  Color? unselectedContainerColor;
+  Color? pageBackgroundColor;
+  Widget? BackgroundImage;
+  List<BoxShadow>? BarShadow;
+  double? BetweenSpaces;
+  @override
+  State<PageViewNavBar> createState() => _PageViewNavBarState();
+}
+
+class _PageViewNavBarState extends State<PageViewNavBar> {
+  int PageIndex = 0;
+  PageController? _pageController;
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(
+      initialPage: 0,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController!.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    late Widget BarBody;
+    if (widget.orientation == "H") {
+      BarBody = Stack(
+        children: [
+          CMaker(
+              height: double.infinity,
+              color: widget.pageBackgroundColor ?? Colors.transparent,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  (widget.BackgroundImage != null)
+                      ? SizedBox(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: widget.BackgroundImage!)
+                      : Container(),
+                  PageView(
+                    onPageChanged: (value) {
+                      setState(() {
+                        PageIndex = value;
+                        widget.onPageChange(value);
+                      });
+                    },
+                    controller: _pageController,
+                    children: widget.pages,
+                  ),
+                ],
+              )),
+          Positioned(
+            top: widget.NavBarPositionTop,
+            left: widget.NavBarPositionLeft,
+            bottom: widget.NavBarPositionBottom,
+            right: widget.NavBarPositionRight,
+            child: CMaker(
+              boxShadow: widget.BarShadow,
+              circularRadius: widget.BarCircularRadius ?? 20,
+              border: widget.BarBorder,
+              alignment: Alignment.center,
+              gradient: widget.BarGradient,
+              color: widget.barColor ?? Colors.white,
+              height: widget.height,
+              width: widget.width,
+              child: SizedBox(
+                width: widget.SelectionContainerWidth,
+                child: Column(
+                  children: [
+                    Container(
+                      height: widget.BetweenSpaces ??
+                          (widget.height -
+                                  (widget.iconsList.length *
+                                      (widget.SelectionContainerHeight ??
+                                          60))) /
+                              (widget.iconsList.length + 1),
+                    ),
+                    CMaker(
+                      boxShadow: widget.BarShadow,
+                      height: widget.height -
+                          (widget.height -
+                                  (widget.iconsList.length *
+                                      (widget.SelectionContainerHeight ??
+                                          60))) /
+                              (widget.iconsList.length + 1),
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: false,
+                        itemCount: widget.iconsList.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  _pageController!.animateToPage(index,
+                                      curve: Curves.linear,
+                                      duration: widget.ScrollDuration ??
+                                          const Duration(milliseconds: 200));
+                                },
+                                child: CMaker(
+                                    alignment: Alignment.center,
+                                    child: ACMaker(
+                                        duration: widget
+                                            .SelectionContainerAnimationDuration,
+                                        padding: EdgeInsets.all(
+                                            widget.SelectionContainerPadding ??
+                                                0),
+                                        alignment: Alignment.center,
+                                        height: widget.SelectionContainerHeight ??
+                                            60,
+                                        width: widget.SelectionContainerWidth ??
+                                            60,
+                                        circularRadius:
+                                            widget.SelectionContainerCircularRadius ??
+                                                15,
+                                        border: (PageIndex == index)
+                                            ? widget.SelectedContainerBorder
+                                            : widget.unSelectedContainerBorder,
+                                        gradient:
+                                            widget.SelectionContainerGradient,
+                                        color: (PageIndex == index)
+                                            ? widget.selectedContainerColor ??
+                                                const Color.fromARGB(
+                                                    255, 0, 0, 0)
+                                            : widget.unselectedContainerColor ??
+                                                Colors.transparent,
+                                        child: widget.iconsList[index])),
+                              ),
+                              Container(
+                                height: widget.BetweenSpaces ??
+                                    (widget.height -
+                                            (widget.iconsList.length *
+                                                (widget.SelectionContainerHeight ??
+                                                    60))) /
+                                        (widget.iconsList.length + 1),
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      BarBody = Stack(
+        children: [
+          CMaker(
+              height: double.infinity,
+              color: widget.pageBackgroundColor ?? Colors.transparent,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  (widget.BackgroundImage != null)
+                      ? SizedBox(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: widget.BackgroundImage!)
+                      : Container(),
+                  PageView(
+                    onPageChanged: (value) {
+                      setState(() {
+                        PageIndex = value;
+                      });
+                      widget.onPageChange(value);
+                    },
+                    controller: _pageController,
+                    children: widget.pages,
+                  ),
+                ],
+              )),
+          Positioned(
+              top: widget.NavBarPositionTop,
+              left: widget.NavBarPositionLeft,
+              bottom: widget.NavBarPositionBottom,
+              right: widget.NavBarPositionRight,
+              child: CMaker(
+                boxShadow: widget.BarShadow,
+                circularRadius: widget.BarCircularRadius ?? 20,
+                border: widget.BarBorder,
+                alignment: Alignment.center,
+                gradient: widget.BarGradient,
+                color: widget.barColor ?? Colors.white,
+                height: widget.height,
+                width: widget.width,
+                child: SizedBox(
+                  height: widget.SelectionContainerHeight,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: widget.BetweenSpaces ??
+                            (widget.width -
+                                    (widget.iconsList.length *
+                                        (widget.SelectionContainerWidth ??
+                                            60))) /
+                                (widget.iconsList.length + 1),
+                      ),
+                      CMaker(
+                        width: widget.width -
+                            (widget.width -
+                                    (widget.iconsList.length *
+                                        (widget.SelectionContainerWidth ??
+                                            60))) /
+                                (widget.iconsList.length + 1),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: false,
+                          itemCount: widget.iconsList.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    PageIndex = index;
+                                    _pageController!.animateToPage(index,
+                                        curve: Curves.linear,
+                                        duration:
+                                            const Duration(milliseconds: 200));
+                                  },
+                                  child: CMaker(
+                                      alignment: Alignment.center,
+                                      child: ACMaker(
+                                          duration: widget
+                                              .SelectionContainerAnimationDuration,
+                                          padding: EdgeInsets.all(
+                                              widget.SelectionContainerPadding ??
+                                                  0),
+                                          alignment: Alignment.center,
+                                          height:
+                                              widget.SelectionContainerHeight ??
+                                                  60,
+                                          width:
+                                              widget.SelectionContainerWidth ??
+                                                  60,
+                                          circularRadius: widget
+                                                  .SelectionContainerCircularRadius ??
+                                              15,
+                                          border: (PageIndex == index)
+                                              ? widget.SelectedContainerBorder
+                                              : widget
+                                                  .unSelectedContainerBorder,
+                                          gradient:
+                                              widget.SelectionContainerGradient,
+                                          color: (PageIndex == index)
+                                              ? widget.selectedContainerColor ??
+                                                  const Color.fromARGB(255, 0, 0, 0)
+                                              : widget.unselectedContainerColor ?? Colors.transparent,
+                                          child: widget.iconsList[index])),
+                                ),
+                                Container(
+                                  width: widget.BetweenSpaces ??
+                                      (widget.width -
+                                              (widget.iconsList.length *
+                                                  (widget.SelectionContainerWidth ??
+                                                      60))) /
+                                          (widget.iconsList.length + 1),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+        ],
+      );
+    }
+    return BarBody;
+  }
+}
 
 class PopAndVanishNavBar extends StatefulWidget {
   PopAndVanishNavBar(
