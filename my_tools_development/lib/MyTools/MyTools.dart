@@ -1549,7 +1549,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
 }
 
 class _SearchPage extends StatefulWidget {
-  _SearchPage(
+  _SearchPage( 
       {super.key,
       required this.crossAxisCount,
       required this.childHeight,
