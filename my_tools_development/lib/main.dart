@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:my_tools_development/MyTools/MyTools.dart';
@@ -21,35 +22,26 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
+late MyResponsive ahmed;
+
 class _AppState extends State<App> {
   String? qrResult;
 
   @override
   Widget build(BuildContext context) {
-    return NavBar(
-      NavBarPositionBottom: 30,
-      NavBarPositionLeft: (PageWidth(context) - (PageWidth(context) * .85)) / 2,
-      pages: [
-        Center(child: Text("1")),
-        Center(child: Text("2")),
-        Center(child: Text("3")),
-        Center(child: Text("4")),
-        Center(child: Text("2")),
-        Center(child: Text("3")),
-        Center(child: Text("4")),
-      ],
-      iconsList: [
-        Icon(Icons.home),
-        Icon(Icons.search),
-        Icon(Icons.add_box_outlined),
-        Icon(Icons.person),
-        Icon(Icons.search),
-        Icon(Icons.add_box_outlined),
-        Icon(Icons.person),
-      ],
-      height: 80,
-      width: PageWidth(context) * .85,
-      onPageChange: (index) {},
-    );
+    ahmed = MyResponsive(context, designHeight: 914, designWidth: 411);
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    print(PageHeight(context));
+    print(PageWidth(context));
+    return Center(
+        child: CustomNavigationBar(
+            HightBigcontaner: double.infinity,
+            WidthFristPading: double.infinity,
+            Colors: Colors.white,
+            Alignment1: Alignment.center,
+            fontWeightIntext: FontWeight.bold,
+            circularRadiusLineContaner: 50,
+            MargenSoucndPading: 10));
   }
 }

@@ -5,10 +5,11 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:codeveloper_portfolio/MyTools/MyFunctionTools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
+import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
+import 'package:my_tools_development/main.dart';
 import 'package:video_player/video_player.dart';
 
 class CMaker extends StatefulWidget {
@@ -150,8 +151,7 @@ class TMaker extends StatelessWidget {
       this.fontFamily,
       this.maxLines,
       this.overflow,
-      this.textDirection
-      });
+      this.textDirection});
   String text;
   double fontSize;
   FontWeight fontWeight;
@@ -165,9 +165,9 @@ class TMaker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      maxLines:maxLines?? 1,
+      maxLines: maxLines ?? 1,
       overflow: overflow ?? TextOverflow.ellipsis,
-      textDirection:textDirection?? TextDirection.rtl,
+      textDirection: textDirection ?? TextDirection.rtl,
       textAlign: textAlign ?? TextAlign.center,
       style: TextStyle(
           fontFamily: fontFamily,
@@ -1408,7 +1408,488 @@ class ViewImage extends StatelessWidget {
 
 //----------------------------------------------------------
 
+// ===========================================
+class MySwitch extends StatefulWidget {
+  MySwitch({
+    super.key,
+    this.SwitchHeight,
+    this.SwitchWidth,
+    this.BackLayerColorOn,
+    required this.BackLayerColorOff,
+    required this.BallColorOff,
+    required this.BallColorOn,
+    this.OffIconBall,
+    this.ONIconBall,
+    this.SwitchHeight2,
+    this.SwitchWidth2,
+    this.colorcmaker2,
+    this.onChange,
+    this.child,
+  });
+
+  double? SwitchHeight;
+  double? SwitchWidth;
+  double? SwitchHeight2;
+  double? SwitchWidth2;
+  Color? BackLayerColorOff;
+  Color? colorcmaker2;
+  Color? BackLayerColorOn;
+  Color? BallColorOn;
+  Color? BallColorOff;
+  Icon? OffIconBall;
+  Icon? ONIconBall;
+  Widget? child;
+
+  Function(bool value)? onChange;
+
+  @override
+  State<MySwitch> createState() => _MySwitchState();
+}
+
+class _MySwitchState extends State<MySwitch> {
+  bool state = false;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: () {
+          if (state) {
+            state = false;
+            widget.OffIconBall;
+            widget.onChange!(state);
+            widget.BackLayerColorOff;
+            widget.BallColorOff;
+          } else {
+            state = true;
+            widget.ONIconBall;
+            widget.onChange!(state);
+            widget.BackLayerColorOn;
+            widget.BallColorOn;
+          }
+          setState(() {});
+        },
+        child: CMaker(
+          color: widget.colorcmaker2,
+          width: widget.SwitchWidth2,
+          height: widget.SwitchHeight2,
+          child: CMaker(
+              alignment: Alignment.center,
+              height: widget.SwitchHeight ?? 80,
+              width: widget.SwitchWidth ?? 70,
+              child: Stack(
+                children: [
+                  CMaker(
+                    margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    height: (widget.SwitchHeight ?? 40) - 20,
+                    width: (widget.SwitchWidth ?? 50) - 2,
+                    circularRadius: 15,
+                    color: (state)
+                        ? widget.BackLayerColorOn
+                        : widget.BackLayerColorOff,
+                  ),
+                  ACMaker(
+                    height: widget.SwitchHeight ?? 50,
+                    width: widget.SwitchWidth ?? 100,
+                    alignment:
+                        (state) ? Alignment.centerRight : Alignment.centerLeft,
+                    child: CMaker(
+                        child: (state) ? widget.ONIconBall : widget.OffIconBall,
+                        margin: EdgeInsets.only(bottom: 5),
+                        circularRadius: 500,
+                        height: 35,
+                        width: 35,
+                        color:
+                            (state) ? widget.BallColorOn : widget.BallColorOff),
+                  ),
+                ],
+              )),
+        ));
+  }
+}
+// ===========================================
+
+// class MySwitchTitleBuilder extends StatefulWidget {
+//   MySwitchTitleBuilder({
+//     super.key,
+//     this.SwitchHeight,
+//     this.SwitchWidth,
+//     required this.BackLayerColorOn,
+//     required this.dataList,
+//     required this.BackLayerColorOff,
+//     required this.BallColorOff,
+//     required this.BallColorOn,
+//     this.OffIconBall,
+//     this.ONIconBall,
+//     this.SwitchHeight2,
+//     this.SwitchWidth2,
+//     this.colorcmaker2,
+//     this.onChange,
+//     this.Cardcolorincmaker2,
+//     this.style,
+//     this.marginInRowCard,
+//     this.paddingInRowCard,
+//     this.paddingInRowCard2,
+//   });
+
+//   double? SwitchHeight;
+//   List dataList;
+//   double? SwitchWidth;
+//   double? SwitchHeight2;
+//   double? SwitchWidth2;
+//   Color? BackLayerColorOff;
+//   Color? colorcmaker2;
+//   Color? BackLayerColorOn;
+//   Color? BallColorOn;
+//   Color? BallColorOff;
+//   Color? Cardcolorincmaker2;
+//   Icon? OffIconBall;
+//   Icon? ONIconBall;
+//   EdgeInsetsGeometry? paddingInRowCard;
+//   EdgeInsetsGeometry? paddingInRowCard2;
+//   TextStyle? style;
+//   EdgeInsetsGeometry? marginInRowCard;
+
+//   Function(List NewList)? onChange;
+
+//   @override
+//   State<MySwitchTitleBuilder> createState() => _MySwitchBuilderState();
+// }
+
+// class _MySwitchBuilderState extends State<MySwitchTitleBuilder> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return CMaker(
+//       height: 300,
+//       width: double.infinity,
+//       child: ListView.builder(
+//         itemCount: data.length,
+//         itemBuilder: (context, index) {
+//           return InkWell(
+//               onTap: () {
+//                 if (widget.dataList[index][1]) {
+//                   widget.dataList[index][1] = false;
+//                   widget.OffIconBall;
+//                   widget.onChange!(data);
+//                   widget.BackLayerColorOff;
+//                   widget.BallColorOff;
+//                 } else {
+//                   print(widget.dataList[index][2]);
+//                   widget.dataList[index][1] = true;
+//                   widget.ONIconBall;
+//                   widget.onChange!(data);
+//                   widget.BackLayerColorOn;
+//                   widget.BallColorOn;
+//                 }
+//                 setState(() {});
+//               },
+//               child: Card(
+//                 color: widget.Cardcolorincmaker2,
+//                 child: CMaker(
+//                   color: widget.colorcmaker2,
+//                   width: widget.SwitchWidth2,
+//                   height: widget.SwitchHeight2,
+//                   child: Row(
+//                     children: [
+//                       CMaker(
+//                         padding: widget.paddingInRowCard2,
+//                         child: widget.dataList[index][3],
+//                       ),
+//                       Padding(
+//                         padding: widget.paddingInRowCard ?? EdgeInsets.only(),
+//                         child: CMaker(
+//                           width: widget.SwitchWidth2,
+//                           child: Text(
+//                             widget.dataList[index][0] ?? "",
+//                             style: widget.style,
+//                           ),
+//                         ),
+//                       ),
+//                       CMaker(
+//                           alignment: Alignment.center,
+//                           height: widget.SwitchHeight ?? 80,
+//                           width: widget.SwitchWidth ?? 70,
+//                           child: Stack(
+//                             children: [
+//                               CMaker(
+//                                 margin: EdgeInsets.symmetric(
+//                                     horizontal: 15, vertical: 10),
+//                                 height: (widget.SwitchHeight ?? 40) - 20,
+//                                 width: (widget.SwitchWidth ?? 50) - 2,
+//                                 color: (widget.dataList[index][1])
+//                                     ? widget.BackLayerColorOn
+//                                     : widget.BackLayerColorOff,
+//                                 circularRadius: 50,
+//                               ),
+//                               ACMaker(
+//                                 duration: Duration(milliseconds: 280),
+//                                 height: widget.SwitchHeight ?? 50,
+//                                 width: widget.SwitchWidth ?? 100,
+//                                 alignment: (widget.dataList[index][1])
+//                                     ? Alignment.centerRight
+//                                     : Alignment.centerLeft,
+//                                 child: CMaker(
+//                                   child: (widget.dataList[index][1])
+//                                       ? widget.ONIconBall
+//                                       : widget.OffIconBall,
+//                                   margin: EdgeInsets.only(bottom: 8),
+
+//                                       color: (widget.dataList[index][1])
+//                                           ? widget.BallColorOn
+//                                           : widget.BallColorOff,
+//                                       circularRadius: 500,
+//                                   height: 35,
+//                                   width: 35,
+//                                 ),
+//                               ),
+//                             ],
+//                           )),
+//                     ],
+//                   ),
+//                 ),
+//               ));
+//         },
+//       ),
+//     );
+//   }
+// }
+
 //===========================================
+
+// class MySwitchTitle extends StatefulWidget {
+//   MySwitchTitle({
+//     super.key,
+//     this.SwitchHeight,
+//     this.SwitchWidth,
+//     this.BackLayerColorOn,
+//     required this.BackLayerColorOff,
+//     required this.BallColorOff,
+//     required this.BallColorOn,
+//     this.OffIconBall,
+//     this.ONIconBall,
+//     this.SwitchHeight2,
+//     this.SwitchWidth2,
+//     this.colorcmaker2,
+//     this.onChange,
+//     this.child,
+//     this.Cardcolorincmaker2,
+//     this.text,
+//     this.IconInRowCard,
+//     this.style,
+//     this.marginInRowCard,
+//     this.paddingInRowCard,
+//     this.paddingInRowCard2,
+//   });
+
+//   double? SwitchHeight;
+
+//   double? SwitchWidth;
+//   double? SwitchHeight2;
+//   double? SwitchWidth2;
+//   Color? BackLayerColorOff;
+//   Color? colorcmaker2;
+//   Color? BackLayerColorOn;
+//   Color? BallColorOn;
+//   Color? BallColorOff;
+//   Color? Cardcolorincmaker2;
+//   Icon? OffIconBall;
+//   Icon? IconInRowCard;
+//   Icon? ONIconBall;
+//   Widget? child;
+//   EdgeInsetsGeometry? paddingInRowCard;
+//   EdgeInsetsGeometry? paddingInRowCard2;
+//   TextStyle? style;
+//   EdgeInsetsGeometry? marginInRowCard;
+//   String? text;
+//   Function(bool value)? onChange;
+
+//   @override
+//   State<MySwitchTitle> createState() => _MySwitchTitle();
+// }
+
+// class _MySwitchTitle extends State<MySwitchTitle> {
+//   bool state = false;
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//         onTap: () {
+//           if (state) {
+//             state = false;
+//             widget.OffIconBall;
+//             widget.onChange!(state);
+//             widget.BackLayerColorOff;
+//             widget.BallColorOff;
+//           } else {
+//             print(widget.text);
+//             state = true;
+//             widget.ONIconBall;
+//             widget.onChange!(state);
+//             widget.BackLayerColorOn;
+//             widget.BallColorOn;
+//           }
+//           setState(() {});
+//         },
+//         child: Card(
+//           color: widget.Cardcolorincmaker2,
+//           child: CMaker(
+//             color: widget.colorcmaker2,
+//             width: widget.SwitchWidth2,
+//             height: widget.SwitchHeight2,
+//             child: Row(
+//               children: [
+//                 CMaker(
+//                   padding: widget.paddingInRowCard2,
+//                   child: widget.IconInRowCard,
+//                 ),
+//                 Padding(
+//                   padding: widget.paddingInRowCard ?? EdgeInsets.only(),
+//                   child: Text(
+//                     widget.text ?? "",
+//                     style: widget.style,
+//                   ),
+//                 ),
+//                 CMaker(
+//                     alignment: Alignment.center,
+//                     height: widget.SwitchHeight ?? 80,
+//                     width: widget.SwitchWidth ?? 70,
+//                     child: Stack(
+//                       children: [
+//                         CMaker(
+//                           margin: EdgeInsets.symmetric(
+//                               horizontal: 15, vertical: 10),
+//                           height: (widget.SwitchHeight ?? 40) - 20,
+//                           width: (widget.SwitchWidth ?? 50) - 2,
+//                           color: (state)
+//                               ? widget.BackLayerColorOn
+//                               : widget.BackLayerColorOff,
+//                           circularRadius: 50,
+//                         ),
+//                         ACMaker(
+//                           duration: Duration(milliseconds: 280),
+//                           height: widget.SwitchHeight ?? 50,
+//                           width: widget.SwitchWidth ?? 100,
+//                           alignment: (state)
+//                               ? Alignment.centerRight
+//                               : Alignment.centerLeft,
+//                           child: Container(
+//                             child: (state)
+//                                 ? widget.ONIconBall
+//                                 : widget.OffIconBall,
+//                             margin: EdgeInsets.only(bottom: 8),
+//                             decoration: BoxDecoration(
+//                                 color: (state)
+//                                     ? widget.BallColorOn
+//                                     : widget.BallColorOff,
+//                                 borderRadius: BorderRadius.circular(500)),
+//                             height: 35,
+//                             width: 35,
+//                           ),
+//                         ),
+//                       ],
+//                     )),
+//               ],
+//             ),
+//           ),
+//         ));
+//   }
+// }
+
+//===========================================
+class CustomNavigationBar extends StatefulWidget {
+  CustomNavigationBar({
+    super.key,
+    required this.HightBigcontaner,
+    required this.WidthFristPading,
+    this.MargenFristPading,
+    required this.Colors,
+     this.Alignment2,
+    required this.Alignment1,
+    required this.fontWeightIntext,
+    required this.circularRadiusLineContaner,
+    required this.MargenSoucndPading,
+    this.HightSmallcontaner,
+    this.WidthSmallcontaner,
+    this.ColorsSmallContaner,
+  });
+  double? HightBigcontaner;
+  double? HightSmallcontaner;
+  double? WidthSmallcontaner;
+  double WidthFristPading;
+  Color? Colors;
+  Color? ColorsSmallContaner;
+  double? MargenFristPading;
+  double MargenSoucndPading;
+  AlignmentGeometry? Alignment1;
+  AlignmentGeometry? Alignment2;
+  FontWeight? fontWeightIntext;
+  double? circularRadiusLineContaner;
+
+  @override
+  State<CustomNavigationBar> createState() => _CustomNavigationBarState();
+}
+
+class _CustomNavigationBarState extends State<CustomNavigationBar> {
+  int Index1 = 0;
+  final List<String> Menu = [
+    "the menu",
+    "films list",
+    "Anime list",
+    "films list",
+    "Anime list",
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          alignment: widget.Alignment1,
+          height: widget.HightBigcontaner,
+          padding: EdgeInsets.symmetric(horizontal: widget.WidthFristPading),
+          color: widget.Colors,
+          child: Container(
+            margin: EdgeInsets.only(top: widget.MargenFristPading??10),
+            alignment: widget.Alignment2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: Menu.asMap().entries.map((entry) {
+                int index2 = entry.key;
+                String text = entry.value;
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      Index1 = index2;
+                    });
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        text,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          fontWeight: widget.fontWeightIntext,
+                        ),
+                      ),
+                      if (Index1 == index2)
+                        CMaker(
+                          circularRadius: widget.circularRadiusLineContaner,
+                          margin:
+                              EdgeInsets.only(top: widget.MargenSoucndPading),
+                          height: widget.HightSmallcontaner ?? 5,
+                          width: widget.WidthSmallcontaner ?? 15,
+                          color: widget.ColorsSmallContaner ?? Colors.white,
+                        ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 //===========================================
 
@@ -3048,7 +3529,8 @@ class __ControlsState extends State<_Controls> {
 
   @override
   Widget build(BuildContext context) {
-    bool isFullScreen = MediaQuery.of(context).orientation == Orientation.landscape;
+    bool isFullScreen =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return (!widget.controller.value.isInitialized)
         ? Center(
@@ -3118,7 +3600,8 @@ class __ControlsState extends State<_Controls> {
                         children: [
                           TMaker(
                             fontWeight: FontWeight.w400,
-                            text: '${_formatDuration(widget.controller.value.position)} / ${_formatDuration(widget.controller.value.duration)}',
+                            text:
+                                '${_formatDuration(widget.controller.value.position)} / ${_formatDuration(widget.controller.value.duration)}',
                             fontSize: 12,
                             color: Colors.white,
                           ),
@@ -3138,7 +3621,9 @@ class __ControlsState extends State<_Controls> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (isFullScreen && widget.showVolumeControl) // Added isFullScreen condition
+                      if (isFullScreen &&
+                          widget
+                              .showVolumeControl) // Added isFullScreen condition
                         CMaker(
                           width: 40,
                           height: 40,
@@ -3167,12 +3652,10 @@ class __ControlsState extends State<_Controls> {
                           child: IconButton(
                             onPressed: () {
                               (widget.isFullScreen == false)
-                                  ? SystemChrome.setPreferredOrientations([
-                                      DeviceOrientation.landscapeLeft
-                                    ])
-                                  : SystemChrome.setPreferredOrientations([
-                                      DeviceOrientation.portraitUp
-                                    ]);
+                                  ? SystemChrome.setPreferredOrientations(
+                                      [DeviceOrientation.landscapeLeft])
+                                  : SystemChrome.setPreferredOrientations(
+                                      [DeviceOrientation.portraitUp]);
                               widget.onScreenModeChange(!widget.isFullScreen);
                             },
                             icon: Icon(
@@ -3325,7 +3808,6 @@ class _VideoPlayer extends StatelessWidget {
 // import 'package:mobile_scanner/mobile_scanner.dart';
 // package: mobile_scanner: ^6.0.2
 // add: flutter pub add mobile_scanner
-
 
 // Future<String> scanQR(BuildContext context) async {
 //   // Using Completer to handle the async flow properly
