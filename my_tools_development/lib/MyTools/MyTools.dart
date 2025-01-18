@@ -1398,10 +1398,51 @@ class ViewImage extends StatelessWidget {
 
 //===========================================
 class SearchAppBar extends StatefulWidget {
-  SearchAppBar({super.key, this.AppBarHeight, this.AppBarColor, this.Body});
-  double? AppBarHeight;
-  Color? AppBarColor;
-  Widget? Body;
+  SearchAppBar(
+      {super.key,
+      required this.data,
+      required this.crossAxisCount,
+      required this.childHeight,
+      this.appBarHeight,
+      this.appBarColor,
+      this.body,
+      this.Scroll,
+      this.childAlignment,
+      this.childBackGroundimage,
+      this.childBorder,
+      this.childBoxShadow,
+      this.childCircularRadius,
+      this.childColor,
+      this.childGradient,
+      this.childPadding,
+      this.childWidth,
+      this.columnSpaces,
+      required this.onSelected,
+      this.rowSpaces,
+      required this.builder,
+      required this.itemCount
+      });
+  double? appBarHeight;
+  Color? appBarColor;
+  Widget? body;
+  Map data;
+  int crossAxisCount;
+  double childHeight;
+  double? childWidth;
+  Color? childColor;
+  AlignmentGeometry? childAlignment;
+  EdgeInsetsGeometry? childPadding;
+  DecorationImage? childBackGroundimage;
+  List<BoxShadow>? childBoxShadow;
+  Gradient? childGradient;
+  BoxBorder? childBorder;
+  double? childCircularRadius;
+  double? rowSpaces;
+  double? columnSpaces;
+  bool? Scroll;
+  Widget Function(int Index) builder;
+  int itemCount;
+  Function(int SelectedIndex) onSelected;
   @override
   State<SearchAppBar> createState() => _SearchAppBarState();
 }
@@ -1418,8 +1459,8 @@ class _SearchAppBarState extends State<SearchAppBar> {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 30),
-            color: widget.AppBarColor ?? Colors.blue,
-            height: widget.AppBarHeight ?? 100,
+            color: widget.appBarColor ?? Colors.blue,
+            height: widget.appBarHeight ?? 100,
             width: double.infinity,
             child: Column(
               children: [
@@ -1475,7 +1516,31 @@ class _SearchAppBarState extends State<SearchAppBar> {
           Expanded(
               child: Container(
             width: double.infinity,
-            child: (inSearch) ? _SearchPage() : widget.Body ?? Container(),
+            child: (inSearch)
+                ? _SearchPage(
+                    builder: widget.builder,
+                    itemCount: widget.itemCount,
+                    crossAxisCount: widget.crossAxisCount,
+                    childHeight: widget.childHeight,
+                    Scroll: widget.Scroll,
+                    childAlignment: widget.childAlignment,
+                    childBackGroundimage: widget.childBackGroundimage,
+                    childBorder: widget.childBorder,
+                    childBoxShadow: widget.childBoxShadow,
+                    childCircularRadius: widget.childCircularRadius,
+                    childColor: widget.childColor,
+                    childGradient: widget.childGradient,
+                    childPadding: widget.childPadding,
+                    childWidth: widget.childWidth,
+                    columnSpaces: widget.columnSpaces,
+                    rowSpaces: widget.rowSpaces,
+                    onSelected: (index) {
+                      
+                        widget.onSelected(index);
+                      
+                    },
+                  )
+                : widget.body ?? Container(),
           ))
         ],
       ),
@@ -1484,8 +1549,43 @@ class _SearchAppBarState extends State<SearchAppBar> {
 }
 
 class _SearchPage extends StatefulWidget {
-  const _SearchPage({super.key});
-
+  _SearchPage(
+      {super.key,
+      required this.crossAxisCount,
+      required this.childHeight,
+      this.Scroll,
+      this.childAlignment,
+      this.childBackGroundimage,
+      this.childBorder,
+      this.childBoxShadow,
+      this.childCircularRadius,
+      this.childColor,
+      this.childGradient,
+      this.childPadding,
+      this.childWidth,
+      this.columnSpaces,
+      this.onSelected,
+      this.rowSpaces,
+      required this.builder,
+      required this.itemCount
+      });
+  Widget Function(int Index) builder;
+  int crossAxisCount;
+  double childHeight;
+  double? childWidth;
+  Color? childColor;
+  AlignmentGeometry? childAlignment;
+  EdgeInsetsGeometry? childPadding;
+  DecorationImage? childBackGroundimage;
+  List<BoxShadow>? childBoxShadow;
+  Gradient? childGradient;
+  BoxBorder? childBorder;
+  double? childCircularRadius;
+  double? rowSpaces;
+  double? columnSpaces;
+  int itemCount;
+  bool? Scroll;
+  Function(int SelectedIndex)? onSelected;
   @override
   State<_SearchPage> createState() => __SearchPageState();
 }
@@ -1495,12 +1595,28 @@ class __SearchPageState extends State<_SearchPage> {
   Widget build(BuildContext context) {
     return Center(
       child: WGridBuilder(
-          builder: (Index) {
-            return Text("hi");
-          },
-          itemCount: 20,
-          crossAxisCount: 5,
-          childHeight: 150),
+        builder:widget.builder,
+        itemCount: widget.itemCount,
+        crossAxisCount: widget.crossAxisCount,
+        childHeight: widget.childHeight,
+        Scroll: widget.Scroll,
+        childAlignment: widget.childAlignment,
+        childBackGroundimage: widget.childBackGroundimage,
+        childBorder: widget.childBorder,
+        childBoxShadow: widget.childBoxShadow,
+        childCircularRadius: widget.childCircularRadius,
+        childColor: widget.childColor,
+        childGradient: widget.childGradient,
+        childPadding: widget.childPadding,
+        childWidth: widget.childWidth,
+        columnSpaces: widget.columnSpaces,
+        rowSpaces: widget.rowSpaces,
+        onSelected: (index) {
+          if (widget.onSelected != null) {
+            widget.onSelected!(index);
+          }
+        },
+      ),
     );
   }
 }
