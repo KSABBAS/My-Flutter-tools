@@ -84,12 +84,6 @@ import 'package:url_launcher/url_launcher.dart';
 //===========================================
 
 // bool IsConnectedToInternet() {
-//   Future<bool> check() async {
-//     var state = await Connectivity().checkConnectivity();
-//     print(state.first);
-//     return state.first.toString() == "ConnectivityResult.none";
-//   }
-//   return true;
 // }
 
 //===========================================
@@ -121,18 +115,6 @@ import 'package:url_launcher/url_launcher.dart';
 //===========================================
 // import 'package:flutter/material.dart';
 
-// double PageHeight(BuildContext context) {
-//   List l = [2.2];
-//   final Sheigt = MediaQuery.of(context).size.height;
-//   l.add(Sheigt);
-//   return l[1];
-// }
-// double PageWidth(BuildContext context) {
-//   List l = [2.2];
-//   final Sheigt = MediaQuery.of(context).size.width;
-//   l.add(Sheigt);
-//   return l[1];
-// }
 double PageHeight(BuildContext context) {
   return MediaQuery.of(context).size.height;
 }
@@ -427,43 +409,7 @@ Future<void> LaunchURL({required String url}) async {
 
 //===========================================
 
-//----------------------------------------------------------
 
-//===========================================
-// import 'package:mobile_scanner/mobile_scanner.dart';
-// package : mobile_scanner: ^2.0.0
-// add : flutter pub add mobile_scanner
-
-// Universal QR Code Scanner
-// Future<String?> scanQRCode(BuildContext context) async {
-//   String? result; // Variable to store the scanned result
-
-//   // Open a dialog to scan the QR code
-//   await showDialog(
-//     context: context,
-//     builder: (context) => Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Scan QR Code"),
-//         backgroundColor: Colors.black,
-//       ),
-//       body: MobileScanner(
-//         onDetect:(barcode) {
-//           if (barcode.raw != null) {
-//             result = barcode.raw; // Store the scanned result
-//             Navigator.of(context).pop(); // Close the scanner
-//           }
-//         },
-//       ),
-//     ),
-//   );
-
-//   return result; // Return the scanned result
-// }
-
-
-//===========================================
-
-//----------------------------------------------------------
 
 
 

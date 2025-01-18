@@ -5,10 +5,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:codeveloper_portfolio/MyTools/MyFunctionTools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
+import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:video_player/video_player.dart';
 
 class CMaker extends StatefulWidget {
@@ -128,17 +128,6 @@ class _ACMakerState extends State<ACMaker> {
   }
 }
 
-//----------------------------------------------------------
-
-//===========================================
-
-// AnimatedCMaker(){
-
-// }
-
-//===========================================
-
-//----------------------------------------------------------
 class TMaker extends StatelessWidget {
   TMaker(
       {super.key,
@@ -150,8 +139,7 @@ class TMaker extends StatelessWidget {
       this.fontFamily,
       this.maxLines,
       this.overflow,
-      this.textDirection
-      });
+      this.textDirection});
   String text;
   double fontSize;
   FontWeight fontWeight;
@@ -165,9 +153,9 @@ class TMaker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      maxLines:maxLines?? 1,
+      maxLines: maxLines ?? 1,
       overflow: overflow ?? TextOverflow.ellipsis,
-      textDirection:textDirection?? TextDirection.rtl,
+      textDirection: textDirection ?? TextDirection.rtl,
       textAlign: textAlign ?? TextAlign.center,
       style: TextStyle(
           fontFamily: fontFamily,
@@ -503,50 +491,50 @@ class _TFFMakerState extends State<TFFMaker> {
 //   }
 // }
 
-// class DDButton extends StatefulWidget {
-//   DDButton(
-//       {super.key, required this.values, this.onChanged, this.initValueIndex});
-//   Function(dynamic value)? onChanged;
-//   List values = [];
-//   int? initValueIndex;
-//   @override
-//   State<DDButton> createState() => _DDButtonState();
-// }
+class DDButton extends StatefulWidget {
+  DDButton(
+      {super.key, required this.values, this.onChanged, this.initValueIndex});
+  Function(dynamic value)? onChanged;
+  List values = [];
+  int? initValueIndex;
+  @override
+  State<DDButton> createState() => _DDButtonState();
+}
 
-// class _DDButtonState extends State<DDButton> {
-//   int? indexChosen;
-//   var commonVar;
-//   @override
-//   Widget build(BuildContext context) {
-//     commonVar = widget.values[indexChosen ?? widget.initValueIndex ?? 0];
-//     List<DropdownMenuItem<Object?>>? t(List values) {
-//       List<DropdownMenuItem<Object?>>? list = [];
-//       for (int i = 0; i < values.length; i++) {
-//         list.add(
-//           DropdownMenuItem(
-//             child: Text(values[i].toString()),
-//             value: values[i],
-//             onTap: () {
-//               indexChosen = i;
-//             },
-//           ),
-//         );
-//       }
-//       return list;
-//     }
+class _DDButtonState extends State<DDButton> {
+  int? indexChosen;
+  var commonVar;
+  @override
+  Widget build(BuildContext context) {
+    commonVar = widget.values[indexChosen ?? widget.initValueIndex ?? 0];
+    List<DropdownMenuItem<Object?>>? t(List values) {
+      List<DropdownMenuItem<Object?>>? list = [];
+      for (int i = 0; i < values.length; i++) {
+        list.add(
+          DropdownMenuItem(
+            child: Text(values[i].toString()),
+            value: values[i],
+            onTap: () {
+              indexChosen = i;
+            },
+          ),
+        );
+      }
+      return list;
+    }
 
-//     return DropdownButton(
-//         onChanged: (val) {
-//           setState(() {
-//             commonVar = val;
-//             widget.onChanged!(val);
-//           });
-//         },
-//         underline: Container(),
-//         value: commonVar,
-//         items: t(widget.values));
-//   }
-// }
+    return DropdownButton(
+        onChanged: (val) {
+          setState(() {
+            commonVar = val;
+            widget.onChanged!(val);
+          });
+        },
+        underline: Container(),
+        value: commonVar,
+        items: t(widget.values));
+  }
+}
 
 class MultiRButton extends StatefulWidget {
   MultiRButton(
@@ -1403,6 +1391,42 @@ class ViewImage extends StatelessWidget {
 
 //===========================================
 // Prevent taking screenshots
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
 
 //===========================================
 
@@ -3048,7 +3072,8 @@ class __ControlsState extends State<_Controls> {
 
   @override
   Widget build(BuildContext context) {
-    bool isFullScreen = MediaQuery.of(context).orientation == Orientation.landscape;
+    bool isFullScreen =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return (!widget.controller.value.isInitialized)
         ? Center(
@@ -3118,7 +3143,8 @@ class __ControlsState extends State<_Controls> {
                         children: [
                           TMaker(
                             fontWeight: FontWeight.w400,
-                            text: '${_formatDuration(widget.controller.value.position)} / ${_formatDuration(widget.controller.value.duration)}',
+                            text:
+                                '${_formatDuration(widget.controller.value.position)} / ${_formatDuration(widget.controller.value.duration)}',
                             fontSize: 12,
                             color: Colors.white,
                           ),
@@ -3138,7 +3164,9 @@ class __ControlsState extends State<_Controls> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (isFullScreen && widget.showVolumeControl) // Added isFullScreen condition
+                      if (isFullScreen &&
+                          widget
+                              .showVolumeControl) // Added isFullScreen condition
                         CMaker(
                           width: 40,
                           height: 40,
@@ -3167,12 +3195,10 @@ class __ControlsState extends State<_Controls> {
                           child: IconButton(
                             onPressed: () {
                               (widget.isFullScreen == false)
-                                  ? SystemChrome.setPreferredOrientations([
-                                      DeviceOrientation.landscapeLeft
-                                    ])
-                                  : SystemChrome.setPreferredOrientations([
-                                      DeviceOrientation.portraitUp
-                                    ]);
+                                  ? SystemChrome.setPreferredOrientations(
+                                      [DeviceOrientation.landscapeLeft])
+                                  : SystemChrome.setPreferredOrientations(
+                                      [DeviceOrientation.portraitUp]);
                               widget.onScreenModeChange(!widget.isFullScreen);
                             },
                             icon: Icon(
@@ -3325,7 +3351,6 @@ class _VideoPlayer extends StatelessWidget {
 // import 'package:mobile_scanner/mobile_scanner.dart';
 // package: mobile_scanner: ^6.0.2
 // add: flutter pub add mobile_scanner
-
 
 // Future<String> scanQR(BuildContext context) async {
 //   // Using Completer to handle the async flow properly
