@@ -8,7 +8,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
-import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:video_player/video_player.dart';
 
 class CMaker extends StatefulWidget {
@@ -1396,453 +1395,252 @@ class ViewImage extends StatelessWidget {
 
 //----------------------------------------------------------
 
+// ===========================================
+class MySwitch extends StatefulWidget {
+  MySwitch({
+    super.key,
+    this.SwitchHeight,
+    this.SwitchWidth,
+    this.BackLayerColorOn,
+    required this.BackLayerColorOff,
+    required this.BallColorOff,
+    required this.BallColorOn,
+    this.OffIconBall,
+    this.ONIconBall,
+    this.SwitchHeight2,
+    this.SwitchWidth2,
+    this.colorcmaker2,
+    this.onChange,
+    this.child,
+  });
+
+  double? SwitchHeight;
+  double? SwitchWidth;
+  double? SwitchHeight2;
+  double? SwitchWidth2;
+  Color? BackLayerColorOff;
+  Color? colorcmaker2;
+  Color? BackLayerColorOn;
+  Color? BallColorOn;
+  Color? BallColorOff;
+  Icon? OffIconBall;
+  Icon? ONIconBall;
+  Widget? child;
+
+  Function(bool value)? onChange;
+
+  @override
+  State<MySwitch> createState() => _MySwitchState();
+}
+
+class _MySwitchState extends State<MySwitch> {
+  bool state = false;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: () {
+          if (state) {
+            state = false;
+            widget.OffIconBall;
+            widget.onChange!(state);
+            widget.BackLayerColorOff;
+            widget.BallColorOff;
+          } else {
+            state = true;
+            widget.ONIconBall;
+            widget.onChange!(state);
+            widget.BackLayerColorOn;
+            widget.BallColorOn;
+          }
+          setState(() {});
+        },
+        child: CMaker(
+          color: widget.colorcmaker2,
+          width: widget.SwitchWidth2,
+          height: widget.SwitchHeight2,
+          child: CMaker(
+              alignment: Alignment.center,
+              height: widget.SwitchHeight ?? 80,
+              width: widget.SwitchWidth ?? 70,
+              child: Stack(
+                children: [
+                  CMaker(
+                    margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    height: (widget.SwitchHeight ?? 40) - 20,
+                    width: (widget.SwitchWidth ?? 50) - 2,
+                    circularRadius: 15,
+                    color: (state)
+                        ? widget.BackLayerColorOn
+                        : widget.BackLayerColorOff,
+                  ),
+                  ACMaker(
+                    height: widget.SwitchHeight ?? 50,
+                    width: widget.SwitchWidth ?? 100,
+                    alignment:
+                        (state) ? Alignment.centerRight : Alignment.centerLeft,
+                    child: CMaker(
+                        child: (state) ? widget.ONIconBall : widget.OffIconBall,
+                        margin: EdgeInsets.only(bottom: 5),
+                        circularRadius: 500,
+                        height: 35,
+                        width: 35,
+                        color:
+                            (state) ? widget.BallColorOn : widget.BallColorOff),
+                  ),
+                ],
+              )),
+        ));
+  }
+}
+// ===========================================
+
+// class MySwitchTitleBuilder extends StatefulWidget {
+//   MySwitchTitleBuilder({
+//     super.key,
+//     this.SwitchHeight,
+//     this.SwitchWidth,
+//     required this.BackLayerColorOn,
+//     required this.dataList,
+//     required this.BackLayerColorOff,
+//     required this.BallColorOff,
+//     required this.BallColorOn,
+//     this.OffIconBall,
+//     this.ONIconBall,
+//     this.SwitchHeight2,
+//     this.SwitchWidth2,
+//     this.colorcmaker2,
+//     this.onChange,
+//     this.Cardcolorincmaker2,
+//     this.style,
+//     this.marginInRowCard,
+//     this.paddingInRowCard,
+//     this.paddingInRowCard2,
+//   });
+
+//   double? SwitchHeight;
+//   List dataList;
+//   double? SwitchWidth;
+//   double? SwitchHeight2;
+//   double? SwitchWidth2;
+//   Color? BackLayerColorOff;
+//   Color? colorcmaker2;
+//   Color? BackLayerColorOn;
+//   Color? BallColorOn;
+//   Color? BallColorOff;
+//   Color? Cardcolorincmaker2;
+//   Icon? OffIconBall;
+//   Icon? ONIconBall;
+//   EdgeInsetsGeometry? paddingInRowCard;
+//   EdgeInsetsGeometry? paddingInRowCard2;
+//   TextStyle? style;
+//   EdgeInsetsGeometry? marginInRowCard;
+
+//   Function(List NewList)? onChange;
+
+//   @override
+//   State<MySwitchTitleBuilder> createState() => _MySwitchBuilderState();
+// }
+
+// class _MySwitchBuilderState extends State<MySwitchTitleBuilder> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return CMaker(
+//       height: 300,
+//       width: double.infinity,
+//       child: ListView.builder(
+//         itemCount: data.length,
+//         itemBuilder: (context, index) {
+//           return InkWell(
+//               onTap: () {
+//                 if (widget.dataList[index][1]) {
+//                   widget.dataList[index][1] = false;
+//                   widget.OffIconBall;
+//                   widget.onChange!(data);
+//                   widget.BackLayerColorOff;
+//                   widget.BallColorOff;
+//                 } else {
+//                   print(widget.dataList[index][2]);
+//                   widget.dataList[index][1] = true;
+//                   widget.ONIconBall;
+//                   widget.onChange!(data);
+//                   widget.BackLayerColorOn;
+//                   widget.BallColorOn;
+//                 }
+//                 setState(() {});
+//               },
+//               child: Card(
+//                 color: widget.Cardcolorincmaker2,
+//                 child: CMaker(
+//                   color: widget.colorcmaker2,
+//                   width: widget.SwitchWidth2,
+//                   height: widget.SwitchHeight2,
+//                   child: Row(
+//                     children: [
+//                       CMaker(
+//                         padding: widget.paddingInRowCard2,
+//                         child: widget.dataList[index][3],
+//                       ),
+//                       Padding(
+//                         padding: widget.paddingInRowCard ?? EdgeInsets.only(),
+//                         child: CMaker(
+//                           width: widget.SwitchWidth2,
+//                           child: Text(
+//                             widget.dataList[index][0] ?? "",
+//                             style: widget.style,
+//                           ),
+//                         ),
+//                       ),
+//                       CMaker(
+//                           alignment: Alignment.center,
+//                           height: widget.SwitchHeight ?? 80,
+//                           width: widget.SwitchWidth ?? 70,
+//                           child: Stack(
+//                             children: [
+//                               CMaker(
+//                                 margin: EdgeInsets.symmetric(
+//                                     horizontal: 15, vertical: 10),
+//                                 height: (widget.SwitchHeight ?? 40) - 20,
+//                                 width: (widget.SwitchWidth ?? 50) - 2,
+//                                 color: (widget.dataList[index][1])
+//                                     ? widget.BackLayerColorOn
+//                                     : widget.BackLayerColorOff,
+//                                 circularRadius: 50,
+//                               ),
+//                               ACMaker(
+//                                 duration: Duration(milliseconds: 280),
+//                                 height: widget.SwitchHeight ?? 50,
+//                                 width: widget.SwitchWidth ?? 100,
+//                                 alignment: (widget.dataList[index][1])
+//                                     ? Alignment.centerRight
+//                                     : Alignment.centerLeft,
+//                                 child: CMaker(
+//                                   child: (widget.dataList[index][1])
+//                                       ? widget.ONIconBall
+//                                       : widget.OffIconBall,
+//                                   margin: EdgeInsets.only(bottom: 8),
+
+//                                       color: (widget.dataList[index][1])
+//                                           ? widget.BallColorOn
+//                                           : widget.BallColorOff,
+//                                       circularRadius: 500,
+//                                   height: 35,
+//                                   width: 35,
+//                                 ),
+//                               ),
+//                             ],
+//                           )),
+//                     ],
+//                   ),
+//                 ),
+//               ));
+//         },
+//       ),
+//     );
+//   }
+// }
+
 //===========================================
-class SearchAppBar extends StatefulWidget {
-  SearchAppBar(
-      {super.key,
-      required this.data,
-      required this.crossAxisCount,
-      required this.childHeight,
-      this.appBarHeight,
-      this.appBarColor,
-      this.body,
-      this.Scroll,
-      this.childAlignment,
-      this.childBackGroundimage,
-      this.childBorder,
-      this.childBoxShadow,
-      this.childCircularRadius,
-      this.childColor,
-      this.childGradient,
-      this.childPadding,
-      this.childWidth,
-      this.columnSpaces,
-      required this.onSelected,
-      this.rowSpaces,
-      required this.builder,
-      required this.itemCount
-      });
-  double? appBarHeight;
-  Color? appBarColor;
-  Widget? body;
-  Map data;
-  int crossAxisCount;
-  double childHeight;
-  double? childWidth;
-  Color? childColor;
-  AlignmentGeometry? childAlignment;
-  EdgeInsetsGeometry? childPadding;
-  DecorationImage? childBackGroundimage;
-  List<BoxShadow>? childBoxShadow;
-  Gradient? childGradient;
-  BoxBorder? childBorder;
-  double? childCircularRadius;
-  double? rowSpaces;
-  double? columnSpaces;
-  bool? Scroll;
-  Widget Function(int Index) builder;
-  int itemCount;
-  Function(int SelectedIndex) onSelected;
-  @override
-  State<SearchAppBar> createState() => _SearchAppBarState();
-}
 
-class _SearchAppBarState extends State<SearchAppBar> {
-  bool inSearch = false;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      height: double.infinity,
-      width: double.infinity,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            color: widget.appBarColor ?? Colors.blue,
-            height: widget.appBarHeight ?? 100,
-            width: double.infinity,
-            child: Column(
-              children: [
-                Spacer(),
-                Row(
-                  children: [
-                    (inSearch)
-                        ? IconButton(
-                            onPressed: () {
-                              inSearch = false;
-                              setState(() {});
-                            },
-                            icon: Icon(Icons.arrow_back))
-                        : Container(),
-                    (inSearch)
-                        ? Padding(padding: EdgeInsets.only(left: 10))
-                        : Container(),
-                    Expanded(
-                      child: CMaker(
-                        circularRadius: 5,
-                        color: Colors.white,
-                        child: TextFormField(
-                          onChanged: (value) {},
-                          onFieldSubmitted: (value) {
-                            inSearch = true;
-                            setState(() {});
-                          },
-                          onTap: () {
-                            print("tapped");
-                          },
-                          decoration: InputDecoration(
-                              prefixIcon: InkWell(
-                                  onTap: () {
-                                    inSearch = true;
-                                    setState(() {});
-                                  },
-                                  child:
-                                      Icon(Icons.search, color: Colors.black)),
-                              hintText: "بحث",
-                              enabledBorder: OutlineInputBorder(),
-                              border: OutlineInputBorder(),
-                              disabledBorder: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder()),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-              ],
-            ),
-          ),
-          Expanded(
-              child: Container(
-            width: double.infinity,
-            child: (inSearch)
-                ? _SearchPage(
-                    builder: widget.builder,
-                    itemCount: widget.itemCount,
-                    crossAxisCount: widget.crossAxisCount,
-                    childHeight: widget.childHeight,
-                    Scroll: widget.Scroll,
-                    childAlignment: widget.childAlignment,
-                    childBackGroundimage: widget.childBackGroundimage,
-                    childBorder: widget.childBorder,
-                    childBoxShadow: widget.childBoxShadow,
-                    childCircularRadius: widget.childCircularRadius,
-                    childColor: widget.childColor,
-                    childGradient: widget.childGradient,
-                    childPadding: widget.childPadding,
-                    childWidth: widget.childWidth,
-                    columnSpaces: widget.columnSpaces,
-                    rowSpaces: widget.rowSpaces,
-                    onSelected: (index) {
-                      
-                        widget.onSelected(index);
-                      
-                    },
-                  )
-                : widget.body ?? Container(),
-          ))
-        ],
-      ),
-    );
-  }
-}
-
-class _SearchPage extends StatefulWidget {
-  _SearchPage(
-      {super.key,
-      required this.crossAxisCount,
-      required this.childHeight,
-      this.Scroll,
-      this.childAlignment,
-      this.childBackGroundimage,
-      this.childBorder,
-      this.childBoxShadow,
-      this.childCircularRadius,
-      this.childColor,
-      this.childGradient,
-      this.childPadding,
-      this.childWidth,
-      this.columnSpaces,
-      this.onSelected,
-      this.rowSpaces,
-      required this.builder,
-      required this.itemCount
-      });
-  Widget Function(int Index) builder;
-  int crossAxisCount;
-  double childHeight;
-  double? childWidth;
-  Color? childColor;
-  AlignmentGeometry? childAlignment;
-  EdgeInsetsGeometry? childPadding;
-  DecorationImage? childBackGroundimage;
-  List<BoxShadow>? childBoxShadow;
-  Gradient? childGradient;
-  BoxBorder? childBorder;
-  double? childCircularRadius;
-  double? rowSpaces;
-  double? columnSpaces;
-  int itemCount;
-  bool? Scroll;
-  Function(int SelectedIndex)? onSelected;
-  @override
-  State<_SearchPage> createState() => __SearchPageState();
-}
-
-class __SearchPageState extends State<_SearchPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: WGridBuilder(
-        builder:widget.builder,
-        itemCount: widget.itemCount,
-        crossAxisCount: widget.crossAxisCount,
-        childHeight: widget.childHeight,
-        Scroll: widget.Scroll,
-        childAlignment: widget.childAlignment,
-        childBackGroundimage: widget.childBackGroundimage,
-        childBorder: widget.childBorder,
-        childBoxShadow: widget.childBoxShadow,
-        childCircularRadius: widget.childCircularRadius,
-        childColor: widget.childColor,
-        childGradient: widget.childGradient,
-        childPadding: widget.childPadding,
-        childWidth: widget.childWidth,
-        columnSpaces: widget.columnSpaces,
-        rowSpaces: widget.rowSpaces,
-        onSelected: (index) {
-          if (widget.onSelected != null) {
-            widget.onSelected!(index);
-          }
-        },
-      ),
-    );
-  }
-}
-class SearchAppBarWithNavigationBar extends StatefulWidget {
-  SearchAppBarWithNavigationBar(
-      {super.key,
-      required this.data,
-      required this.crossAxisCount,
-      required this.childHeight,
-      this.appBarHeight,
-      this.appBarColor,
-      this.body,
-      this.Scroll,
-      this.childAlignment,
-      this.childBackGroundimage,
-      this.childBorder,
-      this.childBoxShadow,
-      this.childCircularRadius,
-      this.childColor,
-      this.childGradient,
-      this.childPadding,
-      this.childWidth,
-      this.columnSpaces,
-      required this.onSelected,
-      this.rowSpaces,
-      required this.builder,
-      required this.itemCount
-      });
-  double? appBarHeight;
-  Color? appBarColor;
-  Widget? body;
-  Map data;
-  int crossAxisCount;
-  double childHeight;
-  double? childWidth;
-  Color? childColor;
-  AlignmentGeometry? childAlignment;
-  EdgeInsetsGeometry? childPadding;
-  DecorationImage? childBackGroundimage;
-  List<BoxShadow>? childBoxShadow;
-  Gradient? childGradient;
-  BoxBorder? childBorder;
-  double? childCircularRadius;
-  double? rowSpaces;
-  double? columnSpaces;
-  bool? Scroll;
-  Widget Function(int Index) builder;
-  int itemCount;
-  Function(int SelectedIndex) onSelected;
-  @override
-  State<SearchAppBarWithNavigationBar> createState() => _SearchAppBarWithNavigationBarState();
-}
-
-class _SearchAppBarWithNavigationBarState extends State<SearchAppBarWithNavigationBar> {
-  bool inSearch = false;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      height: double.infinity,
-      width: double.infinity,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            color: widget.appBarColor ?? Colors.blue,
-            height: widget.appBarHeight ?? 100,
-            width: double.infinity,
-            child: Column(
-              children: [
-                Spacer(),
-                Row(
-                  children: [
-                    (inSearch)
-                        ? IconButton(
-                            onPressed: () {
-                              inSearch = false;
-                              setState(() {});
-                            },
-                            icon: Icon(Icons.arrow_back))
-                        : Container(),
-                    (inSearch)
-                        ? Padding(padding: EdgeInsets.only(left: 10))
-                        : Container(),
-                    Expanded(
-                      child: CMaker(
-                        circularRadius: 5,
-                        color: Colors.white,
-                        child: TextFormField(
-                          onChanged: (value) {},
-                          onFieldSubmitted: (value) {
-                            inSearch = true;
-                            setState(() {});
-                          },
-                          onTap: () {
-                            print("tapped");
-                          },
-                          decoration: InputDecoration(
-                              prefixIcon: InkWell(
-                                  onTap: () {
-                                    inSearch = true;
-                                    setState(() {});
-                                  },
-                                  child:
-                                      Icon(Icons.search, color: Colors.black)),
-                              hintText: "بحث",
-                              enabledBorder: OutlineInputBorder(),
-                              border: OutlineInputBorder(),
-                              disabledBorder: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder()),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-              ],
-            ),
-          ),
-          Expanded(
-              child: Container(
-            width: double.infinity,
-            child: (inSearch)
-                ? _SearchPage(
-                    builder: widget.builder,
-                    itemCount: widget.itemCount,
-                    crossAxisCount: widget.crossAxisCount,
-                    childHeight: widget.childHeight,
-                    Scroll: widget.Scroll,
-                    childAlignment: widget.childAlignment,
-                    childBackGroundimage: widget.childBackGroundimage,
-                    childBorder: widget.childBorder,
-                    childBoxShadow: widget.childBoxShadow,
-                    childCircularRadius: widget.childCircularRadius,
-                    childColor: widget.childColor,
-                    childGradient: widget.childGradient,
-                    childPadding: widget.childPadding,
-                    childWidth: widget.childWidth,
-                    columnSpaces: widget.columnSpaces,
-                    rowSpaces: widget.rowSpaces,
-                    onSelected: (index) {
-                      
-                        widget.onSelected(index);
-                      
-                    },
-                  )
-                : widget.body ?? Container(),
-          ))
-        ],
-      ),
-    );
-  }
-}
-
-class _SearchPage extends StatefulWidget {
-  _SearchPage(
-      {super.key,
-      required this.crossAxisCount,
-      required this.childHeight,
-      this.Scroll,
-      this.childAlignment,
-      this.childBackGroundimage,
-      this.childBorder,
-      this.childBoxShadow,
-      this.childCircularRadius,
-      this.childColor,
-      this.childGradient,
-      this.childPadding,
-      this.childWidth,
-      this.columnSpaces,
-      this.onSelected,
-      this.rowSpaces,
-      required this.builder,
-      required this.itemCount
-      });
-  Widget Function(int Index) builder;
-  int crossAxisCount;
-  double childHeight;
-  double? childWidth;
-  Color? childColor;
-  AlignmentGeometry? childAlignment;
-  EdgeInsetsGeometry? childPadding;
-  DecorationImage? childBackGroundimage;
-  List<BoxShadow>? childBoxShadow;
-  Gradient? childGradient;
-  BoxBorder? childBorder;
-  double? childCircularRadius;
-  double? rowSpaces;
-  double? columnSpaces;
-  int itemCount;
-  bool? Scroll;
-  Function(int SelectedIndex)? onSelected;
-  @override
-  State<_SearchPage> createState() => __SearchPageState();
-}
-
-class __SearchPageState extends State<_SearchPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: WGridBuilder(
-        builder:widget.builder,
-        itemCount: widget.itemCount,
-        crossAxisCount: widget.crossAxisCount,
-        childHeight: widget.childHeight,
-        Scroll: widget.Scroll,
-        childAlignment: widget.childAlignment,
-        childBackGroundimage: widget.childBackGroundimage,
-        childBorder: widget.childBorder,
-        childBoxShadow: widget.childBoxShadow,
-        childCircularRadius: widget.childCircularRadius,
-        childColor: widget.childColor,
-        childGradient: widget.childGradient,
-        childPadding: widget.childPadding,
-        childWidth: widget.childWidth,
-        columnSpaces: widget.columnSpaces,
-        rowSpaces: widget.rowSpaces,
-        onSelected: (index) {
-          if (widget.onSelected != null) {
-            widget.onSelected!(index);
-          }
-        },
-      ),
-    );
-  }
-}
 //===========================================
 
 //----------------------------------------------------------
