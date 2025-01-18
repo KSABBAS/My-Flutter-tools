@@ -1620,6 +1620,229 @@ class __SearchPageState extends State<_SearchPage> {
     );
   }
 }
+class SearchAppBarWithNavigationBar extends StatefulWidget {
+  SearchAppBarWithNavigationBar(
+      {super.key,
+      required this.data,
+      required this.crossAxisCount,
+      required this.childHeight,
+      this.appBarHeight,
+      this.appBarColor,
+      this.body,
+      this.Scroll,
+      this.childAlignment,
+      this.childBackGroundimage,
+      this.childBorder,
+      this.childBoxShadow,
+      this.childCircularRadius,
+      this.childColor,
+      this.childGradient,
+      this.childPadding,
+      this.childWidth,
+      this.columnSpaces,
+      required this.onSelected,
+      this.rowSpaces,
+      required this.builder,
+      required this.itemCount
+      });
+  double? appBarHeight;
+  Color? appBarColor;
+  Widget? body;
+  Map data;
+  int crossAxisCount;
+  double childHeight;
+  double? childWidth;
+  Color? childColor;
+  AlignmentGeometry? childAlignment;
+  EdgeInsetsGeometry? childPadding;
+  DecorationImage? childBackGroundimage;
+  List<BoxShadow>? childBoxShadow;
+  Gradient? childGradient;
+  BoxBorder? childBorder;
+  double? childCircularRadius;
+  double? rowSpaces;
+  double? columnSpaces;
+  bool? Scroll;
+  Widget Function(int Index) builder;
+  int itemCount;
+  Function(int SelectedIndex) onSelected;
+  @override
+  State<SearchAppBarWithNavigationBar> createState() => _SearchAppBarWithNavigationBarState();
+}
+
+class _SearchAppBarWithNavigationBarState extends State<SearchAppBarWithNavigationBar> {
+  bool inSearch = false;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      height: double.infinity,
+      width: double.infinity,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            color: widget.appBarColor ?? Colors.blue,
+            height: widget.appBarHeight ?? 100,
+            width: double.infinity,
+            child: Column(
+              children: [
+                Spacer(),
+                Row(
+                  children: [
+                    (inSearch)
+                        ? IconButton(
+                            onPressed: () {
+                              inSearch = false;
+                              setState(() {});
+                            },
+                            icon: Icon(Icons.arrow_back))
+                        : Container(),
+                    (inSearch)
+                        ? Padding(padding: EdgeInsets.only(left: 10))
+                        : Container(),
+                    Expanded(
+                      child: CMaker(
+                        circularRadius: 5,
+                        color: Colors.white,
+                        child: TextFormField(
+                          onChanged: (value) {},
+                          onFieldSubmitted: (value) {
+                            inSearch = true;
+                            setState(() {});
+                          },
+                          onTap: () {
+                            print("tapped");
+                          },
+                          decoration: InputDecoration(
+                              prefixIcon: InkWell(
+                                  onTap: () {
+                                    inSearch = true;
+                                    setState(() {});
+                                  },
+                                  child:
+                                      Icon(Icons.search, color: Colors.black)),
+                              hintText: "بحث",
+                              enabledBorder: OutlineInputBorder(),
+                              border: OutlineInputBorder(),
+                              disabledBorder: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(),
+              ],
+            ),
+          ),
+          Expanded(
+              child: Container(
+            width: double.infinity,
+            child: (inSearch)
+                ? _SearchPage(
+                    builder: widget.builder,
+                    itemCount: widget.itemCount,
+                    crossAxisCount: widget.crossAxisCount,
+                    childHeight: widget.childHeight,
+                    Scroll: widget.Scroll,
+                    childAlignment: widget.childAlignment,
+                    childBackGroundimage: widget.childBackGroundimage,
+                    childBorder: widget.childBorder,
+                    childBoxShadow: widget.childBoxShadow,
+                    childCircularRadius: widget.childCircularRadius,
+                    childColor: widget.childColor,
+                    childGradient: widget.childGradient,
+                    childPadding: widget.childPadding,
+                    childWidth: widget.childWidth,
+                    columnSpaces: widget.columnSpaces,
+                    rowSpaces: widget.rowSpaces,
+                    onSelected: (index) {
+                      
+                        widget.onSelected(index);
+                      
+                    },
+                  )
+                : widget.body ?? Container(),
+          ))
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchPage extends StatefulWidget {
+  _SearchPage(
+      {super.key,
+      required this.crossAxisCount,
+      required this.childHeight,
+      this.Scroll,
+      this.childAlignment,
+      this.childBackGroundimage,
+      this.childBorder,
+      this.childBoxShadow,
+      this.childCircularRadius,
+      this.childColor,
+      this.childGradient,
+      this.childPadding,
+      this.childWidth,
+      this.columnSpaces,
+      this.onSelected,
+      this.rowSpaces,
+      required this.builder,
+      required this.itemCount
+      });
+  Widget Function(int Index) builder;
+  int crossAxisCount;
+  double childHeight;
+  double? childWidth;
+  Color? childColor;
+  AlignmentGeometry? childAlignment;
+  EdgeInsetsGeometry? childPadding;
+  DecorationImage? childBackGroundimage;
+  List<BoxShadow>? childBoxShadow;
+  Gradient? childGradient;
+  BoxBorder? childBorder;
+  double? childCircularRadius;
+  double? rowSpaces;
+  double? columnSpaces;
+  int itemCount;
+  bool? Scroll;
+  Function(int SelectedIndex)? onSelected;
+  @override
+  State<_SearchPage> createState() => __SearchPageState();
+}
+
+class __SearchPageState extends State<_SearchPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: WGridBuilder(
+        builder:widget.builder,
+        itemCount: widget.itemCount,
+        crossAxisCount: widget.crossAxisCount,
+        childHeight: widget.childHeight,
+        Scroll: widget.Scroll,
+        childAlignment: widget.childAlignment,
+        childBackGroundimage: widget.childBackGroundimage,
+        childBorder: widget.childBorder,
+        childBoxShadow: widget.childBoxShadow,
+        childCircularRadius: widget.childCircularRadius,
+        childColor: widget.childColor,
+        childGradient: widget.childGradient,
+        childPadding: widget.childPadding,
+        childWidth: widget.childWidth,
+        columnSpaces: widget.columnSpaces,
+        rowSpaces: widget.rowSpaces,
+        onSelected: (index) {
+          if (widget.onSelected != null) {
+            widget.onSelected!(index);
+          }
+        },
+      ),
+    );
+  }
+}
 //===========================================
 
 //----------------------------------------------------------
