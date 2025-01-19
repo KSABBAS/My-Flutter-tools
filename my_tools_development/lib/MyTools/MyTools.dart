@@ -1645,33 +1645,40 @@ class _MySwitchBuilderState extends State<MySwitchTitleBuilder> {
 
 // ===========================================
 class SearchAppBar extends StatefulWidget {
-  SearchAppBar(
-      {super.key,
-      required this.data,
-      required this.crossAxisCount,
-      required this.childHeight,
-      this.appBarHeight,
-      this.appBarColor,
-      this.body,
-      this.Scroll,
-      this.childAlignment,
-      this.childBackGroundimage,
-      this.childBorder,
-      this.childBoxShadow,
-      this.childCircularRadius,
-      this.childColor,
-      this.childGradient,
-      this.childPadding,
-      this.childWidth,
-      this.columnSpaces,
-      required this.onSelected,
-      this.rowSpaces,
-      required this.builder,
-      required this.itemCount,
-      this.FilterWidget,
-      this.SortWidget,
-      this.SubAppBarVisible
-      });
+  SearchAppBar({
+    super.key,
+    required this.data,
+    required this.crossAxisCount,
+    required this.childHeight,
+    this.appBarHeight,
+    this.appBarColor,
+    this.body,
+    this.Scroll,
+    this.childAlignment,
+    this.childBackGroundimage,
+    this.childBorder,
+    this.childBoxShadow,
+    this.childCircularRadius,
+    this.childColor,
+    this.childGradient,
+    this.childPadding,
+    this.childWidth,
+    this.columnSpaces,
+    required this.onSelected,
+    this.rowSpaces,
+    required this.builder,
+    required this.itemCount,
+    this.FilterWidget,
+    this.SortWidget,
+    this.SubAppBarVisible,
+    this.onTheSearch,
+    this.OnTheRightWidget,
+    this.SearchIcon,
+    this.SearchIconVisible,
+    this.barLeftPadding,
+    this.barRightPadding,
+    this.paddingBetweenSearchBarAndRightWidget
+  });
   double? appBarHeight;
   Color? appBarColor;
   Widget? body;
@@ -1691,11 +1698,19 @@ class SearchAppBar extends StatefulWidget {
   double? columnSpaces;
   bool? Scroll;
   Widget Function(int Index) builder;
+  Function(bool isOnTheSearch)? onTheSearch;
   int itemCount;
   Widget? FilterWidget;
   Widget? SortWidget;
   bool? SubAppBarVisible;
+  bool? SearchIconVisible;
+  Icon? SearchIcon;
+  Widget? OnTheRightWidget;
   Function(int SelectedIndex) onSelected;
+  double? barLeftPadding;
+  double? barRightPadding;
+  double? paddingBetweenSearchBarAndRightWidget;
+  
   @override
   State<SearchAppBar> createState() => _SearchAppBarState();
 }
@@ -1711,7 +1726,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 30),
+            padding: EdgeInsets.only(left:widget.barLeftPadding ??30, right:widget.barRightPadding ??30),
             color: widget.appBarColor ?? Colors.blue,
             height: widget.appBarHeight ?? 100,
             width: double.infinity,
@@ -1723,6 +1738,9 @@ class _SearchAppBarState extends State<SearchAppBar> {
                     (inSearch)
                         ? IconButton(
                             onPressed: () {
+                              if (widget.onTheSearch != null) {
+                                widget.onTheSearch!(false);
+                              }
                               inSearch = false;
                               setState(() {});
                             },
@@ -1736,22 +1754,28 @@ class _SearchAppBarState extends State<SearchAppBar> {
                         circularRadius: 5,
                         color: Colors.white,
                         child: TextFormField(
+                          textAlign: TextAlign.right,
                           onChanged: (value) {},
                           onFieldSubmitted: (value) {
                             inSearch = true;
+                            if (widget.onTheSearch != null) {
+                              widget.onTheSearch!(true);
+                            }
                             setState(() {});
                           },
                           onTap: () {
                             print("tapped");
                           },
                           decoration: InputDecoration(
-                              prefixIcon: InkWell(
+                              prefixIcon:(widget.SearchIconVisible??true)? InkWell(
                                   onTap: () {
                                     inSearch = true;
+                                    if (widget.onTheSearch != null) {
+                                      widget.onTheSearch!(true);
+                                    }
                                     setState(() {});
                                   },
-                                  child:
-                                      Icon(Icons.search, color: Colors.black)),
+                                  child:widget.SearchIcon ?? Icon(Icons.search)):null,
                               hintText: "بحث",
                               enabledBorder: OutlineInputBorder(),
                               border: OutlineInputBorder(),
@@ -1760,6 +1784,12 @@ class _SearchAppBarState extends State<SearchAppBar> {
                         ),
                       ),
                     ),
+                    (widget.OnTheRightWidget != null)
+                        ? Padding(padding: EdgeInsets.only(left:widget.paddingBetweenSearchBarAndRightWidget?? 20))
+                        : Container(),
+                    (widget.OnTheRightWidget != null)
+                        ? widget.OnTheRightWidget!
+                        : Container(),
                   ],
                 ),
                 Spacer(),
@@ -1824,8 +1854,7 @@ class _SearchPage extends StatefulWidget {
       required this.itemCount,
       this.FilterWidget,
       this.SortWidget,
-      this.SubAppBarVisible
-      });
+      this.SubAppBarVisible});
   Widget Function(int Index) builder;
   int crossAxisCount;
   double childHeight;
@@ -1856,32 +1885,40 @@ class __SearchPageState extends State<_SearchPage> {
     return Container(
       child: Column(
         children: [
-          (widget.SubAppBarVisible??false)?Padding(padding: EdgeInsets.only(top: widget.columnSpaces ?? 20)):Container(),
-          (widget.SubAppBarVisible??false)?Container(
-            width: double.infinity,
-            child: Row(
-              children: [
-                Padding(padding: EdgeInsets.only(left: widget.rowSpaces ?? 20)),
-                (widget.FilterWidget != null)
-                    ? Container(
-                        child: widget.FilterWidget,
-                      )
-                    : Container(),
-                Padding(padding: EdgeInsets.only(left: 20)),
-                (widget.SortWidget != null)
-                    ? Container(
-                        child: widget.SortWidget,
-                      )
-                    : Container(),
-                Spacer(),
-                Text(
-                  "نتائج البحث",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Padding(padding: EdgeInsets.only(left: 50)),
-              ],
-            ),
-          ):Container(),
+          (widget.SubAppBarVisible ?? false)
+              ? Padding(
+                  padding: EdgeInsets.only(top: widget.columnSpaces ?? 20))
+              : Container(),
+          (widget.SubAppBarVisible ?? false)
+              ? Container(
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Padding(
+                          padding:
+                              EdgeInsets.only(left: widget.rowSpaces ?? 20)),
+                      (widget.FilterWidget != null)
+                          ? Container(
+                              child: widget.FilterWidget,
+                            )
+                          : Container(),
+                      Padding(padding: EdgeInsets.only(left: 20)),
+                      (widget.SortWidget != null)
+                          ? Container(
+                              child: widget.SortWidget,
+                            )
+                          : Container(),
+                      Spacer(),
+                      Text(
+                        "نتائج البحث",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      Padding(padding: EdgeInsets.only(left: 50)),
+                    ],
+                  ),
+                )
+              : Container(),
           Expanded(
             child: Container(
               child: WGridBuilder(

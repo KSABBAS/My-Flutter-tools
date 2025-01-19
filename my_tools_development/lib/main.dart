@@ -36,11 +36,12 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return SearchAppBar(
       data: data,
-      crossAxisCount: 5,
+      crossAxisCount: 1,
       childHeight: 150,
       columnSpaces: 40,
       rowSpaces: 40,
-      appBarColor: Colors.green,
+      appBarColor: Colors.white,
+      barRightPadding: 0,
       appBarHeight: 70,
       body: Center(child: Text("hi")),
       childWidth: 300,
@@ -54,6 +55,10 @@ class _AppState extends State<App> {
       FilterWidget:IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt_rounded)),
       SortWidget: IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
       SubAppBarVisible: false,
+      onTheSearch: (isOnTheSearch) {
+        print(isOnTheSearch);
+      },
+      OnTheRightWidget: MyButton(text: "ابحث")
     );
   }
 }
