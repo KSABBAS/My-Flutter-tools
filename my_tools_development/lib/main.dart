@@ -36,7 +36,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return SearchAppBar(
       data: data,
-      crossAxisCount: 2,
+      crossAxisCount: 5,
       childHeight: 150,
       columnSpaces: 40,
       rowSpaces: 40,
@@ -51,6 +51,9 @@ class _AppState extends State<App> {
       builder: (Index) {
         return Center(child: Text(data[data.keys.elementAt(Index)]));
       },
+      FilterWidget:IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt_rounded)),
+      SortWidget: IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
+      SubAppBarVisible: false,
     );
   }
 }

@@ -1619,11 +1619,10 @@ class _MySwitchBuilderState extends State<MySwitchTitleBuilder> {
                                       ? widget.ONIconBall
                                       : widget.OffIconBall,
                                   margin: EdgeInsets.only(bottom: 8),
-
-                                      color: (widget.dataList[index][1])
-                                          ? widget.BallColorOn
-                                          : widget.BallColorOff,
-                                      circularRadius: 500,
+                                  color: (widget.dataList[index][1])
+                                      ? widget.BallColorOn
+                                      : widget.BallColorOff,
+                                  circularRadius: 500,
                                   height: 35,
                                   width: 35,
                                 ),
@@ -1668,7 +1667,10 @@ class SearchAppBar extends StatefulWidget {
       required this.onSelected,
       this.rowSpaces,
       required this.builder,
-      required this.itemCount
+      required this.itemCount,
+      this.FilterWidget,
+      this.SortWidget,
+      this.SubAppBarVisible
       });
   double? appBarHeight;
   Color? appBarColor;
@@ -1690,6 +1692,9 @@ class SearchAppBar extends StatefulWidget {
   bool? Scroll;
   Widget Function(int Index) builder;
   int itemCount;
+  Widget? FilterWidget;
+  Widget? SortWidget;
+  bool? SubAppBarVisible;
   Function(int SelectedIndex) onSelected;
   @override
   State<SearchAppBar> createState() => _SearchAppBarState();
@@ -1783,10 +1788,11 @@ class _SearchAppBarState extends State<SearchAppBar> {
                     columnSpaces: widget.columnSpaces,
                     rowSpaces: widget.rowSpaces,
                     onSelected: (index) {
-                      
-                        widget.onSelected(index);
-                      
+                      widget.onSelected(index);
                     },
+                    FilterWidget: widget.FilterWidget,
+                    SortWidget: widget.SortWidget,
+                    SubAppBarVisible: widget.SubAppBarVisible,
                   )
                 : widget.body ?? Container(),
           ))
@@ -1815,7 +1821,10 @@ class _SearchPage extends StatefulWidget {
       this.onSelected,
       this.rowSpaces,
       required this.builder,
-      required this.itemCount
+      required this.itemCount,
+      this.FilterWidget,
+      this.SortWidget,
+      this.SubAppBarVisible
       });
   Widget Function(int Index) builder;
   int crossAxisCount;
@@ -1833,6 +1842,9 @@ class _SearchPage extends StatefulWidget {
   double? columnSpaces;
   int itemCount;
   bool? Scroll;
+  Widget? FilterWidget;
+  Widget? SortWidget;
+  bool? SubAppBarVisible;
   Function(int SelectedIndex)? onSelected;
   @override
   State<_SearchPage> createState() => __SearchPageState();
@@ -1841,29 +1853,63 @@ class _SearchPage extends StatefulWidget {
 class __SearchPageState extends State<_SearchPage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: WGridBuilder(
-        builder:widget.builder,
-        itemCount: widget.itemCount,
-        crossAxisCount: widget.crossAxisCount,
-        childHeight: widget.childHeight,
-        Scroll: widget.Scroll,
-        childAlignment: widget.childAlignment,
-        childBackGroundimage: widget.childBackGroundimage,
-        childBorder: widget.childBorder,
-        childBoxShadow: widget.childBoxShadow,
-        childCircularRadius: widget.childCircularRadius,
-        childColor: widget.childColor,
-        childGradient: widget.childGradient,
-        childPadding: widget.childPadding,
-        childWidth: widget.childWidth,
-        columnSpaces: widget.columnSpaces,
-        rowSpaces: widget.rowSpaces,
-        onSelected: (index) {
-          if (widget.onSelected != null) {
-            widget.onSelected!(index);
-          }
-        },
+    return Container(
+      child: Column(
+        children: [
+          (widget.SubAppBarVisible??false)?Padding(padding: EdgeInsets.only(top: widget.columnSpaces ?? 20)):Container(),
+          (widget.SubAppBarVisible??false)?Container(
+            width: double.infinity,
+            child: Row(
+              children: [
+                Padding(padding: EdgeInsets.only(left: widget.rowSpaces ?? 20)),
+                (widget.FilterWidget != null)
+                    ? Container(
+                        child: widget.FilterWidget,
+                      )
+                    : Container(),
+                Padding(padding: EdgeInsets.only(left: 20)),
+                (widget.SortWidget != null)
+                    ? Container(
+                        child: widget.SortWidget,
+                      )
+                    : Container(),
+                Spacer(),
+                Text(
+                  "نتائج البحث",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Padding(padding: EdgeInsets.only(left: 50)),
+              ],
+            ),
+          ):Container(),
+          Expanded(
+            child: Container(
+              child: WGridBuilder(
+                builder: widget.builder,
+                itemCount: widget.itemCount,
+                crossAxisCount: widget.crossAxisCount,
+                childHeight: widget.childHeight,
+                Scroll: widget.Scroll,
+                childAlignment: widget.childAlignment,
+                childBackGroundimage: widget.childBackGroundimage,
+                childBorder: widget.childBorder,
+                childBoxShadow: widget.childBoxShadow,
+                childCircularRadius: widget.childCircularRadius,
+                childColor: widget.childColor,
+                childGradient: widget.childGradient,
+                childPadding: widget.childPadding,
+                childWidth: widget.childWidth,
+                columnSpaces: widget.columnSpaces,
+                rowSpaces: widget.rowSpaces,
+                onSelected: (index) {
+                  if (widget.onSelected != null) {
+                    widget.onSelected!(index);
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
