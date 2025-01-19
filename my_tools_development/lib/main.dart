@@ -21,29 +21,31 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-Map data = {
-  "title 1": "value 1",
-  "title 2": "value 2",
-  "title 3": "value 3",
-  "title 4": "value 4",
-  "title 5": "value 5",
-  "title 6": "value 6",
-  "title 7": "value 7",
-};
+Map data = {};
 
 class _AppState extends State<App> {
+  bool isOnTheSearch1=false;
+  int PageIndex = 0;
   @override
   Widget build(BuildContext context) {
     return SearchAppBar(
-      data: data,
       crossAxisCount: 1,
       childHeight: 150,
       columnSpaces: 40,
       rowSpaces: 40,
       appBarColor: Colors.white,
-      barRightPadding: 0,
       appBarHeight: 70,
-      body: Center(child: Text("hi")),
+      body: [
+        Center(
+          child: Text("1"),
+        ),
+        Center(
+          child: Text("2"),
+        ),
+        Center(
+          child: Text("3"),
+        )
+      ][PageIndex],
       childWidth: 300,
       onSelected: (SelectedIndex) {
         print(data[data.keys.elementAt(SelectedIndex)]);
@@ -52,13 +54,40 @@ class _AppState extends State<App> {
       builder: (Index) {
         return Center(child: Text(data[data.keys.elementAt(Index)]));
       },
-      FilterWidget:IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt_rounded)),
+      FilterWidget:
+          IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt_rounded)),
       SortWidget: IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
-      SubAppBarVisible: false,
-      onTheSearch: (isOnTheSearch) {
-        print(isOnTheSearch);
+      SubAppBarVisible: true,
+      onTheSearch: (isOnTheSearch, value) {
+        isOnTheSearch1=isOnTheSearch;
+        if (isOnTheSearch) {
+          data = {
+            "title 1": "value 1",
+            "title 2": "value 2",
+            "title 3": "value 3",
+            "title 4": "value 4",
+            "title 5": "value 5",
+            "title 6": "value 6",
+          };
+          print("searching for $value");
+        } else {
+          print("not searching ");
+        }
+        setState(() {});
       },
-      OnTheRightWidget: MyButton(text: "ابحث")
+      OnTheRightWidget:(!isOnTheSearch1)? MyWidgetSelector(
+        iconsList: [
+          Icon(Icons.home_outlined),
+          Icon(Icons.tv_outlined),
+          Icon(Icons.person_outline_rounded)
+        ],
+        height: 60,
+        width: 200,
+        onChange: (index) {
+          PageIndex = index!;
+          setState(() {});
+        },
+      ):null,
     );
   }
 }

@@ -1647,7 +1647,6 @@ class _MySwitchBuilderState extends State<MySwitchTitleBuilder> {
 class SearchAppBar extends StatefulWidget {
   SearchAppBar({
     super.key,
-    required this.data,
     required this.crossAxisCount,
     required this.childHeight,
     this.appBarHeight,
@@ -1677,12 +1676,15 @@ class SearchAppBar extends StatefulWidget {
     this.SearchIconVisible,
     this.barLeftPadding,
     this.barRightPadding,
-    this.paddingBetweenSearchBarAndRightWidget
+    this.paddingBetweenSearchBarAndRightWidget,
+    this.onValueChange,
+    this.onSearchTapped,
+    this.OnTheLeftWidget,
+    this.paddingBetweenSearchBarAndLeftWidget
   });
   double? appBarHeight;
   Color? appBarColor;
   Widget? body;
-  Map data;
   int crossAxisCount;
   double childHeight;
   double? childWidth;
@@ -1698,7 +1700,8 @@ class SearchAppBar extends StatefulWidget {
   double? columnSpaces;
   bool? Scroll;
   Widget Function(int Index) builder;
-  Function(bool isOnTheSearch)? onTheSearch;
+  Function(bool isOnTheSearch, String SearchText)? onTheSearch;
+  Function(String value)? onValueChange;
   int itemCount;
   Widget? FilterWidget;
   Widget? SortWidget;
@@ -1706,17 +1709,20 @@ class SearchAppBar extends StatefulWidget {
   bool? SearchIconVisible;
   Icon? SearchIcon;
   Widget? OnTheRightWidget;
+  Widget? OnTheLeftWidget;
   Function(int SelectedIndex) onSelected;
+  Function()? onSearchTapped;
   double? barLeftPadding;
   double? barRightPadding;
   double? paddingBetweenSearchBarAndRightWidget;
-  
+  double? paddingBetweenSearchBarAndLeftWidget;
   @override
   State<SearchAppBar> createState() => _SearchAppBarState();
 }
 
 class _SearchAppBarState extends State<SearchAppBar> {
   bool inSearch = false;
+  String SearchText = "";
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1726,7 +1732,9 @@ class _SearchAppBarState extends State<SearchAppBar> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(left:widget.barLeftPadding ??30, right:widget.barRightPadding ??30),
+            padding: EdgeInsets.only(
+                left: widget.barLeftPadding ?? 30,
+                right: widget.barRightPadding ?? 30),
             color: widget.appBarColor ?? Colors.blue,
             height: widget.appBarHeight ?? 100,
             width: double.infinity,
@@ -1735,14 +1743,24 @@ class _SearchAppBarState extends State<SearchAppBar> {
                 Spacer(),
                 Row(
                   children: [
+                    (widget.OnTheLeftWidget != null)
+                        ? widget.OnTheLeftWidget!
+                        : Container(),
+                    (widget.OnTheLeftWidget != null)
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                left: widget
+                                        .paddingBetweenSearchBarAndLeftWidget ??
+                                    20))
+                        : Container(),
+
                     (inSearch)
                         ? IconButton(
                             onPressed: () {
                               if (widget.onTheSearch != null) {
-                                widget.onTheSearch!(false);
+                                inSearch = false;
+                                widget.onTheSearch!(inSearch, SearchText);
                               }
-                              inSearch = false;
-                              setState(() {});
                             },
                             icon: Icon(Icons.arrow_back))
                         : Container(),
@@ -1755,27 +1773,36 @@ class _SearchAppBarState extends State<SearchAppBar> {
                         color: Colors.white,
                         child: TextFormField(
                           textAlign: TextAlign.right,
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            SearchText = value;
+                            if (widget.onValueChange != null) {
+                              widget.onValueChange!(value);
+                            }
+                          },
                           onFieldSubmitted: (value) {
                             inSearch = true;
                             if (widget.onTheSearch != null) {
-                              widget.onTheSearch!(true);
+                              widget.onTheSearch!(inSearch, SearchText);
                             }
-                            setState(() {});
                           },
                           onTap: () {
-                            print("tapped");
+                            if (widget.onSearchTapped != null) {
+                              widget.onSearchTapped!();
+                            }
                           },
                           decoration: InputDecoration(
-                              prefixIcon:(widget.SearchIconVisible??true)? InkWell(
-                                  onTap: () {
-                                    inSearch = true;
-                                    if (widget.onTheSearch != null) {
-                                      widget.onTheSearch!(true);
-                                    }
-                                    setState(() {});
-                                  },
-                                  child:widget.SearchIcon ?? Icon(Icons.search)):null,
+                              prefixIcon: (widget.SearchIconVisible ?? true)
+                                  ? InkWell(
+                                      onTap: () {
+                                        inSearch = true;
+                                        if (widget.onTheSearch != null) {
+                                          widget.onTheSearch!(
+                                              inSearch, SearchText);
+                                        }
+                                      },
+                                      child: widget.SearchIcon ??
+                                          Icon(Icons.search))
+                                  : null,
                               hintText: "بحث",
                               enabledBorder: OutlineInputBorder(),
                               border: OutlineInputBorder(),
@@ -1785,7 +1812,11 @@ class _SearchAppBarState extends State<SearchAppBar> {
                       ),
                     ),
                     (widget.OnTheRightWidget != null)
-                        ? Padding(padding: EdgeInsets.only(left:widget.paddingBetweenSearchBarAndRightWidget?? 20))
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                left: widget
+                                        .paddingBetweenSearchBarAndRightWidget ??
+                                    20))
                         : Container(),
                     (widget.OnTheRightWidget != null)
                         ? widget.OnTheRightWidget!
@@ -1854,7 +1885,8 @@ class _SearchPage extends StatefulWidget {
       required this.itemCount,
       this.FilterWidget,
       this.SortWidget,
-      this.SubAppBarVisible});
+      this.SubAppBarVisible,
+      });
   Widget Function(int Index) builder;
   int crossAxisCount;
   double childHeight;
@@ -1951,9 +1983,166 @@ class __SearchPageState extends State<_SearchPage> {
     );
   }
 }
-
 //===========================================
+//----------------------------------------------------------
+//===========================================
+class MyWidgetSelector extends StatefulWidget {
+   MyWidgetSelector({super.key,
+      required this.iconsList,
+      this.orientation,
+      required this.height,
+      required this.width,
+      this.barColor,
+      this.selectedContainerColor,
+      this.pageBackgroundColor,
+      this.unselectedContainerColor,
+      this.SelectionContainerHeight,
+      this.unSelectionContainerHeight,
+      this.SelectionContainerWidth,
+      this.unSelectionContainerWidth,
+      this.SelectionContainerPadding,
+      this.unSelectionContainerPadding,
+      this.BarShadow,
+      this.BarBorder,
+      this.BarCircularRadius,
+      this.BarGradient,
+      this.SelectedContainerBorder,
+      this.unSelectedContainerBorder,
+      this.SelectionContainerCircularRadius,
+      this.unSelectionContainerCircularRadius,
+      this.SelectionContainerGradient,
+      this.unSelectionContainerGradient,
+      required this.onChange,
+      this.ScrollDuration,
+      this.SelectionContainerAnimationDuration,
+      this.BetweenSpaces,
+  });
+  List<Widget> iconsList;
+  String? orientation;
+  Function(int? index) onChange;
+  double height;
+  double width;
+  double? SelectionContainerHeight;
+  double? unSelectionContainerHeight;
+  Duration? SelectionContainerAnimationDuration;
+  double? SelectionContainerWidth;
+  double? unSelectionContainerWidth;
+  double? SelectionContainerPadding;
+  double? unSelectionContainerPadding;
+  double? SelectionContainerCircularRadius;
+  double? unSelectionContainerCircularRadius;
+  double? BarCircularRadius;
+  BoxBorder? SelectedContainerBorder;
+  BoxBorder? unSelectedContainerBorder;
+  Gradient? SelectionContainerGradient;
+  Gradient? unSelectionContainerGradient;
+  BoxBorder? BarBorder;
+  Gradient? BarGradient;
+  Duration? ScrollDuration;
+  Color? barColor;
+  Color? selectedContainerColor;
+  Color? unselectedContainerColor;
+  Color? pageBackgroundColor;
+  List<BoxShadow>? BarShadow;
+  double? BetweenSpaces;
+  @override
+  State<MyWidgetSelector> createState() => _MyWidgetSelectorState();
+}
 
+class _MyWidgetSelectorState extends State<MyWidgetSelector> {
+  int PageIndex = 0;
+  @override
+  Widget build(BuildContext context) {
+    return CMaker(
+                boxShadow: widget.BarShadow,
+                circularRadius: widget.BarCircularRadius ?? 20,
+                border: widget.BarBorder,
+                alignment: Alignment.center,
+                gradient: widget.BarGradient,
+                color: widget.barColor ?? Colors.white,
+                height: widget.height,
+                width: widget.width,
+                child: SizedBox(
+                  height: widget.SelectionContainerHeight,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: widget.BetweenSpaces ??
+                            (widget.width -
+                                    (widget.iconsList.length *
+                                        (widget.SelectionContainerWidth ??
+                                            60))) /
+                                (widget.iconsList.length + 1),
+                      ),
+                      CMaker(
+                        width: widget.width -
+                            (widget.width -
+                                    (widget.iconsList.length *
+                                        (widget.SelectionContainerWidth ??
+                                            60))) /
+                                (widget.iconsList.length + 1),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: false,
+                          itemCount: widget.iconsList.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    PageIndex = index;
+                                    widget.onChange(index);
+                                  },
+                                  child: CMaker(
+                                      alignment: Alignment.center,
+                                      child: ACMaker(
+                                          duration: widget
+                                              .SelectionContainerAnimationDuration,
+                                          padding: EdgeInsets.all(
+                                              widget.SelectionContainerPadding ??
+                                                  0),
+                                          alignment: Alignment.center,
+                                          height:
+                                              widget.SelectionContainerHeight ??
+                                                  60,
+                                          width:
+                                              widget.SelectionContainerWidth ??
+                                                  60,
+                                          circularRadius: widget
+                                                  .SelectionContainerCircularRadius ??
+                                              15,
+                                          border: (PageIndex == index)
+                                              ? widget.SelectedContainerBorder
+                                              : widget
+                                                  .unSelectedContainerBorder,
+                                          gradient:
+                                              widget.SelectionContainerGradient,
+                                          color: (PageIndex == index)
+                                              ? widget.selectedContainerColor ??
+                                                  const Color.fromARGB(255, 0, 0, 0)
+                                              : widget.unselectedContainerColor ?? Colors.transparent,
+                                          child: widget.iconsList[index])),
+                                ),
+                                Container(
+                                  width: widget.BetweenSpaces ??
+                                      (widget.width -
+                                              (widget.iconsList.length *
+                                                  (widget.SelectionContainerWidth ??
+                                                      60))) /
+                                          (widget.iconsList.length + 1),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+  }
+}
 //===========================================
 
 //----------------------------------------------------------
@@ -2030,7 +2219,8 @@ class NavBar extends StatefulWidget {
       this.NavBarPositionLeft,
       this.NavBarPositionRight,
       this.NavBarPositionTop,
-      this.BetweenSpaces});
+      this.BetweenSpaces,
+      });
   List<Widget> pages;
   List<Widget> iconsList;
   String? orientation;
