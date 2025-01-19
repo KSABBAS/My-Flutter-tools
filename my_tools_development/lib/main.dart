@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:my_tools_development/MyTools/MyTools.dart';
@@ -22,26 +21,44 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-late MyResponsive ahmed;
+Map data = {
+  "title 1": "value 1",
+  "title 2": "value 2",
+  "title 3": "value 3",
+  "title 4": "value 4",
+  "title 5": "value 5",
+  "title 6": "value 6",
+  "title 7": "value 7",
+};
 
 class _AppState extends State<App> {
-  String? qrResult;
-
   @override
   Widget build(BuildContext context) {
-    ahmed = MyResponsive(context, designHeight: 914, designWidth: 411);
-
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    print(PageHeight(context));
-    print(PageWidth(context));
-    return Center(
-        child: CustomNavigationBar(
-            HightBigcontaner: double.infinity,
-            WidthFristPading: double.infinity,
-            Colors: Colors.white,
-            Alignment1: Alignment.center,
-            fontWeightIntext: FontWeight.bold,
-            circularRadiusLineContaner: 50,
-            MargenSoucndPading: 10));
+    return SearchAppBar(
+      data: data,
+      crossAxisCount: 1,
+      childHeight: 150,
+      columnSpaces: 40,
+      rowSpaces: 40,
+      appBarColor: Colors.white,
+      barRightPadding: 0,
+      appBarHeight: 70,
+      body: Center(child: Text("hi")),
+      childWidth: 300,
+      onSelected: (SelectedIndex) {
+        print(data[data.keys.elementAt(SelectedIndex)]);
+      },
+      itemCount: data.length,
+      builder: (Index) {
+        return Center(child: Text(data[data.keys.elementAt(Index)]));
+      },
+      FilterWidget:IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt_rounded)),
+      SortWidget: IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
+      SubAppBarVisible: false,
+      onTheSearch: (isOnTheSearch) {
+        print(isOnTheSearch);
+      },
+      OnTheRightWidget: MyButton(text: "ابحث")
+    );
   }
 }
