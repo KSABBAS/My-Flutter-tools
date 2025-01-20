@@ -75,7 +75,7 @@ class _AppState extends State<App> {
         }
         setState(() {});
       },
-      OnTheRightWidget:(!isOnTheSearch1)? MyWidgetSelector(
+      OnTheRightWidget:(!isOnTheSearch1)? MyRowWidgetSelector(
         iconsList: [
           Icon(Icons.home_outlined),
           Icon(Icons.tv_outlined),
@@ -89,5 +89,6 @@ class _AppState extends State<App> {
         },
       ):null,
     );
+
   }
 }
