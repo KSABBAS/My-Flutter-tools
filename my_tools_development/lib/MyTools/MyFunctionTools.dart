@@ -115,94 +115,9 @@ import 'package:url_launcher/url_launcher.dart';
 //===========================================
 // import 'package:flutter/material.dart';
 
-double PageHeight(BuildContext context) {
-  return MediaQuery.of(context).size.height;
-}
 
-double PageWidth(BuildContext context) {
-  return MediaQuery.of(context).size.width;
-}
 
-double? _referenceFontScreenWidth;
 
-// Responsive Font Size by Width
-double ResponsiveFontSizeByWidth(BuildContext context, double fontSize,
-    {double? designScreenWidth = 1536}) {
-  final screenWidth = MediaQuery.of(context).size.width;
-
-  // Set the reference screen width for font size scaling
-  _referenceFontScreenWidth ??= designScreenWidth;
-
-  // Calculate the scaling factor
-  final scaleFactor = screenWidth / _referenceFontScreenWidth!;
-
-  // Calculate and return the responsive font size
-  return fontSize * scaleFactor;
-}
-
-double? _referenceFontScreenHeight;
-// Responsive Font Size by Height
-double ResponsiveFontSizeByHeight(BuildContext context, double fontSize,
-    {double? designScreenHeight = 792}) {
-  final screenHeight = MediaQuery.of(context).size.height;
-
-  // Set the reference screen height for font size scaling
-  _referenceFontScreenHeight ??= designScreenHeight;
-
-  // Calculate the scaling factor
-  final scaleFactor = screenHeight / _referenceFontScreenHeight!;
-
-  // Calculate and return the responsive font size
-  return fontSize * scaleFactor;
-}
-
-double? _referenceScreenWidth;
-
-// Responsive Width Function
-double ResponsiveWidth(BuildContext context, double containerWidth,
-    {double? designScreenWidth = 1536}) {
-  final screenWidth = MediaQuery.of(context).size.width;
-
-  // Set the reference screen width once
-  _referenceScreenWidth ??= designScreenWidth;
-
-  // Calculate the scaling factor
-  final scaleFactor = screenWidth / _referenceScreenWidth!;
-
-  // Calculate and return the responsive width
-  return containerWidth * scaleFactor;
-}
-
-double? _referenceScreenHeight;
-// Responsive Height Function
-double ResponsiveHeight(BuildContext context, double containerHeight,
-    {double? designScreenHeight = 792}) {
-  final screenHeight = MediaQuery.of(context).size.height;
-
-  // Set the reference screen height once
-  _referenceScreenHeight ??= designScreenHeight;
-
-  // Calculate the scaling factor
-  final scaleFactor = screenHeight / _referenceScreenHeight!;
-
-  // Calculate and return the responsive height
-  return containerHeight * scaleFactor;
-}
-
-class MyResponsive {
-  final double _widthFactor;
-  final double _heightFactor;
-
-  MyResponsive(BuildContext context,
-      {double designWidth = 1536, double designHeight = 792})
-      : _widthFactor = MediaQuery.of(context).size.width / designWidth,
-        _heightFactor = MediaQuery.of(context).size.height / designHeight;
-
-  double fontSizeByWidth(double fontSize) => fontSize * _widthFactor;
-  double fontSizeByHeight(double fontSize) => fontSize * _heightFactor;
-  double width(double value) => value * _widthFactor;
-  double height(double value) => value * _heightFactor;
-}
 
 //===========================================
 
@@ -210,167 +125,13 @@ class MyResponsive {
 
 //===========================================
 
-// List<Widget>? WidgetListMaker(int number, Widget widget) {
-//   List<Widget>? list = [];
-//   for (int i = 0; i < number; i++) {
-//     list.add(widget);
-//   }
-//   return list;
-// }
+
 
 //===========================================
 
 //----------------------------------------------------------
 
 //===========================================
-
-// import 'package:image_picker/image_picker.dart';
-// package : image_picker: ^1.1.2
-// in terminal : flutter pub add image_picker
-// Future PickImageFromGalary() async {
-//   try {
-//     return ImagePicker().pickImage(source: ImageSource.gallery);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickImageFromCamera() async {
-//   try {
-//     return ImagePicker().pickImage(source: ImageSource.camera);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickVideoFromCamera() async {
-//   try {
-//     return ImagePicker().pickVideo(source: ImageSource.camera);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickVideoFromGalary() async {
-//   try {
-//     return ImagePicker().pickVideo(source: ImageSource.gallery);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickMultiImageFromGalary() async {
-//   try {
-//     return ImagePicker().pickMultiImage();
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickMediaFromGalary() async {
-//   try {
-//     return ImagePicker().pickMedia();
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickMultiMediaFromGalary() async {
-//   try {
-//     return ImagePicker().pickMultipleMedia();
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-//===========================================
-
-//----------------------------------------------------------
-
-//===========================================
-// import 'package:file_picker/file_picker.dart';
-// Package : file_picker 8.1.4
-// add : flutter pub add file_picker
-// Future PickImageFile() async {
-//   try {
-//     return await FilePicker.platform.pickFiles(
-//       allowMultiple: false,
-//       type: FileType.image,
-//     );
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickAudioFile() async {
-//   try {
-//     return await FilePicker.platform
-//         .pickFiles(allowMultiple: false, type: FileType.audio);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickMultiImageFiles() async {
-//   try {
-//     return await FilePicker.platform
-//         .pickFiles(allowMultiple: true, type: FileType.image);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickVideoFile() async {
-//   try {
-//     return await FilePicker.platform
-//         .pickFiles(allowMultiple: false, type: FileType.video);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickMultiVideoFiles() async {
-//   try {
-//     return await FilePicker.platform
-//         .pickFiles(allowMultiple: true, type: FileType.video);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickMultiAudioFiles() async {
-//   try {
-//     return await FilePicker.platform.pickFiles(
-//       allowMultiple: true,
-//       type: FileType.audio,
-//     );
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
-
-// Future PickMultiTypeFiles() async {
-//   try {
-//     return await FilePicker.platform
-//         .pickFiles(allowMultiple: true, type: FileType.any);
-//   } catch (e) {
-//     print("Error picking image: $e");
-//     return null;
-//   }
-// }
 
 
 //===========================================
@@ -394,18 +155,15 @@ class MyResponsive {
 //----------------------------------------------------------
 
 //===========================================
-// import : import 'package:url_launcher/url_launcher.dart';
-// package : url_launcher: ^6.3.1
-// add : flutter pub add url_launcher
-Future<void> LaunchURL({required String url}) async {
-    try {
-      if (!await launchUrl(Uri.parse(url), browserConfiguration: const BrowserConfiguration(),mode: LaunchMode.platformDefault)) {
-        throw 'Could not launch $url';
-      }
-    } catch (e) {
-      //mj
-    }
-  }
+
+
+
+//===========================================
+
+//----------------------------------------------------------
+
+//===========================================
+
 
 //===========================================
 

@@ -45,8 +45,9 @@ dependencies:
   media_kit: ^1.1.11
   media_kit_video: ^1.2.5
   media_kit_libs_video: ^1.0.5
-  mobile_scanner: ^6.0.2
+  mobile_scanner: ^6.0.3
   url_launcher: ^6.3.1
+  pretty_qr_code: ^3.3.0
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
-import 'package:my_tools_development/MyTools/MyTools.dart';
+import 'package:my_tools_development/MyTools/Functions/Height_and_width_Functions.dart';
+import 'package:my_tools_development/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
+import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
+import 'package:my_tools_development/MyTools/tools/Text_Tools/TMaker.dart';
+// import 'package:video_player/video_player.dart';
+// package : video_player: ^2.9.2;
+// add : flutter pub add video_player
+import 'dart:io';
+// import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
 import 'package:video_player/video_player.dart';
 
 class MyVideoPlayer extends StatefulWidget {
@@ -61,49 +67,49 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
     try {
       setState(() => _isInitializing = true);
       
-      if (widget.url != null) {
-        if (_isYoutubeUrl(widget.url!)) {
-          print("Detected YouTube URL: ${widget.url}");
+      // if (widget.url != null) {
+      //   if (_isYoutubeUrl(widget.url!)) {
+      //     print("Detected YouTube URL: ${widget.url}");
           
-          final yt = YoutubeExplode();
-          try {
-            final video = await yt.videos.get(widget.url!);
-            final manifest = await yt.videos.streamsClient.getManifest(video.id);
+      //     final yt = YoutubeExplode();
+      //     try {
+      //       final video = await yt.videos.get(widget.url!);
+      //       final manifest = await yt.videos.streamsClient.getManifest(video.id);
             
-            // Get only MP4 streams
-            final streams = manifest.muxed.where((stream) => 
-              stream.container.name.toLowerCase() == 'mp4'
-            ).toList();
+      //       // Get only MP4 streams
+      //       final streams = manifest.muxed.where((stream) => 
+      //         stream.container.name.toLowerCase() == 'mp4'
+      //       ).toList();
             
-            if (streams.isEmpty) throw Exception('No MP4 stream found');
+      //       if (streams.isEmpty) throw Exception('No MP4 stream found');
             
-            // Get medium quality MP4
-            final streamInfo = streams.firstWhere(
-              (stream) => stream.videoQuality.name.contains('360'),
-              orElse: () => streams.first
-            );
+      //       // Get medium quality MP4
+      //       final streamInfo = streams.firstWhere(
+      //         (stream) => stream.videoQuality.name.contains('360'),
+      //         orElse: () => streams.first
+      //       );
             
-            final videoUrl = streamInfo.url.toString();
-            print("Stream type: ${streamInfo.container.name}");
-            print("Quality: ${streamInfo.videoQuality.name}");
-            print("Video URL: $videoUrl");
+      //       final videoUrl = streamInfo.url.toString();
+      //       print("Stream type: ${streamInfo.container.name}");
+      //       print("Quality: ${streamInfo.videoQuality.name}");
+      //       print("Video URL: $videoUrl");
             
-            _controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
-          } catch (e) {
-            print("YouTube extraction error: $e");
-            throw Exception("Failed to extract YouTube video: $e");
-          } finally {
-            yt.close();
-          }
-        } else {
-          _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url!));
-        }
+      //       _controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+      //     } catch (e) {
+      //       print("YouTube extraction error: $e");
+      //       throw Exception("Failed to extract YouTube video: $e");
+      //     } finally {
+      //       yt.close();
+      //     }
+      //   } else {
+      //     _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url!));
+      //   }
         
-        await _controller!.initialize();
-        if (widget.autoPlay) {
-          await _controller!.play();
-        }
-      }
+      //   await _controller!.initialize();
+      //   if (widget.autoPlay) {
+      //     await _controller!.play();
+      //   }
+      // }
       
     } catch (error) {
       print("Controller initialization error: $error");
