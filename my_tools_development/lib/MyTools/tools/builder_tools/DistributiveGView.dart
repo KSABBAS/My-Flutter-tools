@@ -20,8 +20,6 @@ class DistributiveGView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Calculate the number of items per row
-        final crossAxisCount = (constraints.maxWidth / itemWidth).floor();
         return Padding(
             padding: surroundpadding ?? EdgeInsets.all(0),
             child: GridView.builder(

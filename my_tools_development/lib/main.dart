@@ -22,11 +22,7 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-Map data = {};
-
 class _AppState extends State<App> {
-  bool isOnTheSearch1 = false;
-  int PageIndex = 0;
   @override
   Widget build(BuildContext context) {
     return DistributiveGView(

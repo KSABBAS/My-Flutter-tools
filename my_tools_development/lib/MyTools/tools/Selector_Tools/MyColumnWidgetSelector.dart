@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
+
 class MyColumnWidgetSelector extends StatefulWidget {
   MyColumnWidgetSelector({
     super.key,
@@ -32,6 +33,7 @@ class MyColumnWidgetSelector extends StatefulWidget {
     this.ScrollDuration,
     this.SelectionContainerAnimationDuration,
     this.BetweenSpaces,
+    this.reverseDirection
   });
   List<Widget> iconsList;
   String? orientation;
@@ -61,6 +63,7 @@ class MyColumnWidgetSelector extends StatefulWidget {
   Color? pageBackgroundColor;
   List<BoxShadow>? BarShadow;
   double? BetweenSpaces;
+  bool? reverseDirection;
   @override
   State<MyColumnWidgetSelector> createState() => _MyColumnWidgetSelectorState();
 }
@@ -97,6 +100,7 @@ class _MyColumnWidgetSelectorState extends State<MyColumnWidgetSelector> {
                               (widget.SelectionContainerHeight ?? 60))) /
                       (widget.iconsList.length + 1),
               child: ListView.builder(
+                reverse:widget.reverseDirection?? false,
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: false,

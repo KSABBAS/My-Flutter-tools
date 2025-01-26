@@ -32,6 +32,7 @@ class MyRowWidgetSelector extends StatefulWidget {
     this.ScrollDuration,
     this.SelectionContainerAnimationDuration,
     this.BetweenSpaces,
+    this.reverseDirection
   });
   List<Widget> iconsList;
   String? orientation;
@@ -61,6 +62,7 @@ class MyRowWidgetSelector extends StatefulWidget {
   Color? pageBackgroundColor;
   List<BoxShadow>? BarShadow;
   double? BetweenSpaces;
+  bool? reverseDirection;
   @override
   State<MyRowWidgetSelector> createState() => _MyRowWidgetSelectorState();
 }
@@ -97,6 +99,7 @@ class _MyRowWidgetSelectorState extends State<MyRowWidgetSelector> {
                       (widget.iconsList.length + 1),
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
+                reverse:widget.reverseDirection?? false,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: false,
                 itemCount: widget.iconsList.length,
