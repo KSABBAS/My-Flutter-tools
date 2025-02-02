@@ -1,10 +1,10 @@
 import 'dart:async';
 
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 // import 'package:mobile_scanner/mobile_scanner.dart';
-// // import 'package:mobile_scanner/mobile_scanner.dart';
-// // package: mobile_scanner: ^6.0.2
-// // add: flutter pub add mobile_scanner
+// import 'package:mobile_scanner/mobile_scanner.dart';
+// package: mobile_scanner: ^6.0.2
+// add: flutter pub add mobile_scanner
 
 // Future<String> scanQR(BuildContext context) async {
 //   // Using Completer to handle the async flow properly

@@ -14,7 +14,10 @@ class CMaker extends StatefulWidget {
       this.color,
       this.gradient,
       this.circularRadius,
-      this.transform});
+      this.transform,
+      this.clipBehavior,
+      this.shape
+      });
   Color? color;
   double? height;
   double? width;
@@ -27,6 +30,8 @@ class CMaker extends StatefulWidget {
   Matrix4? transform;
   BoxBorder? border;
   double? circularRadius;
+  Clip? clipBehavior;
+  BoxShape? shape;
   Widget? child;
   @override
   State<CMaker> createState() => _CMakerState();
@@ -36,11 +41,13 @@ class _CMakerState extends State<CMaker> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      clipBehavior: widget.clipBehavior?? Clip.none,
       transform: widget.transform,
       alignment: widget.alignment,
       padding: widget.padding,
       margin: widget.margin,
       decoration: BoxDecoration(
+        shape: widget.shape??BoxShape.rectangle,
           gradient: widget.gradient,
           image: widget.BackGroundimage,
           border: widget.border,
