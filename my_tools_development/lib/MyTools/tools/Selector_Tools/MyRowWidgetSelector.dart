@@ -5,12 +5,10 @@ class MyRowWidgetSelector extends StatefulWidget {
   MyRowWidgetSelector({
     super.key,
     required this.iconsList,
-    this.orientation,
     required this.height,
     required this.width,
     this.barColor,
     this.selectedContainerColor,
-    this.pageBackgroundColor,
     this.unselectedContainerColor,
     this.SelectionContainerHeight,
     this.unSelectionContainerHeight,
@@ -35,7 +33,6 @@ class MyRowWidgetSelector extends StatefulWidget {
     this.reverseDirection
   });
   List<Widget> iconsList;
-  String? orientation;
   Function(int? index) onChange;
   double height;
   double width;
@@ -59,7 +56,6 @@ class MyRowWidgetSelector extends StatefulWidget {
   Color? barColor;
   Color? selectedContainerColor;
   Color? unselectedContainerColor;
-  Color? pageBackgroundColor;
   List<BoxShadow>? BarShadow;
   double? BetweenSpaces;
   bool? reverseDirection;

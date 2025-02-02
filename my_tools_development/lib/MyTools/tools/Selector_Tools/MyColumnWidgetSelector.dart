@@ -6,12 +6,10 @@ class MyColumnWidgetSelector extends StatefulWidget {
   MyColumnWidgetSelector({
     super.key,
     required this.iconsList,
-    this.orientation,
     required this.height,
     required this.width,
     this.barColor,
     this.selectedContainerColor,
-    this.pageBackgroundColor,
     this.unselectedContainerColor,
     this.SelectionContainerHeight,
     this.unSelectionContainerHeight,
@@ -36,7 +34,6 @@ class MyColumnWidgetSelector extends StatefulWidget {
     this.reverseDirection
   });
   List<Widget> iconsList;
-  String? orientation;
   Function(int? index) onChange;
   double height;
   double width;
@@ -60,7 +57,6 @@ class MyColumnWidgetSelector extends StatefulWidget {
   Color? barColor;
   Color? selectedContainerColor;
   Color? unselectedContainerColor;
-  Color? pageBackgroundColor;
   List<BoxShadow>? BarShadow;
   double? BetweenSpaces;
   bool? reverseDirection;

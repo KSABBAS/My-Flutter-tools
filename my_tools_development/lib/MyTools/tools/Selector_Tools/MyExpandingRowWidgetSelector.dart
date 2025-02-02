@@ -6,11 +6,9 @@ class MyExpandingRowWidgetSelector extends StatefulWidget {
   MyExpandingRowWidgetSelector({
     super.key,
     required this.iconsList,
-    this.orientation,
     required this.height, // Only specify height, width will be dynamic
     this.barColor,
     this.selectedContainerColor,
-    this.pageBackgroundColor,
     this.unselectedContainerColor,
     this.SelectionContainerHeight,
     this.unSelectionContainerHeight,
@@ -36,7 +34,6 @@ class MyExpandingRowWidgetSelector extends StatefulWidget {
   });
 
   final List<Widget> iconsList;
-  final String? orientation;
   final Function(int? index) onChange;
   final double height; // Only height is specified, width is dynamic
   final double? SelectionContainerHeight;
@@ -59,7 +56,6 @@ class MyExpandingRowWidgetSelector extends StatefulWidget {
   final Color? barColor;
   final Color? selectedContainerColor;
   final Color? unselectedContainerColor;
-  final Color? pageBackgroundColor;
   final List<BoxShadow>? BarShadow;
   final double? betweenSpaces; // Spacing between widgets
   final bool? reverseDirection;
