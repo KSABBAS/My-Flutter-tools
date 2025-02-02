@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
-// import 'package:my_tools_development/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
-// import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
 
 class MyColumnWidgetSelector extends StatefulWidget {
   MyColumnWidgetSelector({
     super.key,
     required this.iconsList,
+    this.orientation,
     required this.height,
     required this.width,
     this.barColor,
     this.selectedContainerColor,
+    this.pageBackgroundColor,
     this.unselectedContainerColor,
     this.SelectionContainerHeight,
     this.unSelectionContainerHeight,
@@ -21,7 +21,7 @@ class MyColumnWidgetSelector extends StatefulWidget {
     this.unSelectionContainerPadding,
     this.BarShadow,
     this.BarBorder,
-    this.BarCircularRadius,
+    this.BarborderRadius,
     this.BarGradient,
     this.SelectedContainerBorder,
     this.unSelectedContainerBorder,
@@ -36,6 +36,7 @@ class MyColumnWidgetSelector extends StatefulWidget {
     this.reverseDirection
   });
   List<Widget> iconsList;
+  String? orientation;
   Function(int? index) onChange;
   double height;
   double width;
@@ -48,7 +49,7 @@ class MyColumnWidgetSelector extends StatefulWidget {
   double? unSelectionContainerPadding;
   double? SelectionContainerCircularRadius;
   double? unSelectionContainerCircularRadius;
-  double? BarCircularRadius;
+  BorderRadiusGeometry? BarborderRadius;
   BoxBorder? SelectedContainerBorder;
   BoxBorder? unSelectedContainerBorder;
   Gradient? SelectionContainerGradient;
@@ -59,6 +60,7 @@ class MyColumnWidgetSelector extends StatefulWidget {
   Color? barColor;
   Color? selectedContainerColor;
   Color? unselectedContainerColor;
+  Color? pageBackgroundColor;
   List<BoxShadow>? BarShadow;
   double? BetweenSpaces;
   bool? reverseDirection;
@@ -70,13 +72,15 @@ class _MyColumnWidgetSelectorState extends State<MyColumnWidgetSelector> {
   int PageIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return CMaker(
+    return Container(
+      decoration: BoxDecoration(
       boxShadow: widget.BarShadow,
-      circularRadius: widget.BarCircularRadius ?? 20,
+      borderRadius: widget.BarborderRadius,
       border: widget.BarBorder,
-      alignment: Alignment.center,
       gradient: widget.BarGradient,
       color: widget.barColor ?? Colors.white,
+      ),
+      alignment: Alignment.center,
       height: widget.height,
       width: widget.width,
       child: SizedBox(

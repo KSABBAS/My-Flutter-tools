@@ -5,10 +5,12 @@ class MyRowWidgetSelector extends StatefulWidget {
   MyRowWidgetSelector({
     super.key,
     required this.iconsList,
+    this.orientation,
     required this.height,
     required this.width,
     this.barColor,
     this.selectedContainerColor,
+    this.pageBackgroundColor,
     this.unselectedContainerColor,
     this.SelectionContainerHeight,
     this.unSelectionContainerHeight,
@@ -18,7 +20,7 @@ class MyRowWidgetSelector extends StatefulWidget {
     this.unSelectionContainerPadding,
     this.BarShadow,
     this.BarBorder,
-    this.BarCircularRadius,
+    this.BarborderRadius,
     this.BarGradient,
     this.SelectedContainerBorder,
     this.unSelectedContainerBorder,
@@ -46,7 +48,7 @@ class MyRowWidgetSelector extends StatefulWidget {
   double? unSelectionContainerPadding;
   double? SelectionContainerCircularRadius;
   double? unSelectionContainerCircularRadius;
-  double? BarCircularRadius;
+  BorderRadiusGeometry? BarborderRadius;
   BoxBorder? SelectedContainerBorder;
   BoxBorder? unSelectedContainerBorder;
   Gradient? SelectionContainerGradient;
@@ -57,6 +59,7 @@ class MyRowWidgetSelector extends StatefulWidget {
   Color? barColor;
   Color? selectedContainerColor;
   Color? unselectedContainerColor;
+  Color? pageBackgroundColor;
   List<BoxShadow>? BarShadow;
   double? BetweenSpaces;
   bool? reverseDirection;
@@ -68,13 +71,15 @@ class _MyRowWidgetSelectorState extends State<MyRowWidgetSelector> {
   int PageIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return CMaker(
+    return Container(
+      decoration: BoxDecoration(
       boxShadow: widget.BarShadow,
-      circularRadius: widget.BarCircularRadius ?? 20,
+      borderRadius: widget.BarborderRadius,
       border: widget.BarBorder,
-      alignment: Alignment.center,
       gradient: widget.BarGradient,
       color: widget.barColor ?? Colors.white,
+      ),
+      alignment: Alignment.center,
       height: widget.height,
       width: widget.width,
       child: SizedBox(
