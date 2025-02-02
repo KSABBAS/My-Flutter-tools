@@ -41,7 +41,7 @@ class NavBar extends StatefulWidget {
     this.NavBarPositionTop,
     this.BetweenSpaces,
     this.BarborderRadius,
-    this.reverseDirection
+    this.reverseDirection,
   });
   List<Widget> pages;
   List<Widget> iconsList;
