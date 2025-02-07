@@ -4,6 +4,7 @@ import 'package:my_tools_development/MyTools/Functions/Height_and_width_Function
 import 'package:my_tools_development/MyTools/Functions/MyResponsive.dart';
 import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:my_tools_development/MyTools/MyTools.dart';
+import 'package:my_tools_development/MyTools/tools/App_Containing_Tools/SearchAppBar.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Checkbox/MultiCBox.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/MyButton.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Radio/MultiRButton.dart';
@@ -39,25 +40,73 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
+List<Product> products = [
+  Product(id: 234567, name: "phone0", price: 200, date: DateTime(2005)),
+  Product(id: 234568, name: "phone1", price: 210, date: DateTime(2006)),
+  Product(id: 234569, name: "phone2", price: 240, date: DateTime(2007)),
+  Product(id: 234587, name: "phone3", price: 2020, date: DateTime(2008)),
+  Product(id: 234562, name: "phone4", price: 2200, date: DateTime(2009)),
+];
+List data = [
+  [1, DateTime(2025, 2, 1), 15.99, "Wireless Mouse"],
+  [2, DateTime(2025, 1, 28), 89.49, "Bluetooth Headphones"],
+  [3, DateTime(2025, 2, 3), 42.99, "Mechanical Keyboard"],
+  [4, DateTime(2025, 1, 30), 7.99, "USB Flash Drive 32GB"],
+  [5, DateTime(2025, 1, 25), 299.99, "Smartwatch Series 6"],
+  [6, DateTime(2025, 2, 5), 18.49, "Portable Phone Stand"],
+  [7, DateTime(2025, 1, 15), 54.99, "External Hard Drive 1TB"],
+  [8, DateTime(2025, 1, 20), 1299.99, "Gaming Laptop"],
+  [9, DateTime(2025, 2, 4), 23.99, "Wireless Charger"],
+  [10, DateTime(2025, 1, 27), 5.99, "Stylus Pen"],
+  [11, DateTime(2025, 1, 18), 699.99, "Smartphone"],
+  [12, DateTime(2025, 2, 2), 44.99, "Backpack with USB Port"],
+  [13, DateTime(2025, 1, 26), 15.49, "Gaming Mouse Pad"],
+  [14, DateTime(2025, 1, 29), 249.99, "Noise-Canceling Earbuds"],
+  [15, DateTime(2025, 1, 22), 75.00, "Mini Projector"],
+  [16, DateTime(2025, 1, 17), 9.99, "Portable Fan"],
+  [17, DateTime(2025, 1, 24), 349.99, "Wireless Speaker"],
+  [18, DateTime(2025, 2, 6), 25.00, "Ergonomic Office Chair"],
+  [19, DateTime(2025, 1, 19), 6.49, "Laptop Cooling Pad"],
+  [20, DateTime(2025, 2, 1), 49.99, "Monitor Stand Riser"]
+];
+
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: MyExpandingRowWidgetSelector(
-      betweenSpaces: 100,
-      SelectionContainerBorder: Border.all(),
-      SelectionContainerMargin: EdgeInsets.symmetric(vertical: 20),
-      SelectionContainerPadding:EdgeInsets.all(10),
-      SelectionContainerColor: Colors.transparent,
-      iconsList: [
-        Text("hi"),
-        Text("hi;kljn"),
-        Text("hiobiugyctfrdx"),
-      ],
-      height: 100,
-      onChange: (index) {
-        setState(() {});
-      },
-    ));
+    return SearchAppBar(
+        childHeight: 100,
+        childWidth: 200,
+        onTheSearch: (isOnTheSearch, SearchText) {
+          setState(() {});
+        },
+        SubAppBarVisible: true,
+        SortWidget: Icon(Icons.sort),
+        FilterWidget: Icon(Icons.filter),
+        childColor: Colors.red,
+        rowSpaces: 20,
+        columnSpaces: 20,
+        drawerWidth: 400,
+        productBuilder: (product) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("${product.id}"),
+              Text("${product.name}"),
+              Text("${product.price}"),
+              Text("${product.date}")
+            ],
+          );
+        },
+        products: MyListBuilder(
+          itemCount: data.length,
+          builder: (index) {
+            return Product(
+                id: data[index][0],
+                name: data[index][3],
+                price: data[index][2],
+                date: data[index][1]);
+          },
+        ));
   }
 }

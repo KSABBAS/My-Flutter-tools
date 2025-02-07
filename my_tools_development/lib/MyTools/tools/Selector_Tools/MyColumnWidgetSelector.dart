@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
+// import 'package:tix/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
+// import 'package:tix/MyTools/tools/CMaker_Tools/CMaker.dart';
+import 'package:my_tools_development/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
+import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
+// import 'package:tix/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
+// import 'package:tix/MyTools/tools/CMaker_Tools/CMaker.dart';
 
 class MyColumnWidgetSelector extends StatefulWidget {
   MyColumnWidgetSelector({
@@ -9,27 +15,29 @@ class MyColumnWidgetSelector extends StatefulWidget {
     required this.height,
     required this.width,
     this.barColor,
-    this.selectedContainerColor,
-    this.unselectedContainerColor,
-    this.SelectionContainerHeight,
-    this.unSelectionContainerHeight,
-    this.SelectionContainerWidth,
-    this.unSelectionContainerWidth,
-    this.SelectionContainerPadding,
-    this.unSelectionContainerPadding,
+      this.SelectionContainerColor,
+      this.unSelectedContainerColor,
+      this.SelectionContainerHeight,
+      this.unSelectedContainerHeight,
+      this.SelectionContainerWidth,
+      this.unSelectedContainerWidth,
+      this.SelectionContainerPadding,
+      this.unSelectedContainerPadding,
+      this.SelectionContainerBorder,
+      this.unSelectedContainerBorder,
+      this.SelectionContainerCircularRadius,
+      this.unSelectedContainerCircularRadius,
+      this.SelectionContainerGradient,
+      this.unSelectedContainerGradient,
+      this.SelectionContainerAnimationDuration,
+      this.SelectionContainerMargin,
+      this.unSelectedContainerMargin,
     this.BarShadow,
     this.BarBorder,
     this.BarborderRadius,
     this.BarGradient,
-    this.SelectedContainerBorder,
-    this.unSelectedContainerBorder,
-    this.SelectionContainerCircularRadius,
-    this.unSelectionContainerCircularRadius,
-    this.SelectionContainerGradient,
-    this.unSelectionContainerGradient,
     required this.onChange,
     this.ScrollDuration,
-    this.SelectionContainerAnimationDuration,
     this.BetweenSpaces,
     this.reverseDirection
   });
@@ -37,26 +45,28 @@ class MyColumnWidgetSelector extends StatefulWidget {
   Function(int? index) onChange;
   double height;
   double width;
-  double? SelectionContainerHeight;
-  double? unSelectionContainerHeight;
-  Duration? SelectionContainerAnimationDuration;
-  double? SelectionContainerWidth;
-  double? unSelectionContainerWidth;
-  double? SelectionContainerPadding;
-  double? unSelectionContainerPadding;
-  double? SelectionContainerCircularRadius;
-  double? unSelectionContainerCircularRadius;
+  final double? SelectionContainerHeight;
+  final double? unSelectedContainerHeight;
+  final Duration? SelectionContainerAnimationDuration;
+  final double? SelectionContainerWidth;
+  final double? unSelectedContainerWidth;
+  final EdgeInsetsGeometry? SelectionContainerPadding;
+  final EdgeInsetsGeometry? SelectionContainerMargin;
+  final EdgeInsetsGeometry? unSelectedContainerPadding;
+  final EdgeInsetsGeometry? unSelectedContainerMargin;
+  final double? SelectionContainerCircularRadius;
+  final double? unSelectedContainerCircularRadius;
+  final BoxBorder? SelectionContainerBorder;
+  final BoxBorder? unSelectedContainerBorder;
+  final Gradient? SelectionContainerGradient;
+  final Gradient? unSelectedContainerGradient;
+  final Color? SelectionContainerColor;
+  final Color? unSelectedContainerColor;
   BorderRadiusGeometry? BarborderRadius;
-  BoxBorder? SelectedContainerBorder;
-  BoxBorder? unSelectedContainerBorder;
-  Gradient? SelectionContainerGradient;
-  Gradient? unSelectionContainerGradient;
   BoxBorder? BarBorder;
   Gradient? BarGradient;
   Duration? ScrollDuration;
   Color? barColor;
-  Color? selectedContainerColor;
-  Color? unselectedContainerColor;
   List<BoxShadow>? BarShadow;
   double? BetweenSpaces;
   bool? reverseDirection;
@@ -116,8 +126,8 @@ class _MyColumnWidgetSelectorState extends State<MyColumnWidgetSelector> {
                             child: ACMaker(
                                 duration:
                                     widget.SelectionContainerAnimationDuration,
-                                padding: EdgeInsets.all(
-                                    widget.SelectionContainerPadding ?? 0),
+                                padding: 
+                                    widget.SelectionContainerPadding ,
                                 alignment: Alignment.center,
                                 height: widget.SelectionContainerHeight ?? 60,
                                 width: widget.SelectionContainerWidth ?? 60,
@@ -125,13 +135,13 @@ class _MyColumnWidgetSelectorState extends State<MyColumnWidgetSelector> {
                                     widget.SelectionContainerCircularRadius ??
                                         15,
                                 border: (PageIndex == index)
-                                    ? widget.SelectedContainerBorder
+                                    ? widget.SelectionContainerBorder
                                     : widget.unSelectedContainerBorder,
                                 gradient: widget.SelectionContainerGradient,
                                 color: (PageIndex == index)
-                                    ? widget.selectedContainerColor ??
+                                    ? widget.SelectionContainerColor ??
                                         const Color.fromARGB(255, 0, 0, 0)
-                                    : widget.unselectedContainerColor ??
+                                    : widget.unSelectedContainerColor ??
                                         Colors.transparent,
                                 child: widget.iconsList[index])),
                       ),

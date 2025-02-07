@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
+// import 'package:tix/MyTools/tools/CMaker_Tools/AnimatedCMaker.dart';
+// import 'package:tix/MyTools/tools/CMaker_Tools/CMaker.dart';
 
 class MyExpandingColumnWidgetSelector extends StatefulWidget {
   MyExpandingColumnWidgetSelector(
@@ -16,23 +18,23 @@ class MyExpandingColumnWidgetSelector extends StatefulWidget {
       this.unSelectedContainerWidth,
       this.SelectionContainerPadding,
       this.unSelectedContainerPadding,
-      this.BarShadow,
-      this.BarBorder,
-      this.BarCircularRadius,
-      this.BarGradient,
       this.SelectionContainerBorder,
       this.unSelectedContainerBorder,
       this.SelectionContainerCircularRadius,
       this.unSelectedContainerCircularRadius,
       this.SelectionContainerGradient,
       this.unSelectedContainerGradient,
+      this.SelectionContainerAnimationDuration,
+      this.SelectionContainerMargin,
+      this.unSelectedContainerMargin,
+      this.BarShadow,
+      this.BarBorder,
+      this.BarCircularRadius,
+      this.BarGradient,
       required this.onChange,
       this.ScrollDuration,
-      this.SelectionContainerAnimationDuration,
       this.betweenSpaces,
       this.reverseDirection,
-      this.SelectionContainerMargin,
-      this.unSelectedContainerMargin
       });
   final List<Widget> iconsList;
   final Function(int? index) onChange;
@@ -48,17 +50,17 @@ class MyExpandingColumnWidgetSelector extends StatefulWidget {
   final EdgeInsetsGeometry? unSelectedContainerMargin;
   final double? SelectionContainerCircularRadius;
   final double? unSelectedContainerCircularRadius;
-  final double? BarCircularRadius;
   final BoxBorder? SelectionContainerBorder;
   final BoxBorder? unSelectedContainerBorder;
   final Gradient? SelectionContainerGradient;
   final Gradient? unSelectedContainerGradient;
+  final Color? SelectionContainerColor;
+  final Color? unSelectedContainerColor;
+  final double? BarCircularRadius;
   final BoxBorder? BarBorder;
   final Gradient? BarGradient;
   final Duration? ScrollDuration;
   final Color? barColor;
-  final Color? SelectionContainerColor;
-  final Color? unSelectedContainerColor;
   final List<BoxShadow>? BarShadow;
   final double? betweenSpaces; 
   final bool? reverseDirection;
