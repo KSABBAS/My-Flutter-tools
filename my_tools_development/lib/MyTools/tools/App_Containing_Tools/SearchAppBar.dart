@@ -684,17 +684,20 @@ class _SearchPageState extends State<_SearchPage> with TickerProviderStateMixin 
               top: topPosition,
               width: widget.sortMenuWidth ?? 250,
               child: Material(
+                color: Colors.white,
                 elevation: widget.sortMenuElevation ?? 4,
                 borderRadius: widget.sortMenuBorderRadius ?? BorderRadius.circular(8),
                 child: SlideTransition(
                   position: _sortMenuOffsetAnimation,
                   child: Container(
+                    decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: widget.sortMenuBackgroundColor ?? Colors.white,
+                    ),
                     height: widget.sortMenuHeight ?? 300,
                     padding: widget.sortMenuPadding ?? const EdgeInsets.all(16),
-                    color: widget.sortMenuBackgroundColor ?? Colors.white,
                     // The sort overlay now shows only the options.
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                    child: ListView(
                       children: [
                         // Each option is applied immediately when tapped.
                         RadioListTile<SortOption>(
