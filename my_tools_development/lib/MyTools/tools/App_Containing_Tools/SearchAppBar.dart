@@ -28,7 +28,7 @@ enum PanelType { none, filter, sort }
 /// الـ SearchAppBar هو الـ widget الرئيسي الذي يتحكم بواجهة البحث بالإضافة إلى إعدادات الدرج والفلترة والفرز.
 class SearchAppBar extends StatefulWidget {
   SearchAppBar({
-    super.key,
+    Key? key,
     // إعدادات شبكة عرض المنتجات
     required this.childHeight,
     required this.childWidth,
@@ -68,10 +68,39 @@ class SearchAppBar extends StatefulWidget {
     this.FilterWidget,
     this.SortWidget,
     this.SubAppBarVisible,
+    // Sort menu customization parameters:
+    this.sortMenuWidth,
+    this.sortMenuHeight,
+    this.sortMenuBackgroundColor,
+    this.sortMenuElevation,
+    this.sortMenuBorderRadius,
+    this.sortMenuPadding,
+    this.sortMenuAnimationDuration,
+    // **Slider Color Customization Parameters:**
+    this.priceSliderActiveColor,
+    this.priceSliderInactiveColor,
+    this.priceSliderThumbColor,
+    this.dateSliderActiveColor,
+    this.dateSliderInactiveColor,
+    this.dateSliderThumbColor,
+    this.alphabetSliderActiveColor,
+    this.alphabetSliderInactiveColor,
+    this.alphabetSliderThumbColor,
+    // New slider callback parameters:
+    this.onPriceSliderChanged,
+    this.onPriceSliderChangeEnd,
+    this.onDateSliderChanged,
+    this.onDateSliderChangeEnd,
+    this.onAlphabetSliderChanged,
+    this.onAlphabetSliderChangeEnd,
+    // Callbacks for applying the filter when Apply Filter is pressed.
+    required this.onPriceFilterChanged,
+    required this.onDateFilterChanged,
+    required this.onAlphabetFilterChanged,
     // قائمة المنتجات والـ builder الخاص بكل منتج
     required this.products,
     required this.productBuilder,
-  });
+  }) : super(key: key);
 
   // إعدادات شبكة عرض المنتجات
   final double childHeight;
@@ -116,6 +145,39 @@ class SearchAppBar extends StatefulWidget {
   final Widget? SortWidget;
   final bool? SubAppBarVisible;
 
+  // Sort menu customization parameters:
+  final double? sortMenuWidth;
+  final double? sortMenuHeight;
+  final Color? sortMenuBackgroundColor; // Use Colors.transparent if needed.
+  final double? sortMenuElevation;
+  final BorderRadius? sortMenuBorderRadius;
+  final EdgeInsetsGeometry? sortMenuPadding;
+  final Duration? sortMenuAnimationDuration;
+
+  // **Slider Color Customization Parameters:**
+  final Color? priceSliderActiveColor;
+  final Color? priceSliderInactiveColor;
+  final Color? priceSliderThumbColor;
+  final Color? dateSliderActiveColor;
+  final Color? dateSliderInactiveColor;
+  final Color? dateSliderThumbColor;
+  final Color? alphabetSliderActiveColor;
+  final Color? alphabetSliderInactiveColor;
+  final Color? alphabetSliderThumbColor;
+
+  // New slider callback parameters:
+  final Function(RangeValues value)? onPriceSliderChanged;
+  final Function(RangeValues value)? onPriceSliderChangeEnd;
+  final Function(RangeValues value)? onDateSliderChanged;
+  final Function(RangeValues value)? onDateSliderChangeEnd;
+  final Function(RangeValues value)? onAlphabetSliderChanged;
+  final Function(RangeValues value)? onAlphabetSliderChangeEnd;
+
+  // Callbacks for applying filters when Apply Filter is pressed.
+  final Function(RangeValues value) onPriceFilterChanged;
+  final Function(RangeValues value) onDateFilterChanged;
+  final Function(RangeValues value) onAlphabetFilterChanged;
+
   // قائمة المنتجات والـ builder الخاص بكل منتج
   final List<Product> products;
   final Widget Function(Product product) productBuilder;
@@ -127,34 +189,23 @@ class SearchAppBar extends StatefulWidget {
 class _SearchAppBarState extends State<SearchAppBar> {
   bool inSearch = false;
   String searchText = "";
-
-  // حالة الفلترة والفرز
   late List<Product> displayedProducts;
-
-  // فلتر السعر
   late double minPrice;
   late double maxPrice;
   late RangeValues selectedPriceRange;
-
-  // فلتر التاريخ (قيمه كميّاً هي ميلي ثانية منذ Epoch)
   late DateTime minDate;
   late DateTime maxDate;
   late RangeValues selectedDateRange;
-
-  // فلتر أول حرف من الاسم (قيم ASCII: من 65 = 'A' إلى 90 = 'Z')
   late int minAlphabet;
   late int maxAlphabet;
   late RangeValues selectedAlphabetRange;
-
   SortOption selectedSortOption = SortOption.none;
 
   @override
   void initState() {
     super.initState();
-    // البداية، نعرض جميع المنتجات
+    // Initially display all products.
     displayedProducts = List.from(widget.products);
-
-    // حساب نطاق السعر
     if (widget.products.isNotEmpty) {
       minPrice = widget.products.map((p) => p.price).reduce((a, b) => a < b ? a : b);
       maxPrice = widget.products.map((p) => p.price).reduce((a, b) => a > b ? a : b);
@@ -163,8 +214,6 @@ class _SearchAppBarState extends State<SearchAppBar> {
       maxPrice = 100;
     }
     selectedPriceRange = RangeValues(minPrice, maxPrice);
-
-    // حساب نطاق التواريخ
     if (widget.products.isNotEmpty) {
       minDate = widget.products.map((p) => p.date).reduce((a, b) => a.isBefore(b) ? a : b);
       maxDate = widget.products.map((p) => p.date).reduce((a, b) => a.isAfter(b) ? a : b);
@@ -176,47 +225,16 @@ class _SearchAppBarState extends State<SearchAppBar> {
       minDate.millisecondsSinceEpoch.toDouble(),
       maxDate.millisecondsSinceEpoch.toDouble(),
     );
-
-    // حساب نطاق الحروف الأولى للاسماء
     if (widget.products.isNotEmpty) {
-      minAlphabet = widget.products
-          .map((p) => p.name.toUpperCase().codeUnitAt(0))
-          .reduce((a, b) => a < b ? a : b);
-      maxAlphabet = widget.products
-          .map((p) => p.name.toUpperCase().codeUnitAt(0))
-          .reduce((a, b) => a > b ? a : b);
+      minAlphabet = widget.products.map((p) => p.name.toUpperCase().codeUnitAt(0)).reduce((a, b) => a < b ? a : b);
+      maxAlphabet = widget.products.map((p) => p.name.toUpperCase().codeUnitAt(0)).reduce((a, b) => a > b ? a : b);
     } else {
-      minAlphabet = 65; // 'A'
-      maxAlphabet = 90; // 'Z'
+      minAlphabet = 65;
+      maxAlphabet = 90;
     }
     selectedAlphabetRange = RangeValues(minAlphabet.toDouble(), maxAlphabet.toDouble());
   }
 
-  /// عند تغيير فلتر السعر
-  void updatePriceFilter(RangeValues newRange) {
-    setState(() {
-      selectedPriceRange = newRange;
-      applyFilterSort();
-    });
-  }
-
-  /// عند تغيير فلتر التاريخ
-  void updateDateFilter(RangeValues newRange) {
-    setState(() {
-      selectedDateRange = newRange;
-      applyFilterSort();
-    });
-  }
-
-  /// عند تغيير فلتر الحروف
-  void updateAlphabetFilter(RangeValues newRange) {
-    setState(() {
-      selectedAlphabetRange = newRange;
-      applyFilterSort();
-    });
-  }
-
-  /// عند تغيير خيار الفرز
   void updateSort(SortOption newSort) {
     setState(() {
       selectedSortOption = newSort;
@@ -224,7 +242,6 @@ class _SearchAppBarState extends State<SearchAppBar> {
     });
   }
 
-  /// تطبيق جميع معايير الفلترة والفرز على القائمة الأصلية
   void applyFilterSort() {
     List<Product> filtered = widget.products.where((product) {
       bool priceOk = product.price >= selectedPriceRange.start &&
@@ -256,7 +273,6 @@ class _SearchAppBarState extends State<SearchAppBar> {
     });
   }
 
-  /// تنسيق التاريخ (مثلاً: 2023-02-07)
   String formatDate(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
@@ -269,7 +285,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
       width: double.infinity,
       child: Column(
         children: [
-          // شريط التطبيق (AppBar)
+          // AppBar
           Container(
             padding: EdgeInsets.only(
               left: widget.barLeftPadding ?? 30,
@@ -358,7 +374,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
               ],
             ),
           ),
-          // عرض النتائج مع إمكانية فتح درج الفلترة والفرز
+          // Content: Search Results & Filter Drawer
           Expanded(
             child: Container(
               width: double.infinity,
@@ -378,31 +394,50 @@ class _SearchAppBarState extends State<SearchAppBar> {
                       childGradient: widget.childGradient,
                       rowSpaces: widget.rowSpaces,
                       columnSpaces: widget.columnSpaces,
-                      // إعدادات الدرج
                       drawerWidth: widget.drawerWidth,
                       drawerBackgroundColor: widget.drawerBackgroundColor,
                       drawerAnimationDuration: widget.drawerAnimationDuration,
                       filterDrawerSide: widget.filterDrawerSide,
                       sortDrawerSide: widget.sortDrawerSide,
-                      // تمرير ودجت الفلتر والفرز المُخصصة (إن وُجدت)
                       filterWidget: widget.FilterWidget,
-                      sortWidget: widget.SortWidget,
-                      // معايير فلتر السعر
+                      SortWidget: widget.SortWidget, // Not used for overlay.
                       minPrice: minPrice,
                       maxPrice: maxPrice,
                       selectedPriceRange: selectedPriceRange,
-                      onPriceFilterChanged: updatePriceFilter,
-                      // معايير فلتر التاريخ
+                      onPriceFilterChanged: widget.onPriceFilterChanged,
                       minDate: minDate,
                       maxDate: maxDate,
                       selectedDateRange: selectedDateRange,
-                      onDateFilterChanged: updateDateFilter,
-                      // معايير فلتر أول حرف للاسماء
+                      onDateFilterChanged: widget.onDateFilterChanged,
                       selectedAlphabetRange: selectedAlphabetRange,
-                      onAlphabetFilterChanged: updateAlphabetFilter,
-                      // معايير الفرز
+                      onAlphabetFilterChanged: widget.onAlphabetFilterChanged,
                       selectedSortOption: selectedSortOption,
                       onSortChanged: updateSort,
+                      // Slider color customization:
+                      priceSliderActiveColor: widget.priceSliderActiveColor,
+                      priceSliderInactiveColor: widget.priceSliderInactiveColor,
+                      priceSliderThumbColor: widget.priceSliderThumbColor,
+                      dateSliderActiveColor: widget.dateSliderActiveColor,
+                      dateSliderInactiveColor: widget.dateSliderInactiveColor,
+                      dateSliderThumbColor: widget.dateSliderThumbColor,
+                      alphabetSliderActiveColor: widget.alphabetSliderActiveColor,
+                      alphabetSliderInactiveColor: widget.alphabetSliderInactiveColor,
+                      alphabetSliderThumbColor: widget.alphabetSliderThumbColor,
+                      // Sort menu customization:
+                      sortMenuWidth: widget.sortMenuWidth,
+                      sortMenuHeight: widget.sortMenuHeight,
+                      sortMenuBackgroundColor: widget.sortMenuBackgroundColor,
+                      sortMenuElevation: widget.sortMenuElevation,
+                      sortMenuBorderRadius: widget.sortMenuBorderRadius,
+                      sortMenuPadding: widget.sortMenuPadding,
+                      sortMenuAnimationDuration: widget.sortMenuAnimationDuration,
+                      // New slider callback parameters:
+                      onPriceSliderChanged: widget.onPriceSliderChanged,
+                      onPriceSliderChangeEnd: widget.onPriceSliderChangeEnd,
+                      onDateSliderChanged: widget.onDateSliderChanged,
+                      onDateSliderChangeEnd: widget.onDateSliderChangeEnd,
+                      onAlphabetSliderChanged: widget.onAlphabetSliderChanged,
+                      onAlphabetSliderChangeEnd: widget.onAlphabetSliderChangeEnd,
                     )
                   : widget.body ?? Container(),
             ),
@@ -413,11 +448,11 @@ class _SearchAppBarState extends State<SearchAppBar> {
   }
 }
 
-/// _SearchPage مسؤولة عن عرض شبكة المنتجات مع درج الفلترة والفرز.
+/// _SearchPage displays the product grid and manages the filter drawer and sort overlay.
+/// It uses temporary state for the filter slider values so that the filters are only applied when "Apply Filter" is pressed.
 class _SearchPage extends StatefulWidget {
   _SearchPage({
-    super.key,
-    // لعرض المنتجات
+    Key? key,
     required this.products,
     required this.productBuilder,
     required this.childHeight,
@@ -432,34 +467,52 @@ class _SearchPage extends StatefulWidget {
     this.childGradient,
     this.rowSpaces,
     this.columnSpaces,
-    // إعدادات الدرج
     this.drawerWidth,
     this.drawerBackgroundColor,
     this.drawerAnimationDuration,
     this.filterDrawerSide = DrawerSide.right,
     this.sortDrawerSide = DrawerSide.right,
-    // ودجت مخصصة للفلتر والفرز (إن تم تمريرها)
     this.filterWidget,
-    this.sortWidget,
-    // معايير فلتر السعر
+    this.SortWidget,
     required this.minPrice,
     required this.maxPrice,
     required this.selectedPriceRange,
     required this.onPriceFilterChanged,
-    // معايير فلتر التاريخ
     required this.minDate,
     required this.maxDate,
     required this.selectedDateRange,
     required this.onDateFilterChanged,
-    // معايير فلتر أول حرف للاسماء
     required this.selectedAlphabetRange,
     required this.onAlphabetFilterChanged,
-    // معايير الفرز
     required this.selectedSortOption,
     required this.onSortChanged,
-  });
+    // Slider color customization:
+    this.priceSliderActiveColor,
+    this.priceSliderInactiveColor,
+    this.priceSliderThumbColor,
+    this.dateSliderActiveColor,
+    this.dateSliderInactiveColor,
+    this.dateSliderThumbColor,
+    this.alphabetSliderActiveColor,
+    this.alphabetSliderInactiveColor,
+    this.alphabetSliderThumbColor,
+    // Sort menu customization:
+    this.sortMenuWidth,
+    this.sortMenuHeight,
+    this.sortMenuBackgroundColor,
+    this.sortMenuElevation,
+    this.sortMenuBorderRadius,
+    this.sortMenuPadding,
+    this.sortMenuAnimationDuration,
+    // New slider callback parameters:
+    this.onPriceSliderChanged,
+    this.onPriceSliderChangeEnd,
+    this.onDateSliderChanged,
+    this.onDateSliderChangeEnd,
+    this.onAlphabetSliderChanged,
+    this.onAlphabetSliderChangeEnd,
+  }) : super(key: key);
 
-  // معايير عرض الشبكة
   final List<Product> products;
   final Widget Function(Product product) productBuilder;
   final double childHeight;
@@ -474,48 +527,73 @@ class _SearchPage extends StatefulWidget {
   final double? childCircularRadius;
   final double? rowSpaces;
   final double? columnSpaces;
-
-  // إعدادات الدرج
   final double? drawerWidth;
   final Color? drawerBackgroundColor;
   final Duration? drawerAnimationDuration;
   final DrawerSide filterDrawerSide;
   final DrawerSide sortDrawerSide;
-
-  // ودجت مخصصة للفلتر والفرز
   final Widget? filterWidget;
-  final Widget? sortWidget;
-
-  // معايير فلتر السعر
+  final Widget? SortWidget;
   final double minPrice;
   final double maxPrice;
   final RangeValues selectedPriceRange;
   final Function(RangeValues newRange) onPriceFilterChanged;
-
-  // معايير فلتر التاريخ
   final DateTime minDate;
   final DateTime maxDate;
   final RangeValues selectedDateRange;
   final Function(RangeValues newRange) onDateFilterChanged;
-
-  // معايير فلتر أول حرف للاسماء
   final RangeValues selectedAlphabetRange;
   final Function(RangeValues newRange) onAlphabetFilterChanged;
-
-  // معايير الفرز
   final SortOption selectedSortOption;
   final Function(SortOption newSort) onSortChanged;
+  // Slider color customization:
+  final Color? priceSliderActiveColor;
+  final Color? priceSliderInactiveColor;
+  final Color? priceSliderThumbColor;
+  final Color? dateSliderActiveColor;
+  final Color? dateSliderInactiveColor;
+  final Color? dateSliderThumbColor;
+  final Color? alphabetSliderActiveColor;
+  final Color? alphabetSliderInactiveColor;
+  final Color? alphabetSliderThumbColor;
+  // Sort menu customization:
+  final double? sortMenuWidth;
+  final double? sortMenuHeight;
+  final Color? sortMenuBackgroundColor;
+  final double? sortMenuElevation;
+  final BorderRadius? sortMenuBorderRadius;
+  final EdgeInsetsGeometry? sortMenuPadding;
+  final Duration? sortMenuAnimationDuration;
+  // New slider callback parameters:
+  final Function(RangeValues value)? onPriceSliderChanged;
+  final Function(RangeValues value)? onPriceSliderChangeEnd;
+  final Function(RangeValues value)? onDateSliderChanged;
+  final Function(RangeValues value)? onDateSliderChangeEnd;
+  final Function(RangeValues value)? onAlphabetSliderChanged;
+  final Function(RangeValues value)? onAlphabetSliderChangeEnd;
 
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<_SearchPage>
-    with SingleTickerProviderStateMixin {
+class _SearchPageState extends State<_SearchPage> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
   PanelType _currentPanel = PanelType.none;
   DrawerSide _currentPanelSide = DrawerSide.right;
+
+  // For sort overlay:
+  final GlobalKey _sortButtonKey = GlobalKey();
+  OverlayEntry? _sortOverlayEntry;
+  bool _isSortOverlayVisible = false;
+  late AnimationController _sortMenuController;
+  late Animation<Offset> _sortMenuOffsetAnimation;
+  SortOption _tempSortOption = SortOption.none;
+
+  // Temporary slider state variables for filters (applied only when "Apply Filter" is pressed)
+  late RangeValues _tempPriceRange;
+  late RangeValues _tempDateRange;
+  late RangeValues _tempAlphabetRange;
 
   @override
   void initState() {
@@ -527,13 +605,24 @@ class _SearchPageState extends State<_SearchPage>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(1.0, 0.0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+
+    _sortMenuController = AnimationController(
+      vsync: this,
+      duration: widget.sortMenuAnimationDuration ?? const Duration(milliseconds: 300),
+    );
+    _sortMenuOffsetAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _sortMenuController, curve: Curves.easeInOut));
+
+    _tempSortOption = widget.selectedSortOption;
+    // Initialize temporary slider values from the provided current filter values.
+    _tempPriceRange = widget.selectedPriceRange;
+    _tempDateRange = widget.selectedDateRange;
+    _tempAlphabetRange = widget.selectedAlphabetRange;
   }
 
-  /// فتح اللوحة (فلتر أو فرز) من الاتجاه المحدد
   void openPanel(PanelType type, DrawerSide side) {
     setState(() {
       _currentPanel = type;
@@ -541,15 +630,11 @@ class _SearchPageState extends State<_SearchPage>
       _slideAnimation = Tween<Offset>(
         begin: side == DrawerSide.right ? const Offset(1.0, 0.0) : const Offset(-1.0, 0.0),
         end: Offset.zero,
-      ).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ));
+      ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
     });
     _animationController.forward();
   }
 
-  /// إغلاق اللوحة
   void closePanel() {
     _animationController.reverse().then((_) {
       setState(() {
@@ -558,168 +643,147 @@ class _SearchPageState extends State<_SearchPage>
     });
   }
 
-  /// دالة مساعدة لتنسيق التاريخ
   String _formatDate(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
 
-  /// بناء محتوى الدرج (فلترة أو فرز)
-  Widget _buildDrawerPanel(BuildContext context) {
-    double calculatedDrawerWidth = widget.drawerWidth ??
-        MediaQuery.of(context).size.width * 0.8;
-    Widget content;
-    if (_currentPanel == PanelType.filter) {
-      content = SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // قسم فلتر السعر
-              const Text("Price Range", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.minPrice.toStringAsFixed(2)),
-                  Text(widget.maxPrice.toStringAsFixed(2)),
-                ],
-              ),
-              RangeSlider(
-                min: widget.minPrice,
-                max: widget.maxPrice,
-                values: widget.selectedPriceRange,
-                onChanged: widget.onPriceFilterChanged,
-                labels: RangeLabels(
-                  widget.selectedPriceRange.start.toStringAsFixed(2),
-                  widget.selectedPriceRange.end.toStringAsFixed(2),
-                ),
-                divisions: 100,
-              ),
-              Text("Selected: ${widget.selectedPriceRange.start.toStringAsFixed(2)} - ${widget.selectedPriceRange.end.toStringAsFixed(2)}"),
-              const SizedBox(height: 16),
-              // قسم فلتر التاريخ
-              const Text("Date Range", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(_formatDate(widget.minDate)),
-                  Text(_formatDate(widget.maxDate)),
-                ],
-              ),
-              RangeSlider(
-                min: widget.minDate.millisecondsSinceEpoch.toDouble(),
-                max: widget.maxDate.millisecondsSinceEpoch.toDouble(),
-                values: widget.selectedDateRange,
-                onChanged: widget.onDateFilterChanged,
-                labels: RangeLabels(
-                  _formatDate(DateTime.fromMillisecondsSinceEpoch(widget.selectedDateRange.start.toInt())),
-                  _formatDate(DateTime.fromMillisecondsSinceEpoch(widget.selectedDateRange.end.toInt())),
-                ),
-                divisions: 10,
-              ),
-              Text("Selected: ${_formatDate(DateTime.fromMillisecondsSinceEpoch(widget.selectedDateRange.start.toInt()))} - ${_formatDate(DateTime.fromMillisecondsSinceEpoch(widget.selectedDateRange.end.toInt()))}"),
-              const SizedBox(height: 16),
-              // قسم فلتر أول حرف للاسماء
-              const Text("Name Initial Range", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(String.fromCharCode(widget.selectedAlphabetRange.start.toInt())),
-                  Text(String.fromCharCode(widget.selectedAlphabetRange.end.toInt())),
-                ],
-              ),
-              RangeSlider(
-                min: 65,
-                max: 90,
-                values: widget.selectedAlphabetRange,
-                onChanged: widget.onAlphabetFilterChanged,
-                labels: RangeLabels(
-                  String.fromCharCode(widget.selectedAlphabetRange.start.toInt()),
-                  String.fromCharCode(widget.selectedAlphabetRange.end.toInt()),
-                ),
-                divisions: 25,
-              ),
-              Text("Selected: ${String.fromCharCode(widget.selectedAlphabetRange.start.toInt())} - ${String.fromCharCode(widget.selectedAlphabetRange.end.toInt())}"),
-              const SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  onPressed: closePanel,
-                  child: const Text("Apply Filter"),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    } else if (_currentPanel == PanelType.sort) {
-      content = Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  /// Toggles the sort overlay.
+  void _toggleSortOverlay() {
+    if (_isSortOverlayVisible) {
+      _hideSortOverlay();
+    } else {
+      _showSortOverlay();
+    }
+  }
+
+  /// Displays the sort overlay just below the sort button.
+  void _showSortOverlay() {
+    RenderBox renderBox = _sortButtonKey.currentContext!.findRenderObject() as RenderBox;
+    Offset offset = renderBox.localToGlobal(Offset.zero);
+    Size size = renderBox.size;
+    _tempSortOption = widget.selectedSortOption;
+
+    // Compute top position ensuring a 20-pixel margin at the bottom.
+    double topPosition = offset.dy + size.height;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double menuHeight = widget.sortMenuHeight ?? 300;
+    if (topPosition + menuHeight > screenHeight) {
+      topPosition = screenHeight - menuHeight - 20;
+    }
+
+    _sortOverlayEntry = OverlayEntry(
+      builder: (context) => GestureDetector(
+        onTap: () {
+          _hideSortOverlay();
+        },
+        behavior: HitTestBehavior.translucent,
+        child: Stack(
           children: [
-            const Text("Sort Options", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            DropdownButton<SortOption>(
-              value: widget.selectedSortOption,
-              onChanged: (SortOption? newOption) {
-                if (newOption != null) {
-                  widget.onSortChanged(newOption);
-                }
-              },
-              items: const [
-                DropdownMenuItem(
-                  value: SortOption.none,
-                  child: Text("None"),
+            Positioned(
+              left: offset.dx,
+              top: topPosition,
+              width: widget.sortMenuWidth ?? 250,
+              child: Material(
+                elevation: widget.sortMenuElevation ?? 4,
+                borderRadius: widget.sortMenuBorderRadius ?? BorderRadius.circular(8),
+                child: SlideTransition(
+                  position: _sortMenuOffsetAnimation,
+                  child: Container(
+                    height: widget.sortMenuHeight ?? 300,
+                    padding: widget.sortMenuPadding ?? const EdgeInsets.all(16),
+                    color: widget.sortMenuBackgroundColor ?? Colors.white,
+                    // The sort overlay now shows only the options.
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Each option is applied immediately when tapped.
+                        RadioListTile<SortOption>(
+                          title: const Text("None"),
+                          value: SortOption.none,
+                          groupValue: _tempSortOption,
+                          onChanged: (value) {
+                            setState(() {
+                              _tempSortOption = value!;
+                            });
+                            widget.onSortChanged(_tempSortOption);
+                            _hideSortOverlay();
+                          },
+                        ),
+                        RadioListTile<SortOption>(
+                          title: const Text("Price: Low to High"),
+                          value: SortOption.priceAsc,
+                          groupValue: _tempSortOption,
+                          onChanged: (value) {
+                            setState(() {
+                              _tempSortOption = value!;
+                            });
+                            widget.onSortChanged(_tempSortOption);
+                            _hideSortOverlay();
+                          },
+                        ),
+                        RadioListTile<SortOption>(
+                          title: const Text("Price: High to Low"),
+                          value: SortOption.priceDesc,
+                          groupValue: _tempSortOption,
+                          onChanged: (value) {
+                            setState(() {
+                              _tempSortOption = value!;
+                            });
+                            widget.onSortChanged(_tempSortOption);
+                            _hideSortOverlay();
+                          },
+                        ),
+                        RadioListTile<SortOption>(
+                          title: const Text("Newest"),
+                          value: SortOption.newest,
+                          groupValue: _tempSortOption,
+                          onChanged: (value) {
+                            setState(() {
+                              _tempSortOption = value!;
+                            });
+                            widget.onSortChanged(_tempSortOption);
+                            _hideSortOverlay();
+                          },
+                        ),
+                        RadioListTile<SortOption>(
+                          title: const Text("Oldest"),
+                          value: SortOption.oldest,
+                          groupValue: _tempSortOption,
+                          onChanged: (value) {
+                            setState(() {
+                              _tempSortOption = value!;
+                            });
+                            widget.onSortChanged(_tempSortOption);
+                            _hideSortOverlay();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                DropdownMenuItem(
-                  value: SortOption.priceAsc,
-                  child: Text("Price: Low to High"),
-                ),
-                DropdownMenuItem(
-                  value: SortOption.priceDesc,
-                  child: Text("Price: High to Low"),
-                ),
-                DropdownMenuItem(
-                  value: SortOption.newest,
-                  child: Text("Newest"),
-                ),
-                DropdownMenuItem(
-                  value: SortOption.oldest,
-                  child: Text("Oldest"),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: closePanel,
-              child: const Text("Apply Sort"),
+              ),
             ),
           ],
         ),
-      );
-    } else {
-      content = const SizedBox.shrink();
-    }
-
-    return Align(
-      alignment: _currentPanelSide == DrawerSide.right
-          ? Alignment.centerRight
-          : Alignment.centerLeft,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: Container(
-          width: calculatedDrawerWidth,
-          height: MediaQuery.of(context).size.height,
-          color: widget.drawerBackgroundColor ?? Colors.white,
-          child: SafeArea(child: content),
-        ),
       ),
     );
+    Overlay.of(context)!.insert(_sortOverlayEntry!);
+    _sortMenuController.forward();
+    _isSortOverlayVisible = true;
+  }
+
+  void _hideSortOverlay() {
+    _sortMenuController.reverse().then((_) {
+      _sortOverlayEntry?.remove();
+      _sortOverlayEntry = null;
+      _isSortOverlayVisible = false;
+    });
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _sortMenuController.dispose();
     super.dispose();
   }
 
@@ -729,10 +793,8 @@ class _SearchPageState extends State<_SearchPage>
       children: [
         Column(
           children: [
-            // شريط فرعي لعرض أيقونات الفلترة والفرز
-            if (widget.rowSpaces != null ||
-                widget.filterWidget != null ||
-                widget.sortWidget != null) ...[
+            // Sub AppBar with filter and sort buttons.
+            if (widget.rowSpaces != null || widget.filterWidget != null || widget.SortWidget != null) ...[
               SizedBox(height: widget.columnSpaces ?? 20),
               Container(
                 width: double.infinity,
@@ -744,9 +806,11 @@ class _SearchPageState extends State<_SearchPage>
                       child: widget.filterWidget ?? const Icon(Icons.filter_alt),
                     ),
                     const SizedBox(width: 20),
+                    // The sort button is wrapped with a GlobalKey for positioning.
                     GestureDetector(
-                      onTap: () => openPanel(PanelType.sort, widget.sortDrawerSide),
-                      child: widget.sortWidget ?? const Icon(Icons.sort),
+                      key: _sortButtonKey,
+                      onTap: _toggleSortOverlay,
+                      child: widget.SortWidget ?? const Icon(Icons.sort),
                     ),
                     const Spacer(),
                     const Text(
@@ -758,7 +822,7 @@ class _SearchPageState extends State<_SearchPage>
                 ),
               ),
             ],
-            // عرض شبكة المنتجات
+            // Product grid view.
             Expanded(
               child: DistributiveGView(
                 itemCount: widget.products.length,
@@ -795,7 +859,7 @@ class _SearchPageState extends State<_SearchPage>
             ),
           ],
         ),
-        // تراكب الدرج عند فتحه
+        // Filter Drawer Overlay.
         if (_currentPanel != PanelType.none) ...[
           Positioned.fill(
             child: GestureDetector(
@@ -808,6 +872,318 @@ class _SearchPageState extends State<_SearchPage>
           _buildDrawerPanel(context),
         ],
       ],
+    );
+  }
+
+  /// Builds the filter drawer. The slider values are stored in temporary variables and are applied only when "Apply Filter" is pressed.
+  Widget _buildDrawerPanel(BuildContext context) {
+    double calculatedDrawerWidth = widget.drawerWidth ??
+        MediaQuery.of(context).size.width * 0.8;
+    Widget content;
+    if (_currentPanel == PanelType.filter) {
+      content = SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Price Filter Container.
+              Container(
+                margin: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Price Range", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(widget.minPrice.toStringAsFixed(2)),
+                        Text(widget.maxPrice.toStringAsFixed(2)),
+                      ],
+                    ),
+                    // SliderTheme for Price Range Slider using temporary state.
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        activeTrackColor: widget.priceSliderActiveColor ?? Colors.blue,
+                        inactiveTrackColor: widget.priceSliderInactiveColor ?? Colors.grey,
+                        thumbColor: widget.priceSliderThumbColor ?? Colors.blue,
+                      ),
+                      child: RangeSlider(
+                        min: widget.minPrice,
+                        max: widget.maxPrice,
+                        values: _tempPriceRange,
+                        onChanged: (value) {
+                          setState(() {
+                            _tempPriceRange = value;
+                          });
+                          if (widget.onPriceSliderChanged != null) {
+                            widget.onPriceSliderChanged!(value);
+                          }
+                        },
+                        onChangeEnd: (value) {
+                          if (widget.onPriceSliderChangeEnd != null) {
+                            widget.onPriceSliderChangeEnd!(value);
+                          }
+                        },
+                        labels: RangeLabels(
+                          _tempPriceRange.start.toStringAsFixed(2),
+                          _tempPriceRange.end.toStringAsFixed(2),
+                        ),
+                        divisions: 100,
+                      ),
+                    ),
+                    Text("Selected: ${_tempPriceRange.start.toStringAsFixed(2)} - ${_tempPriceRange.end.toStringAsFixed(2)}"),
+                  ],
+                ),
+              ),
+              // Date Filter Container.
+              Container(
+                margin: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Date Range", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(_formatDate(widget.minDate)),
+                        Text(_formatDate(widget.maxDate)),
+                      ],
+                    ),
+                    // SliderTheme for Date Range Slider using temporary state.
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        activeTrackColor: widget.dateSliderActiveColor ?? Colors.green,
+                        inactiveTrackColor: widget.dateSliderInactiveColor ?? Colors.grey,
+                        thumbColor: widget.dateSliderThumbColor ?? Colors.green,
+                      ),
+                      child: RangeSlider(
+                        min: widget.minDate.millisecondsSinceEpoch.toDouble(),
+                        max: widget.maxDate.millisecondsSinceEpoch.toDouble(),
+                        values: _tempDateRange,
+                        onChanged: (value) {
+                          setState(() {
+                            _tempDateRange = value;
+                          });
+                          if (widget.onDateSliderChanged != null) {
+                            widget.onDateSliderChanged!(value);
+                          }
+                        },
+                        onChangeEnd: (value) {
+                          if (widget.onDateSliderChangeEnd != null) {
+                            widget.onDateSliderChangeEnd!(value);
+                          }
+                        },
+                        labels: RangeLabels(
+                          _formatDate(DateTime.fromMillisecondsSinceEpoch(_tempDateRange.start.toInt())),
+                          _formatDate(DateTime.fromMillisecondsSinceEpoch(_tempDateRange.end.toInt())),
+                        ),
+                        divisions: 10,
+                      ),
+                    ),
+                    Text("Selected: ${_formatDate(DateTime.fromMillisecondsSinceEpoch(_tempDateRange.start.toInt()))} - ${_formatDate(DateTime.fromMillisecondsSinceEpoch(_tempDateRange.end.toInt()))}"),
+                  ],
+                ),
+              ),
+              // Name Initial Filter Container.
+              Container(
+                margin: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Name Initial Range", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(String.fromCharCode(_tempAlphabetRange.start.toInt())),
+                        Text(String.fromCharCode(_tempAlphabetRange.end.toInt())),
+                      ],
+                    ),
+                    // SliderTheme for Name Initial Range Slider using temporary state.
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        activeTrackColor: widget.alphabetSliderActiveColor ?? Colors.red,
+                        inactiveTrackColor: widget.alphabetSliderInactiveColor ?? Colors.grey,
+                        thumbColor: widget.alphabetSliderThumbColor ?? Colors.red,
+                      ),
+                      child: RangeSlider(
+                        min: 65,
+                        max: 90,
+                        values: _tempAlphabetRange,
+                        onChanged: (value) {
+                          setState(() {
+                            _tempAlphabetRange = value;
+                          });
+                          if (widget.onAlphabetSliderChanged != null) {
+                            widget.onAlphabetSliderChanged!(value);
+                          }
+                        },
+                        onChangeEnd: (value) {
+                          if (widget.onAlphabetSliderChangeEnd != null) {
+                            widget.onAlphabetSliderChangeEnd!(value);
+                          }
+                        },
+                        labels: RangeLabels(
+                          String.fromCharCode(_tempAlphabetRange.start.toInt()),
+                          String.fromCharCode(_tempAlphabetRange.end.toInt()),
+                        ),
+                        divisions: 25,
+                      ),
+                    ),
+                    Text("Selected: ${String.fromCharCode(_tempAlphabetRange.start.toInt())} - ${String.fromCharCode(_tempAlphabetRange.end.toInt())}"),
+                  ],
+                ),
+              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Apply the filters only when this button is pressed.
+                    widget.onPriceFilterChanged(_tempPriceRange);
+                    widget.onDateFilterChanged(_tempDateRange);
+                    widget.onAlphabetFilterChanged(_tempAlphabetRange);
+                    closePanel();
+                  },
+                  child: const Text("Apply Filter"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      content = const SizedBox.shrink();
+    }
+    return Align(
+      alignment: _currentPanelSide == DrawerSide.right
+          ? Alignment.centerRight
+          : Alignment.centerLeft,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: Container(
+          width: calculatedDrawerWidth,
+          height: MediaQuery.of(context).size.height,
+          color: widget.drawerBackgroundColor ?? Colors.white,
+          child: SafeArea(child: content),
+        ),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+/// MyApp demonstrates the usage of SearchAppBar.
+/// You can adjust colors, dimensions, slider callbacks, etc.
+class MyApp extends StatelessWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  // قائمة منتجات تجريبية
+  final List<Product> products = List.generate(
+    20,
+    (index) => Product(
+      id: index,
+      name: "Product ${index + 1}",
+      price: (index + 1) * 10.0,
+      date: DateTime.now().subtract(Duration(days: index * 2)),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Search AppBar Demo',
+      home: Scaffold(
+        body: SearchAppBar(
+          childHeight: 150,
+          childWidth: 150,
+          appBarHeight: 100,
+          appBarColor: Colors.blue,
+          // Sort menu customization:
+          sortMenuWidth: 250,
+          sortMenuHeight: 300,
+          sortMenuBackgroundColor: Colors.white,
+          sortMenuElevation: 4,
+          sortMenuBorderRadius: BorderRadius.circular(8),
+          sortMenuPadding: const EdgeInsets.all(16),
+          sortMenuAnimationDuration: Duration(milliseconds: 300),
+          // Slider color customization:
+          priceSliderActiveColor: Colors.blue,
+          priceSliderInactiveColor: Colors.grey,
+          priceSliderThumbColor: Colors.blue,
+          dateSliderActiveColor: Colors.green,
+          dateSliderInactiveColor: Colors.grey,
+          dateSliderThumbColor: Colors.green,
+          alphabetSliderActiveColor: Colors.red,
+          alphabetSliderInactiveColor: Colors.grey,
+          alphabetSliderThumbColor: Colors.red,
+          // New slider callbacks:
+          onPriceSliderChanged: (value) {
+            print("Price slider changed: $value");
+          },
+          onPriceSliderChangeEnd: (value) {
+            print("Price slider change ended: $value");
+          },
+          onDateSliderChanged: (value) {
+            print("Date slider changed: $value");
+          },
+          onDateSliderChangeEnd: (value) {
+            print("Date slider change ended: $value");
+          },
+          onAlphabetSliderChanged: (value) {
+            print("Alphabet slider changed: $value");
+          },
+          onAlphabetSliderChangeEnd: (value) {
+            print("Alphabet slider change ended: $value");
+          },
+          // Callbacks for applying filters:
+          onPriceFilterChanged: (value) {
+            print("Applied Price Filter: $value");
+          },
+          onDateFilterChanged: (value) {
+            print("Applied Date Filter: $value");
+          },
+          onAlphabetFilterChanged: (value) {
+            print("Applied Alphabet Filter: $value");
+          },
+          products: products,
+          productBuilder: (product) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(product.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text("\$${product.price.toStringAsFixed(2)}"),
+                  Text("${product.date.toLocal()}".split(' ')[0]),
+                ],
+              ),
+            );
+          },
+          // Other callbacks for search can be added as needed.
+        ),
+      ),
     );
   }
 }

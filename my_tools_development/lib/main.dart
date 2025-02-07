@@ -39,14 +39,6 @@ class App extends StatefulWidget {
   @override
   State<App> createState() => _AppState();
 }
-
-List<Product> products = [
-  Product(id: 234567, name: "phone0", price: 200, date: DateTime(2005)),
-  Product(id: 234568, name: "phone1", price: 210, date: DateTime(2006)),
-  Product(id: 234569, name: "phone2", price: 240, date: DateTime(2007)),
-  Product(id: 234587, name: "phone3", price: 2020, date: DateTime(2008)),
-  Product(id: 234562, name: "phone4", price: 2200, date: DateTime(2009)),
-];
 List data = [
   [1, DateTime(2025, 2, 1), 15.99, "Wireless Mouse"],
   [2, DateTime(2025, 1, 28), 89.49, "Bluetooth Headphones"],
@@ -74,6 +66,15 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return SearchAppBar(
+        onAlphabetFilterChanged: (value) => print(value),
+        onDateFilterChanged: (value) => print(value),
+        onPriceFilterChanged: (value) => print(value),
+        onAlphabetSliderChanged: (value) => print(value),
+        onDateSliderChanged:(value) =>  print(value),
+        onPriceSliderChanged: (value) => print(value),
+        onAlphabetSliderChangeEnd: (value) => print(value),
+        onPriceSliderChangeEnd: (value) => print(value),
+        onDateSliderChangeEnd: (value) => print(value),
         childHeight: 100,
         childWidth: 200,
         onTheSearch: (isOnTheSearch, SearchText) {
@@ -85,7 +86,10 @@ class _AppState extends State<App> {
         childColor: Colors.red,
         rowSpaces: 20,
         columnSpaces: 20,
+        appBarColor: Colors.white,
+        appBarHeight: 150,
         drawerWidth: 400,
+        sortDrawerSide: DrawerSide.left,
         productBuilder: (product) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
