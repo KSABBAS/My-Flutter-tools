@@ -8,57 +8,60 @@ class MyExpandingColumnWidgetSelector extends StatefulWidget {
       required this.iconsList,
       required this.width,
       this.barColor,
-      this.selectedContainerColor,
-      this.unselectedContainerColor,
+      this.SelectionContainerColor,
+      this.unSelectedContainerColor,
       this.SelectionContainerHeight,
-      this.unSelectionContainerHeight,
+      this.unSelectedContainerHeight,
       this.SelectionContainerWidth,
-      this.unSelectionContainerWidth,
+      this.unSelectedContainerWidth,
       this.SelectionContainerPadding,
-      this.unSelectionContainerPadding,
+      this.unSelectedContainerPadding,
       this.BarShadow,
       this.BarBorder,
-      this.BarborderRadius,
+      this.BarCircularRadius,
       this.BarGradient,
-      this.SelectedContainerBorder,
+      this.SelectionContainerBorder,
       this.unSelectedContainerBorder,
       this.SelectionContainerCircularRadius,
-      this.unSelectionContainerCircularRadius,
+      this.unSelectedContainerCircularRadius,
       this.SelectionContainerGradient,
-      this.unSelectionContainerGradient,
+      this.unSelectedContainerGradient,
       required this.onChange,
       this.ScrollDuration,
       this.SelectionContainerAnimationDuration,
-      this.BetweenSpaces,
-      this.reverseDirection});
-  List<Widget> iconsList;
-  Function(int? index) onChange;
-  double width;
-  double? SelectionContainerHeight;
-  double? unSelectionContainerHeight;
-  Duration? SelectionContainerAnimationDuration;
-  double? SelectionContainerWidth;
-  double? unSelectionContainerWidth;
-  double? SelectionContainerPadding;
-  double? unSelectionContainerPadding;
-  double? SelectionContainerCircularRadius;
-  double? unSelectionContainerCircularRadius;
-  BorderRadiusGeometry? BarborderRadius;
-  BoxBorder? SelectedContainerBorder;
-  BoxBorder? unSelectedContainerBorder;
-  Gradient? SelectionContainerGradient;
-  Gradient? unSelectionContainerGradient;
-  BoxBorder? BarBorder;
-  Gradient? BarGradient;
-  Duration? ScrollDuration;
-  Color? barColor;
-  Color? selectedContainerColor;
-  Color? unselectedContainerColor;
-  List<BoxShadow>? BarShadow;
-  double? BetweenSpaces;
-  bool? reverseDirection;
-  double? BarCircularRadius;
-  double? betweenSpaces;
+      this.betweenSpaces,
+      this.reverseDirection,
+      this.SelectionContainerMargin,
+      this.unSelectedContainerMargin
+      });
+  final List<Widget> iconsList;
+  final Function(int? index) onChange;
+  final double width; 
+  final double? SelectionContainerHeight;
+  final double? unSelectedContainerHeight;
+  final Duration? SelectionContainerAnimationDuration;
+  final double? SelectionContainerWidth;
+  final double? unSelectedContainerWidth;
+  final EdgeInsetsGeometry? SelectionContainerPadding;
+  final EdgeInsetsGeometry? SelectionContainerMargin;
+  final EdgeInsetsGeometry? unSelectedContainerPadding;
+  final EdgeInsetsGeometry? unSelectedContainerMargin;
+  final double? SelectionContainerCircularRadius;
+  final double? unSelectedContainerCircularRadius;
+  final double? BarCircularRadius;
+  final BoxBorder? SelectionContainerBorder;
+  final BoxBorder? unSelectedContainerBorder;
+  final Gradient? SelectionContainerGradient;
+  final Gradient? unSelectedContainerGradient;
+  final BoxBorder? BarBorder;
+  final Gradient? BarGradient;
+  final Duration? ScrollDuration;
+  final Color? barColor;
+  final Color? SelectionContainerColor;
+  final Color? unSelectedContainerColor;
+  final List<BoxShadow>? BarShadow;
+  final double? betweenSpaces; 
+  final bool? reverseDirection;
 
   @override
   State<MyExpandingColumnWidgetSelector> createState() =>
@@ -110,21 +113,21 @@ class _MyExpandingColumnWidgetSelectorState
                         alignment: Alignment.center,
                         child: ACMaker(
                           duration: widget.SelectionContainerAnimationDuration,
-                          padding: EdgeInsets.all(
-                              widget.SelectionContainerPadding ?? 0),
+                          padding: 
+                              widget.SelectionContainerPadding ,
                           alignment: Alignment.center,
-                          height: widget.SelectionContainerHeight ?? 60,
-                          width: widget.SelectionContainerWidth ?? 60,
+                          height: widget.SelectionContainerHeight ,
+                          width: widget.SelectionContainerWidth ,
                           circularRadius:
                               widget.SelectionContainerCircularRadius ?? 15,
                           border: (PageIndex == index)
-                              ? widget.SelectedContainerBorder
+                              ? widget.SelectionContainerBorder
                               : widget.unSelectedContainerBorder,
                           gradient: widget.SelectionContainerGradient,
                           color: (PageIndex == index)
-                              ? widget.selectedContainerColor ??
+                              ? widget.SelectionContainerColor ??
                                   const Color.fromARGB(255, 0, 0, 0)
-                              : widget.unselectedContainerColor ??
+                              : widget.unSelectedContainerColor ??
                                   Colors.transparent,
                           child: widget.iconsList[index],
                         ),

@@ -8,56 +8,60 @@ class MyExpandingRowWidgetSelector extends StatefulWidget {
     required this.iconsList,
     required this.height, // Only specify height, width will be dynamic
     this.barColor,
-    this.selectedContainerColor,
-    this.unselectedContainerColor,
+    this.SelectionContainerColor,
+    this.unSelectedContainerColor,
     this.SelectionContainerHeight,
-    this.unSelectionContainerHeight,
+    this.unSelectedContainerHeight,
     this.SelectionContainerWidth,
-    this.unSelectionContainerWidth,
+    this.unSelectedContainerWidth,
     this.SelectionContainerPadding,
-    this.unSelectionContainerPadding,
+    this.unSelectedContainerPadding,
     this.BarShadow,
     this.BarBorder,
     this.BarCircularRadius,
     this.BarGradient,
-    this.SelectedContainerBorder,
+    this.SelectionContainerBorder,
     this.unSelectedContainerBorder,
     this.SelectionContainerCircularRadius,
-    this.unSelectionContainerCircularRadius,
+    this.unSelectedContainerCircularRadius,
     this.SelectionContainerGradient,
-    this.unSelectionContainerGradient,
+    this.unSelectedContainerGradient,
     required this.onChange,
     this.ScrollDuration,
     this.SelectionContainerAnimationDuration,
-    this.betweenSpaces, // New parameter for spacing between widgets
+    this.betweenSpaces, 
     this.reverseDirection,
+    this.SelectionContainerMargin,
+    this.unSelectedContainerMargin
   });
 
   final List<Widget> iconsList;
   final Function(int? index) onChange;
-  final double height; // Only height is specified, width is dynamic
+  final double height; 
   final double? SelectionContainerHeight;
-  final double? unSelectionContainerHeight;
+  final double? unSelectedContainerHeight;
   final Duration? SelectionContainerAnimationDuration;
   final double? SelectionContainerWidth;
-  final double? unSelectionContainerWidth;
-  final double? SelectionContainerPadding;
-  final double? unSelectionContainerPadding;
+  final double? unSelectedContainerWidth;
+  final EdgeInsetsGeometry? SelectionContainerPadding;
+  final EdgeInsetsGeometry? SelectionContainerMargin;
+  final EdgeInsetsGeometry? unSelectedContainerPadding;
+  final EdgeInsetsGeometry? unSelectedContainerMargin;
   final double? SelectionContainerCircularRadius;
-  final double? unSelectionContainerCircularRadius;
+  final double? unSelectedContainerCircularRadius;
   final double? BarCircularRadius;
-  final BoxBorder? SelectedContainerBorder;
+  final BoxBorder? SelectionContainerBorder;
   final BoxBorder? unSelectedContainerBorder;
   final Gradient? SelectionContainerGradient;
-  final Gradient? unSelectionContainerGradient;
+  final Gradient? unSelectedContainerGradient;
   final BoxBorder? BarBorder;
   final Gradient? BarGradient;
   final Duration? ScrollDuration;
   final Color? barColor;
-  final Color? selectedContainerColor;
-  final Color? unselectedContainerColor;
+  final Color? SelectionContainerColor;
+  final Color? unSelectedContainerColor;
   final List<BoxShadow>? BarShadow;
-  final double? betweenSpaces; // Spacing between widgets
+  final double? betweenSpaces; 
   final bool? reverseDirection;
 
   @override
@@ -99,19 +103,20 @@ class _MyExpandingRowWidgetSelectorState extends State<MyExpandingRowWidgetSelec
               child: CMaker(
                 alignment: Alignment.center,
                 child: ACMaker(
+                  margin: widget.SelectionContainerMargin,
                   duration: widget.SelectionContainerAnimationDuration,
-                  padding: EdgeInsets.all(widget.SelectionContainerPadding ?? 0),
+                  padding: widget.SelectionContainerPadding ,
                   alignment: Alignment.center,
-                  height: widget.SelectionContainerHeight ?? 60,
-                  width: widget.SelectionContainerWidth ?? 60,
+                  height: widget.SelectionContainerHeight ,
+                  width: widget.SelectionContainerWidth ,
                   circularRadius: widget.SelectionContainerCircularRadius ?? 15,
                   border: (PageIndex == index)
-                      ? widget.SelectedContainerBorder
+                      ? widget.SelectionContainerBorder
                       : widget.unSelectedContainerBorder,
                   gradient: widget.SelectionContainerGradient,
                   color: (PageIndex == index)
-                      ? widget.selectedContainerColor ?? const Color.fromARGB(255, 0, 0, 0)
-                      : widget.unselectedContainerColor ?? Colors.transparent,
+                      ? widget.SelectionContainerColor ?? const Color.fromARGB(255, 0, 0, 0)
+                      : widget.unSelectedContainerColor ?? Colors.transparent,
                   child: widget.iconsList[index],
                 ),
               ),

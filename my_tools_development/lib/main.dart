@@ -42,86 +42,22 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: PercentageCirclePainter(percentage: 50,addText: true,height: 100,width: 100,strokeWidth: 5,textStyle: TextStyle(color: Colors.red),));
+    return Center(
+        child: MyExpandingRowWidgetSelector(
+      betweenSpaces: 100,
+      SelectionContainerBorder: Border.all(),
+      SelectionContainerMargin: EdgeInsets.symmetric(vertical: 20),
+      SelectionContainerPadding:EdgeInsets.all(10),
+      SelectionContainerColor: Colors.transparent,
+      iconsList: [
+        Text("hi"),
+        Text("hi;kljn"),
+        Text("hiobiugyctfrdx"),
+      ],
+      height: 100,
+      onChange: (index) {
+        setState(() {});
+      },
+    ));
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:flutter/material.dart';
-
-// void main() {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: PercentageCirclePage(),
-//     );
-//   }
-// }
-
-// class PercentageCirclePage extends StatefulWidget {
-//   @override
-//   _PercentageCirclePageState createState() => _PercentageCirclePageState();
-// }
-
-// class _PercentageCirclePageState extends State<PercentageCirclePage> {
-//   double _percentage = 0.0;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Circular Percentage Slider'),
-//       ),
-//       body: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: <Widget>[
-//           Center(
-//             child: SizedBox(
-//               width: 200,
-//               height: 200,
-//               child: CustomPaint(
-//                 painter: PercentageCircle(_percentage,backgroundColor: Colors.green),
-//                 child: Center(
-//                   child: Text(
-//                     '${(_percentage * 100).toInt()}%',
-//                     style: TextStyle(fontSize: 30, color: Colors.black),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ),
-//           Slider(
-//             value: _percentage,
-//             min: 0,
-//             max: 1,
-//             divisions: 1000,
-//             label: '${(_percentage * 100).toInt()}%',
-//             onChanged: (value) {
-//               setState(() {
-//                 _percentage = value;
-//               });
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
-
