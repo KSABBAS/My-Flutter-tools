@@ -39,6 +39,7 @@ class App extends StatefulWidget {
   @override
   State<App> createState() => _AppState();
 }
+
 List data = [
   [1, DateTime(2025, 2, 1), 15.99, "Wireless Mouse"],
   [2, DateTime(2025, 1, 28), 89.49, "Bluetooth Headphones"],
@@ -66,30 +67,28 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return SearchAppBar(
+      
+        body: CMaker(color: Colors.red,),
+        childHeight: 100,
+        childWidth: 200,
         onAlphabetFilterChanged: (value) => print(value),
         onDateFilterChanged: (value) => print(value),
         onPriceFilterChanged: (value) => print(value),
-        onAlphabetSliderChanged: (value) => print(value),
-        onDateSliderChanged:(value) =>  print(value),
-        onPriceSliderChanged: (value) => print(value),
-        onAlphabetSliderChangeEnd: (value) => print(value),
-        onPriceSliderChangeEnd: (value) => print(value),
-        onDateSliderChangeEnd: (value) => print(value),
-        childHeight: 100,
-        childWidth: 200,
-        onTheSearch: (isOnTheSearch, SearchText) {
-          setState(() {});
-        },
-        SubAppBarVisible: true,
-        SortWidget: Icon(Icons.sort),
-        FilterWidget: Icon(Icons.filter),
-        childColor: Colors.red,
-        rowSpaces: 20,
-        columnSpaces: 20,
-        appBarColor: Colors.white,
-        appBarHeight: 150,
-        drawerWidth: 400,
-        sortDrawerSide: DrawerSide.left,
+        products: MyListBuilder(
+          itemCount: data.length,
+          builder: (index) {
+            return Product(
+                id: data[index][0],
+                name: data[index][3],
+                price: data[index][2],
+                date: data[index][1]);
+          },
+        ),
+        // childColor: Colors.green,
+        // rowSpaces: 20, 
+        
+        // columnSpaces: 20,
+        // drawerWidth:400,
         productBuilder: (product) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -101,16 +100,52 @@ class _AppState extends State<App> {
               Text("${product.date}")
             ],
           );
-        },
-        products: MyListBuilder(
-          itemCount: data.length,
-          builder: (index) {
-            return Product(
-                id: data[index][0],
-                name: data[index][3],
-                price: data[index][2],
-                date: data[index][1]);
-          },
-        ));
+        });
   }
 }
+// onAlphabetFilterChanged: (value) => print(value),
+//         onDateFilterChanged: (value) => print(value),
+//         onPriceFilterChanged: (value) => print(value),
+//         onAlphabetSliderChanged: (value) => print(value),
+//         onDateSliderChanged:(value) =>  print(value),
+//         onPriceSliderChanged: (value) => print(value),
+//         onAlphabetSliderChangeEnd: (value) => print(value),
+//         onPriceSliderChangeEnd: (value) => print(value),
+//         onDateSliderChangeEnd: (value) => print(value),
+//         childHeight: 100,
+//         childWidth: 200,
+//         onTheSearch: (isOnTheSearch, SearchText) {
+//           setState(() {});
+//         },
+//         SubAppBarVisible: true,
+//         SortWidget: Icon(Icons.sort),
+//         FilterWidget: Icon(Icons.filter),
+//         childColor: Colors.red,
+//         rowSpaces: 20,
+//         columnSpaces: 20,
+//         appBarColor: Colors.white,
+//         appBarHeight: 150,
+//         drawerWidth: 400,
+//         sortDrawerSide: DrawerSide.left,
+//         productBuilder: (product) {
+//           return Column(
+//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               Text("${product.id}"),
+//               Text("${product.name}"),
+//               Text("${product.price}"),
+//               Text("${product.date}")
+//             ],
+//           );
+//         },
+//         products: MyListBuilder(
+//           itemCount: data.length,
+//           builder: (index) {
+//             return Product(
+//                 id: data[index][0],
+//                 name: data[index][3],
+//                 price: data[index][2],
+//                 date: data[index][1]);
+//           },
+//         )
