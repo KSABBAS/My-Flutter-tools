@@ -5,6 +5,7 @@ import 'package:my_tools_development/MyTools/Functions/MyResponsive.dart';
 import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:my_tools_development/MyTools/MyTools.dart';
 import 'package:my_tools_development/MyTools/tools/App_Containing_Tools/SearchAppBar.dart';
+import 'package:my_tools_development/MyTools/tools/Audio_tools/miniAudioPlayer.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Checkbox/MultiCBox.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/MyButton.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Radio/MultiRButton.dart';
@@ -18,6 +19,7 @@ import 'package:my_tools_development/MyTools/tools/Selector_Tools/MyExpandingCol
 import 'package:my_tools_development/MyTools/tools/Selector_Tools/MyExpandingRowWidgetSelector.dart';
 import 'package:my_tools_development/MyTools/tools/Selector_Tools/MyRowWidgetSelector.dart';
 import 'package:my_tools_development/MyTools/tools/Text_Tools/TMaker.dart';
+import 'package:my_tools_development/MyTools/tools/Video_Tools/miniVideoPlayer/miniVideoPlayer.dart';
 import 'package:my_tools_development/MyTools/tools/builder_tools/DistributiveGView.dart';
 import 'package:my_tools_development/MyTools/tools/builder_tools/Specific_height_width_grid.dart';
 import 'package:my_tools_development/MyTools/Functions/WidgetListBuilder.dart';
@@ -66,42 +68,45 @@ List data = [
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return SearchAppBar(
-      
-        body: CMaker(color: Colors.red,),
-        childHeight: 100,
-        childWidth: 200,
-        onAlphabetFilterChanged: (value) => print(value),
-        onDateFilterChanged: (value) => print(value),
-        onPriceFilterChanged: (value) => print(value),
-        products: MyListBuilder(
-          itemCount: data.length,
-          builder: (index) {
-            return Product(
-                id: data[index][0],
-                name: data[index][3],
-                price: data[index][2],
-                date: data[index][1]);
-          },
-        ),
-        // childColor: Colors.green,
-        // rowSpaces: 20, 
-        
-        // columnSpaces: 20,
-        // drawerWidth:400,
-        productBuilder: (product) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("${product.id}"),
-              Text("${product.name}"),
-              Text("${product.price}"),
-              Text("${product.date}")
-            ],
-          );
-        });
+    return Center(
+        child: CustomVideoPlayer(videoSource: "videos/1.mp4", isAsset: true,containerHeight: 300,containerWidth: 400));
   }
+
+  //   return SearchAppBar(
+
+  //       body: CMaker(color: Colors.red,),
+  //       childHeight: 100,
+  //       childWidth: 200,
+  //       onAlphabetFilterChanged: (value) => print(value),
+  //       onDateFilterChanged: (value) => print(value),
+  //       onPriceFilterChanged: (value) => print(value),
+  //       products: MyListBuilder(
+  //         itemCount: data.length,
+  //         builder: (index) {
+  //           return Product(
+  //               id: data[index][0],
+  //               name: data[index][3],
+  //               price: data[index][2],
+  //               date: data[index][1]);
+  //         },
+  //       ),
+  //       // childColor: Colors.green,
+  //       // rowSpaces: 20,
+
+  //       // columnSpaces: 20,
+  //       // drawerWidth:400,
+  //       productBuilder: (product) {
+  //         return Column(
+  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: [
+  //             Text("${product.id}"),
+  //             Text("${product.name}"),
+  //             Text("${product.price}"),
+  //             Text("${product.date}")
+  //           ],
+  //         );
+  //       });
 }
 // onAlphabetFilterChanged: (value) => print(value),
 //         onDateFilterChanged: (value) => print(value),
