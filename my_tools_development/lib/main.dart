@@ -69,7 +69,36 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: CustomVideoPlayer(videoSource: "videos/1.mp4", isAsset: true,containerHeight: 300,containerWidth: 400));
+        child: CustomVideoPlayer(
+  videoSource: "videos/1.mp4", // or a network URL
+  isAsset: true,
+  qualitySources: {
+    "360p": "videos/1.mp4",
+    "480p": "videos/1.mp4",
+    "720p": "videos/1.mp4",
+    "1080p": "videos/1.mp4",
+  },
+  speedOptions: [0.5, 1.0, 1.5, 2.0,5],
+  containerColor: Colors.black,
+  containerCircularRadius: 16,
+  containerBoxShadow: [
+    BoxShadow(color: Colors.black54, blurRadius: 6, offset: Offset(2, 2))
+  ],
+  containerHeight: 250,
+  containerWidth: double.infinity,
+  aspectRatio: 16 / 9,
+  playPauseIconColor: Colors.white,
+  sliderActiveColor: Colors.red,
+  sliderInactiveColor: Colors.grey,
+  sliderThumbColor: Colors.redAccent,
+  timerTextStyle: TextStyle(fontSize: 14, color: Colors.white),
+  autoHideDuration: Duration(seconds: 3),
+  showPlayPause: true,
+  showSlider: true,
+  showTimer: true,
+  showFullScreenButton: true,
+  showSettingsButton: true, // In full-screen, a settings icon appears.
+));
   }
 
   //   return SearchAppBar(

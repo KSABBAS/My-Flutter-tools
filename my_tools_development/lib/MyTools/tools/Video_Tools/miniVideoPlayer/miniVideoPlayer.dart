@@ -229,13 +229,13 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
     // Only show speed options if provided.
     if (widget.speedOptions != null && widget.speedOptions!.isNotEmpty) {
-      options.add(const Text('Playback Speed', style: TextStyle(color: Colors.white)));
+      options.add(const Text('Playback Speed', style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))));
       options.add(const SizedBox(height: 4));
       options.add(Wrap(
         spacing: 8,
         children: widget.speedOptions!.map((speed) {
           return ChoiceChip(
-            label: Text('${speed}x', style: const TextStyle(color: Colors.white)),
+            label: Text('${speed}x', style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
             selected: _currentSpeed == speed,
             selectedColor: Colors.redAccent,
             onSelected: (selected) {
@@ -255,13 +255,13 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     // Only show quality options if provided.
     if (widget.qualitySources != null && widget.qualitySources!.isNotEmpty) {
       if (options.isNotEmpty) options.add(const SizedBox(height: 12));
-      options.add(const Text('Video Quality', style: TextStyle(color: Colors.white)));
+      options.add(const Text('Video Quality', style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))));
       options.add(const SizedBox(height: 4));
       options.add(Wrap(
         spacing: 8,
         children: widget.qualitySources!.keys.map((quality) {
           return ChoiceChip(
-            label: Text(quality, style: const TextStyle(color: Colors.white)),
+            label: Text(quality, style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
             selected: _selectedQuality == quality ||
                 (quality == 'Auto' && _selectedQuality.isEmpty),
             selectedColor: Colors.redAccent,
