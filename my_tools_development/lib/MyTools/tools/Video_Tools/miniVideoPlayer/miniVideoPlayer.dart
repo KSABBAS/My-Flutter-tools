@@ -37,7 +37,8 @@ class CustomVideoPlayer extends StatefulWidget {
   final Duration? animationDuration;
 
   // Control behavior and visibility:
-  final Duration autoHideDuration; // How long controls remain visible when playing
+  final Duration
+      autoHideDuration; // How long controls remain visible when playing
   final bool showPlayPause;
   final bool showSlider;
   final bool showTimer;
@@ -229,13 +230,15 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
     // Only show speed options if provided.
     if (widget.speedOptions != null && widget.speedOptions!.isNotEmpty) {
-      options.add(const Text('Playback Speed', style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))));
+      options.add(const Text('Playback Speed',
+          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))));
       options.add(const SizedBox(height: 4));
       options.add(Wrap(
         spacing: 8,
         children: widget.speedOptions!.map((speed) {
           return ChoiceChip(
-            label: Text('${speed}x', style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
+            label: Text('${speed}x',
+                style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
             selected: _currentSpeed == speed,
             selectedColor: Colors.redAccent,
             onSelected: (selected) {
@@ -255,13 +258,15 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     // Only show quality options if provided.
     if (widget.qualitySources != null && widget.qualitySources!.isNotEmpty) {
       if (options.isNotEmpty) options.add(const SizedBox(height: 12));
-      options.add(const Text('Video Quality', style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))));
+      options.add(const Text('Video Quality',
+          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))));
       options.add(const SizedBox(height: 4));
       options.add(Wrap(
         spacing: 8,
         children: widget.qualitySources!.keys.map((quality) {
           return ChoiceChip(
-            label: Text(quality, style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
+            label: Text(quality,
+                style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
             selected: _selectedQuality == quality ||
                 (quality == 'Auto' && _selectedQuality.isEmpty),
             selectedColor: Colors.redAccent,
@@ -271,7 +276,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                 setState(() {
                   _selectedQuality = quality == 'Auto' ? '' : quality;
                 });
-                await _controller.pause();
+                if (!widget.isFullScreen) await _controller.pause();
                 await _controller.dispose();
                 await _initializeVideo();
                 if (_isPlaying) {
@@ -310,17 +315,20 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     );
   }
 
+
   /// Toggles full-screen mode while preserving playback state.
   Future<void> _toggleFullScreen() async {
     if (!widget.isFullScreen) {
       // Push full-screen route and await its completion.
+      
       final VideoPlayerController? returnedController =
-          await Navigator.of(context).push<VideoPlayerController>(
-        MaterialPageRoute(builder: (context) {
+          await Navigator.of(context)
+              .push<VideoPlayerController>(MaterialPageRoute(
+        builder: (context) {
           return Scaffold(
-            backgroundColor: Colors.black,
-            body: SafeArea(
-              child: CustomVideoPlayer(
+              backgroundColor: Colors.black,
+              body: SafeArea(
+                  child: CustomVideoPlayer(
                 videoSource: widget.videoSource,
                 isAsset: widget.isAsset,
                 qualitySources: widget.qualitySources,
@@ -344,31 +352,31 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                 showSlider: widget.showSlider,
                 showTimer: widget.showTimer,
                 showFullScreenButton: widget.showFullScreenButton,
-                showSettingsButton: true, // Enable settings in full-screen mode.
+                showSettingsButton:
+                    true, // Enable settings in full-screen mode.
                 isFullScreen: true,
                 // Re-use the same controller so playback continues seamlessly.
                 externalController: _controller,
                 disposeController: false,
               )));
-            },
-          ));
-
-      if (!mounted) return;
-      setState(() {
-        if (returnedController != null) {
-          _controller = returnedController;
-        }
-      });
+        },
+      ));
+      await _controller.dispose();
+      await _initializeVideo();
+      _controller.seekTo(returnedController!.value.position);
+      returnedController.dispose();
     } else {
-      if (!mounted) return;
       Navigator.of(context).pop(_controller);
+      await _controller.play();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final videoAspectRatio = widget.aspectRatio ??
-        (_controller.value.isInitialized ? _controller.value.aspectRatio : 16 / 9);
+        (_controller.value.isInitialized
+            ? _controller.value.aspectRatio
+            : 16 / 9);
 
     return Material(
       type: MaterialType.transparency,
@@ -379,7 +387,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         padding: widget.containerPadding,
         decoration: BoxDecoration(
           color: widget.containerColor,
-          borderRadius: BorderRadius.circular(widget.containerCircularRadius ?? 0),
+          borderRadius:
+              BorderRadius.circular(widget.containerCircularRadius ?? 0),
           boxShadow: widget.containerBoxShadow,
           shape: widget.containerShape ?? BoxShape.rectangle,
         ),
@@ -439,7 +448,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                         right: 0,
                         bottom: 0,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           color: Colors.black54,
                           child: Row(
                             children: [
@@ -449,23 +459,29 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                                   '${_formatDuration(_controller.value.position)} / ${_formatDuration(_controller.value.duration)}',
                                   style: widget.timerTextStyle,
                                 ),
-                              if (widget.showSlider)
-                                const SizedBox(width: 8),
+                              if (widget.showSlider) const SizedBox(width: 8),
                               // Slider in the middle.
                               if (widget.showSlider)
                                 Expanded(
                                   child: Slider(
                                     min: 0,
-                                    max: _controller.value.duration.inMilliseconds.toDouble(),
-                                    value: _controller.value.position.inMilliseconds.clamp(
-                                      0,
-                                      _controller.value.duration.inMilliseconds,
-                                    ).toDouble(),
+                                    max: _controller
+                                        .value.duration.inMilliseconds
+                                        .toDouble(),
+                                    value: _controller
+                                        .value.position.inMilliseconds
+                                        .clamp(
+                                          0,
+                                          _controller
+                                              .value.duration.inMilliseconds,
+                                        )
+                                        .toDouble(),
                                     activeColor: widget.sliderActiveColor,
                                     inactiveColor: widget.sliderInactiveColor,
                                     thumbColor: widget.sliderThumbColor,
                                     onChanged: (value) {
-                                      _controller.seekTo(Duration(milliseconds: value.toInt()));
+                                      _controller.seekTo(Duration(
+                                          milliseconds: value.toInt()));
                                       if (!mounted) return;
                                       setState(() {
                                         _controlsVisible = true;
@@ -476,7 +492,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                               // Full-screen/minimize button on the right.
                               IconButton(
                                 icon: Icon(
-                                  widget.isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                                  widget.isFullScreen
+                                      ? Icons.fullscreen_exit
+                                      : Icons.fullscreen,
                                   color: widget.playPauseIconColor,
                                 ),
                                 onPressed: _toggleFullScreen,
@@ -491,7 +509,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                           top: 8,
                           right: 8,
                           child: IconButton(
-                            icon: Icon(Icons.settings, color: widget.playPauseIconColor),
+                            icon: Icon(Icons.settings,
+                                color: widget.playPauseIconColor),
                             onPressed: _toggleSettings,
                           ),
                         ),
@@ -500,7 +519,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                 ),
               ),
             // The settings panel overlay (only in full-screen and when toggled on).
-            if (widget.isFullScreen && widget.showSettingsButton && _settingsVisible)
+            if (widget.isFullScreen &&
+                widget.showSettingsButton &&
+                _settingsVisible)
               _buildSettingsPanel(),
           ],
         ),
