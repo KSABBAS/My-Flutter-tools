@@ -362,11 +362,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       await _controller.dispose();
       await _initializeVideo();
       _controller.seekTo(returnedController!.value.position);
+      if(returnedController.value.isPlaying)await _controller.play();
       returnedController.dispose();
-      await _controller.play();
     } else {
       Navigator.of(context).pop(_controller);
-      await _controller.play();
+      if(_controller.value.isPlaying)await _controller.play();
     }
   }
 
