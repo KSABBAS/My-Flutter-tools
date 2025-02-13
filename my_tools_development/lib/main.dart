@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:my_tools_development/MyTools/Functions/Height_and_width_Functions.dart';
@@ -5,6 +7,7 @@ import 'package:my_tools_development/MyTools/Functions/MyResponsive.dart';
 import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:my_tools_development/MyTools/MyTools.dart';
 import 'package:my_tools_development/MyTools/tools/App_Containing_Tools/SearchAppBar.dart';
+import 'package:my_tools_development/MyTools/tools/Audio_tools/audio_recorder.dart';
 import 'package:my_tools_development/MyTools/tools/Audio_tools/miniAudioPlayer.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Checkbox/MultiCBox.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/MyButton.dart';
@@ -42,24 +45,29 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
+File? AudioFile;
+
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return SearchAppBar(
-      childHeight: 300,
-      onSelected: (SelectedIndex) {
-        print(SelectedIndex);
-      },
-      builder: (Index) {
-        return Container(
-          child: Text("hi $Index"),
-        );
-      },
-      itemCount: 30,
-      onTheSearch: (isOnTheSearch, SearchText) {
-        setState(() {});
-      },
-      body: Container(color: Colors.red,),
+    return Column(
+      children: [
+        SoundRecorder(
+          onRecordingStart: () {
+            print("started");
+          },
+          onRecordingProgress: (duration) {
+            print(duration);
+          },
+          onRecordingComplete: (audioFile) {
+            setState(() {
+              AudioFile = audioFile;
+            });
+            print("done");
+          },
+        ),
+        if (AudioFile != null) MyMiniAudioPlayer(audioFile: AudioFile,)
+      ],
     );
   }
 }

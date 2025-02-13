@@ -292,14 +292,11 @@ class __SearchPageState extends State<_SearchPage> {
                   Padding(
                       padding: EdgeInsets.only(left: widget.rowSpaces ?? 20)),
                   if (widget.FilterWidget != null)
-                    Container(child: widget.FilterWidget)
-                  else
-                    Container(),
+                    Container(child: widget.FilterWidget),
+                  if (widget.FilterWidget != null)
                   Padding(padding: EdgeInsets.only(left: 20)),
                   if (widget.SortWidget != null)
-                    Container(child: widget.SortWidget)
-                  else
-                    Container(),
+                    Container(child: widget.SortWidget),
                   Spacer(),
                   Text(
                     "نتائج البحث",
