@@ -11,7 +11,7 @@ import 'package:video_player/video_player.dart';
 /// the controls. In full‑screen mode (if enabled), a settings icon at top right
 /// toggles a small settings panel showing playback speed and quality options,
 /// but only if those options are provided.
-class CustomVideoPlayer extends StatefulWidget {
+class MyMiniVideoPlayer extends StatefulWidget {
   // Video source parameters:
   final String videoSource;
   final bool isAsset;
@@ -52,7 +52,7 @@ class CustomVideoPlayer extends StatefulWidget {
   // Whether to dispose the controller when this widget is disposed.
   final bool disposeController;
 
-  const CustomVideoPlayer({
+  const MyMiniVideoPlayer({
     Key? key,
     required this.videoSource,
     this.isAsset = false,
@@ -89,10 +89,10 @@ class CustomVideoPlayer extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CustomVideoPlayerState createState() => _CustomVideoPlayerState();
+  _MyMiniVideoPlayerState createState() => _MyMiniVideoPlayerState();
 }
 
-class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+class _MyMiniVideoPlayerState extends State<MyMiniVideoPlayer> {
   late VideoPlayerController _controller;
   Timer? _hideTimer;
   bool _controlsVisible = true;
@@ -328,7 +328,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
           return Scaffold(
               backgroundColor: Colors.black,
               body: SafeArea(
-                  child: CustomVideoPlayer(
+                  child: MyMiniVideoPlayer(
                 videoSource: widget.videoSource,
                 isAsset: widget.isAsset,
                 qualitySources: widget.qualitySources,

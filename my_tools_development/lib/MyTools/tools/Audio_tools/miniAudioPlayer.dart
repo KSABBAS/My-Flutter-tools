@@ -7,7 +7,7 @@ import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
 // Enum to define the position of the timer text
 enum TimerPosition { right, bottomRight }
 
-class AudioPlayerWidget extends StatefulWidget {
+class MyMiniAudioPlayer extends StatefulWidget {
   final String audioSource;
   final bool isAsset;
   final TimerPosition timerPosition;
@@ -31,7 +31,7 @@ class AudioPlayerWidget extends StatefulWidget {
   final Clip? containerClipBehavior;
   final BoxShape? containerShape;
 
-  const AudioPlayerWidget({
+  const MyMiniAudioPlayer({
     Key? key,
     required this.audioSource,
     this.isAsset = false,
@@ -58,10 +58,10 @@ class AudioPlayerWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AudioPlayerWidgetState createState() => _AudioPlayerWidgetState();
+  _MyMiniAudioPlayerState createState() => _MyMiniAudioPlayerState();
 }
 
-class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
+class _MyMiniAudioPlayerState extends State<MyMiniAudioPlayer> {
   late AudioPlayer _audioPlayer;
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
