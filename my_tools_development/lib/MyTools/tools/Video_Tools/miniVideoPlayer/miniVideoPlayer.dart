@@ -315,12 +315,10 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     );
   }
 
-
   /// Toggles full-screen mode while preserving playback state.
   Future<void> _toggleFullScreen() async {
     if (!widget.isFullScreen) {
       // Push full-screen route and await its completion.
-      
       final VideoPlayerController? returnedController =
           await Navigator.of(context)
               .push<VideoPlayerController>(MaterialPageRoute(
@@ -365,6 +363,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       await _initializeVideo();
       _controller.seekTo(returnedController!.value.position);
       returnedController.dispose();
+      await _controller.play();
     } else {
       Navigator.of(context).pop(_controller);
       await _controller.play();
