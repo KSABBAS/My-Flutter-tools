@@ -42,65 +42,84 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-List data = [
-  [1, DateTime(2025, 2, 1), 15.99, "Wireless Mouse"],
-  [2, DateTime(2025, 1, 28), 89.49, "Bluetooth Headphones"],
-  [3, DateTime(2025, 2, 3), 42.99, "Mechanical Keyboard"],
-  [4, DateTime(2025, 1, 30), 7.99, "USB Flash Drive 32GB"],
-  [5, DateTime(2025, 1, 25), 299.99, "Smartwatch Series 6"],
-  [6, DateTime(2025, 2, 5), 18.49, "Portable Phone Stand"],
-  [7, DateTime(2025, 1, 15), 54.99, "External Hard Drive 1TB"],
-  [8, DateTime(2025, 1, 20), 1299.99, "Gaming Laptop"],
-  [9, DateTime(2025, 2, 4), 23.99, "Wireless Charger"],
-  [10, DateTime(2025, 1, 27), 5.99, "Stylus Pen"],
-  [11, DateTime(2025, 1, 18), 699.99, "Smartphone"],
-  [12, DateTime(2025, 2, 2), 44.99, "Backpack with USB Port"],
-  [13, DateTime(2025, 1, 26), 15.49, "Gaming Mouse Pad"],
-  [14, DateTime(2025, 1, 29), 249.99, "Noise-Canceling Earbuds"],
-  [15, DateTime(2025, 1, 22), 75.00, "Mini Projector"],
-  [16, DateTime(2025, 1, 17), 9.99, "Portable Fan"],
-  [17, DateTime(2025, 1, 24), 349.99, "Wireless Speaker"],
-  [18, DateTime(2025, 2, 6), 25.00, "Ergonomic Office Chair"],
-  [19, DateTime(2025, 1, 19), 6.49, "Laptop Cooling Pad"],
-  [20, DateTime(2025, 2, 1), 49.99, "Monitor Stand Riser"]
-];
-
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Center(
         child: CustomVideoPlayer(
-  videoSource: "videos/1.mp4", // or a network URL
-  isAsset: true,
-  qualitySources: {
-    "360p": "videos/1.mp4",
-    "480p": "videos/1.mp4",
-    "720p": "videos/1.mp4",
-    "1080p": "videos/1.mp4",
-  },
-  speedOptions: [0.5, 1.0, 1.5, 2.0,5],
-  containerColor: Colors.black,
-  containerCircularRadius: 16,
-  containerBoxShadow: [
-    BoxShadow(color: Colors.black54, blurRadius: 6, offset: Offset(2, 2))
-  ],
-  containerHeight: 250,
-  containerWidth: double.infinity,
-  aspectRatio: 16 / 9,
-  playPauseIconColor: Colors.white,
-  sliderActiveColor: Colors.red,
-  sliderInactiveColor: Colors.grey,
-  sliderThumbColor: Colors.redAccent,
-  timerTextStyle: TextStyle(fontSize: 14, color: Colors.white),
-  autoHideDuration: Duration(seconds: 3),
-  showPlayPause: true,
-  showSlider: true,
-  showTimer: true,
-  showFullScreenButton: true,
-  showSettingsButton: true, // In full-screen, a settings icon appears.
-));
+      videoSource: "videos/1.mp4",
+      isAsset: true,
+      qualitySources: {
+        "360p": "videos/1.mp4",
+        "480p": "videos/1.mp4",
+        "720p": "videos/1.mp4",
+        "1080p": "videos/1.mp4",
+        "1090p": "videos/1.mp4",
+      },
+      containerHeight:200,
+      containerWidth: 600,
+      // showFullScreenButton: false,
+      showPlayPause: true,
+      showSettingsButton: true,
+      showSlider: false,
+      showTimer: false,
+
+      speedOptions: [0.5, 1.0, 1.5, 2.0,6],
+    ));
   }
 
+// List data = [
+//   [1, DateTime(2025, 2, 1), 15.99, "Wireless Mouse"],
+//   [2, DateTime(2025, 1, 28), 89.49, "Bluetooth Headphones"],
+//   [3, DateTime(2025, 2, 3), 42.99, "Mechanical Keyboard"],
+//   [4, DateTime(2025, 1, 30), 7.99, "USB Flash Drive 32GB"],
+//   [5, DateTime(2025, 1, 25), 299.99, "Smartwatch Series 6"],
+//   [6, DateTime(2025, 2, 5), 18.49, "Portable Phone Stand"],
+//   [7, DateTime(2025, 1, 15), 54.99, "External Hard Drive 1TB"],
+//   [8, DateTime(2025, 1, 20), 1299.99, "Gaming Laptop"],
+//   [9, DateTime(2025, 2, 4), 23.99, "Wireless Charger"],
+//   [10, DateTime(2025, 1, 27), 5.99, "Stylus Pen"],
+//   [11, DateTime(2025, 1, 18), 699.99, "Smartphone"],
+//   [12, DateTime(2025, 2, 2), 44.99, "Backpack with USB Port"],
+//   [13, DateTime(2025, 1, 26), 15.49, "Gaming Mouse Pad"],
+//   [14, DateTime(2025, 1, 29), 249.99, "Noise-Canceling Earbuds"],
+//   [15, DateTime(2025, 1, 22), 75.00, "Mini Projector"],
+//   [16, DateTime(2025, 1, 17), 9.99, "Portable Fan"],
+//   [17, DateTime(2025, 1, 24), 349.99, "Wireless Speaker"],
+//   [18, DateTime(2025, 2, 6), 25.00, "Ergonomic Office Chair"],
+//   [19, DateTime(2025, 1, 19), 6.49, "Laptop Cooling Pad"],
+//   [20, DateTime(2025, 2, 1), 49.99, "Monitor Stand Riser"]
+// ];
+// CustomVideoPlayer(
+//   videoSource: "videos/1.mp4", // or a network URL
+//   isAsset: true,
+//   qualitySources: {
+//     "360p": "videos/1.mp4",
+//     "480p": "videos/1.mp4",
+//     "720p": "videos/1.mp4",
+//     "1080p": "videos/1.mp4",
+//   },
+//   speedOptions: [0.5, 1.0, 1.5, 2.0,5],
+//   containerColor: Colors.black,
+//   containerCircularRadius: 16,
+//   containerBoxShadow: [
+//     BoxShadow(color: Colors.black54, blurRadius: 6, offset: Offset(2, 2))
+//   ],
+//   containerHeight: 250,
+//   containerWidth: double.infinity,
+//   aspectRatio: 16 / 9,
+//   playPauseIconColor: Colors.white,
+//   sliderActiveColor: Colors.red,
+//   sliderInactiveColor: Colors.grey,
+//   sliderThumbColor: Colors.redAccent,
+//   timerTextStyle: TextStyle(fontSize: 14, color: Colors.white),
+//   autoHideDuration: Duration(seconds: 3),
+//   showPlayPause: true,
+//   showSlider: true,
+//   showTimer: true,
+//   showFullScreenButton: true,
+//   showSettingsButton: true, // In full-screen, a settings icon appears.
+// )
   //   return SearchAppBar(
 
   //       body: CMaker(color: Colors.red,),

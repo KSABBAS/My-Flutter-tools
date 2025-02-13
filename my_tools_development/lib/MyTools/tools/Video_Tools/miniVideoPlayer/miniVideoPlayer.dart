@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:video_player/video_player.dart';
 
 /// A customizable mini video player.
@@ -276,7 +277,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                 setState(() {
                   _selectedQuality = quality == 'Auto' ? '' : quality;
                 });
-                if (!widget.isFullScreen) await _controller.pause();
+                await _controller.pause();
                 await _controller.dispose();
                 await _initializeVideo();
                 if (_isPlaying) {
@@ -315,6 +316,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     );
   }
 
+
   /// Toggles full-screen mode while preserving playback state.
   Future<void> _toggleFullScreen() async {
     if (!widget.isFullScreen) {
@@ -351,7 +353,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                 showTimer: widget.showTimer,
                 showFullScreenButton: widget.showFullScreenButton,
                 showSettingsButton:
-                    true, // Enable settings in full-screen mode.
+                    widget.showSettingsButton, // Enable settings in full-screen mode.
                 isFullScreen: true,
                 // Re-use the same controller so playback continues seamlessly.
                 externalController: _controller,
@@ -362,11 +364,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       await _controller.dispose();
       await _initializeVideo();
       _controller.seekTo(returnedController!.value.position);
-      if(returnedController.value.isPlaying)await _controller.play();
       returnedController.dispose();
     } else {
       Navigator.of(context).pop(_controller);
-      if(_controller.value.isPlaying)await _controller.play();
     }
   }
 
@@ -489,7 +489,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                                   ),
                                 ),
                               // Full-screen/minimize button on the right.
-                              IconButton(
+                              if(widget.showFullScreenButton)IconButton(
                                 icon: Icon(
                                   widget.isFullScreen
                                       ? Icons.fullscreen_exit
@@ -503,7 +503,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                         ),
                       ),
                       // In full-screen mode, show a settings icon at the top right.
-                      if (widget.isFullScreen && widget.showSettingsButton)
+                      if (widget.isFullScreen&&widget.showSettingsButton)
                         Positioned(
                           top: 8,
                           right: 8,
@@ -518,7 +518,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                 ),
               ),
             // The settings panel overlay (only in full-screen and when toggled on).
-            if (widget.isFullScreen &&
+            if (widget.isFullScreen&&
                 widget.showSettingsButton &&
                 _settingsVisible)
               _buildSettingsPanel(),
