@@ -159,6 +159,7 @@ class _MyDottedImageViewerState extends State<MyDottedImageViewer>
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(widget.images.length, (index) {
           bool isSelected = index == _currentPage;
           return GestureDetector(
@@ -202,12 +203,7 @@ class _MyDottedImageViewerState extends State<MyDottedImageViewer>
 
   @override
   Widget build(BuildContext context) {
-    final EdgeInsets resolvedPadding =
-        widget.miniIndicatorContainerPadding.resolve(Directionality.of(context));
-    final double defaultMiniHeight =
-        max(widget.selectedDotHeight, widget.unselectedDotHeight) +
-            resolvedPadding.vertical;
-
+    // Build the PageView (image viewer) with callbacks.
     Widget pageView = PageView.builder(
       controller: _pageController,
       physics: widget.scrollPhysics ?? const PageScrollPhysics(),
@@ -217,15 +213,12 @@ class _MyDottedImageViewerState extends State<MyDottedImageViewer>
           _currentPage = index;
         });
         _resetAutoScroll();
-
-        // Trigger the onPageChanged callback with the current displayed index.
         if (widget.onPageChanged != null) {
           widget.onPageChanged!(index);
         }
       },
       itemBuilder: (context, index) {
         Widget imageWidget = _buildImage(widget.images[index]);
-        // Wrap the image with GestureDetector to handle tap events and return the image tapped index.
         if (widget.onImagePressed != null) {
           imageWidget = GestureDetector(
             onTap: () => widget.onImagePressed!(index),
@@ -236,36 +229,49 @@ class _MyDottedImageViewerState extends State<MyDottedImageViewer>
       },
     );
 
+    // Build the mini indicator container that holds the dots.
+    Widget miniIndicator = Container(
+      decoration: widget.miniIndicatorContainerDecoration,
+      padding: widget.miniIndicatorContainerPadding,
+      alignment: widget.miniIndicatorContainerAlignment,
+      margin: widget.miniIndicatorContainerMargin,
+      width: widget.miniIndicatorContainerWidth,
+      height: widget.miniIndicatorContainerHeight,
+      child: _buildDotsIndicator(),
+    );
+
     if (widget.overlayDots) {
-      return Column(
+      // When overlayDots is true, only the mini indicator is overlaid.
+      return Stack(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                pageView,
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    alignment: widget.overlayDotsAlignment,
-                    padding: widget.overlayDotsPadding,
-                    child: _buildDotsIndicator(),
-                  ),
-                ),
-              ],
+          pageView,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              alignment: widget.overlayDotsAlignment,
+              padding: widget.overlayDotsPadding,
+              child: miniIndicator,
             ),
           ),
         ],
       );
     } else {
+      // When overlayDots is false, the layout uses the big indicator container
+      // which holds (in its center) the mini indicator container (dots indicator).
+      Widget bigIndicator = Container(
+        decoration: widget.bigIndicatorContainerDecoration,
+        padding: widget.bigIndicatorContainerPadding,
+        alignment: widget.bigIndicatorContainerAlignment,
+        width: widget.bigIndicatorContainerWidth,
+        height: widget.bigIndicatorContainerHeight,
+        child: miniIndicator,
+      );
       return Column(
         children: [
           Expanded(child: pageView),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: _buildDotsIndicator(),
-          ),
+          bigIndicator,
         ],
       );
     }

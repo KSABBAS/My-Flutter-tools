@@ -47,6 +47,21 @@ class CardBuilderViewer extends StatefulWidget {
   /// Padding for the overlay dots container.
   final EdgeInsets overlayDotsPadding;
 
+  // ----- Big Indicator Container Customization -----
+  final BoxDecoration? bigIndicatorContainerDecoration;
+  final EdgeInsetsGeometry bigIndicatorContainerPadding;
+  final Alignment bigIndicatorContainerAlignment;
+  final double? bigIndicatorContainerWidth;
+  final double? bigIndicatorContainerHeight;
+
+  // ----- Mini Indicator Container Customization -----
+  final BoxDecoration? miniIndicatorContainerDecoration;
+  final EdgeInsetsGeometry miniIndicatorContainerPadding;
+  final Alignment miniIndicatorContainerAlignment;
+  final EdgeInsetsGeometry miniIndicatorContainerMargin;
+  final double? miniIndicatorContainerWidth;
+  final double? miniIndicatorContainerHeight;
+
   const CardBuilderViewer({
     Key? key,
     required this.itemCount,
@@ -70,6 +85,17 @@ class CardBuilderViewer extends StatefulWidget {
     this.overlayDots = false,
     this.overlayDotsAlignment = Alignment.bottomCenter,
     this.overlayDotsPadding = const EdgeInsets.only(bottom: 16.0),
+    this.bigIndicatorContainerDecoration,
+    this.bigIndicatorContainerPadding = const EdgeInsets.all(8.0),
+    this.bigIndicatorContainerAlignment = Alignment.center,
+    this.bigIndicatorContainerWidth,
+    this.bigIndicatorContainerHeight,
+    this.miniIndicatorContainerDecoration,
+    this.miniIndicatorContainerPadding = const EdgeInsets.all(10.0),
+    this.miniIndicatorContainerAlignment = Alignment.center,
+    this.miniIndicatorContainerMargin = EdgeInsets.zero,
+    this.miniIndicatorContainerWidth,
+    this.miniIndicatorContainerHeight,
   }) : super(key: key);
 
   @override
@@ -188,8 +214,19 @@ class _CardBuilderViewerState extends State<CardBuilderViewer> {
       },
     );
 
-    // Always return a Column.
+    // Build the mini indicator container that holds the dots indicator.
+    Widget miniIndicator = Container(
+      decoration: widget.miniIndicatorContainerDecoration,
+      padding: widget.miniIndicatorContainerPadding,
+      alignment: widget.miniIndicatorContainerAlignment,
+      margin: widget.miniIndicatorContainerMargin,
+      width: widget.miniIndicatorContainerWidth,
+      height: widget.miniIndicatorContainerHeight,
+      child: _buildDotsIndicator(),
+    );
+
     if (widget.overlayDots && widget.showDotsIndicator) {
+      // In overlay mode, only the mini indicator is overlaid on the PageView.
       return Column(
         children: [
           Expanded(
@@ -203,7 +240,7 @@ class _CardBuilderViewerState extends State<CardBuilderViewer> {
                   child: Container(
                     alignment: widget.overlayDotsAlignment,
                     padding: widget.overlayDotsPadding,
-                    child: _buildDotsIndicator(),
+                    child: miniIndicator,
                   ),
                 ),
               ],
@@ -212,14 +249,19 @@ class _CardBuilderViewerState extends State<CardBuilderViewer> {
         ],
       );
     } else {
+      // In non-overlay mode, the dots indicator is rendered inside the big indicator container.
+      Widget bigIndicator = Container(
+        decoration: widget.bigIndicatorContainerDecoration,
+        padding: widget.bigIndicatorContainerPadding,
+        alignment: widget.bigIndicatorContainerAlignment,
+        width: widget.bigIndicatorContainerWidth,
+        height: widget.bigIndicatorContainerHeight,
+        child: miniIndicator,
+      );
       return Column(
         children: [
           Expanded(child: pageView),
-          if (!widget.overlayDots && widget.showDotsIndicator)
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: _buildDotsIndicator(),
-            ),
+          if (widget.showDotsIndicator) bigIndicator,
         ],
       );
     }
