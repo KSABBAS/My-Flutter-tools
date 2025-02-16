@@ -3,27 +3,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+// package : permission_handler: ^11.3.1
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Audio Recorder Demo',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Audio Recorder')),
-        body: const Center(child: SoundRecorder()),
-      ),
-    );
-  }
-}
-
+// package : flutter_sound: ^9.0.0
+  // <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  // <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 class SoundRecorder extends StatefulWidget {
   const SoundRecorder({
     super.key,
