@@ -15,6 +15,8 @@ import 'package:my_tools_development/MyTools/tools/Button_Tools/Radio/MultiRButt
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/generateQRCode.dart';
 import 'package:my_tools_development/MyTools/tools/Image_Tools/Image_Viewers/ClickToOpenImageViwer.dart';
+import 'package:my_tools_development/MyTools/tools/Image_Tools/Image_Viewers/Dotted_image_viewer.dart';
+import 'package:my_tools_development/MyTools/tools/Image_Tools/Image_Viewers/miniOnTheRightImageView.dart';
 import 'package:my_tools_development/MyTools/tools/Painter_tools/PercentageCircle.dart';
 import 'package:my_tools_development/MyTools/tools/Scanner_Tools/scanQR.dart';
 import 'package:my_tools_development/MyTools/tools/Selector_Tools/MyColumnWidgetSelector.dart';
@@ -50,24 +52,15 @@ File? AudioFile;
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SoundRecorder(
-          onRecordingStart: () {
-            print("started");
-          },
-          onRecordingProgress: (duration) {
-            print(duration);
-          },
-          onRecordingComplete: (audioFile) {
-            setState(() {
-              AudioFile = audioFile;
-            });
-            print("done");
-          },
-        ),
-        if (AudioFile != null) MyMiniAudioPlayer(audioFile: AudioFile)
-      ],
+    return MyMiniOnTheRightImageViewer(images: [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
+    ], 
+    activeDotColor: Colors.green,
+    imageFit: BoxFit.fitWidth,
     );
   }
 }
