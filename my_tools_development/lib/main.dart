@@ -13,7 +13,9 @@ import 'package:my_tools_development/MyTools/tools/Audio_tools/miniAudioPlayer.d
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Checkbox/MultiCBox.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/MyButton.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Radio/MultiRButton.dart';
+import 'package:my_tools_development/MyTools/tools/Button_Tools/StarsRating.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
+import 'package:my_tools_development/MyTools/tools/Generator_Tools/GenerateStarRating.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/generateQRCode.dart';
 import 'package:my_tools_development/MyTools/tools/Image_Tools/Image_Viewers/ClickToOpenImageViwer.dart';
 import 'package:my_tools_development/MyTools/tools/Image_Tools/Image_Viewers/Dotted_image_viewer.dart';
@@ -50,63 +52,66 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-File? AudioFile;
+double rating1 = 0;
+double rating2 = 0;
+double rating3 = 0;
 
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return StageProgressNavigator(
-      pages: [
-        CMaker(
-            alignment: Alignment.center, color: Colors.blue, child: Text("1")),
-        CMaker(
-            alignment: Alignment.center, color: Colors.blue, child: Text("2")),
-        CMaker(
-            alignment: Alignment.center, color: Colors.blue, child: Text("3")),
-      ],
-      transitionType: TransitionType.fade,
-      onStageChanged: (stage) {
-        print("Stage changed to $stage");
-      },
-      orientation: StageProgressOrientation.horizontal,
-      navigationBarPosition: NavigationBarPosition.bottom,
-      activeColor: Colors.red, 
-      inactiveColor: Colors.green,
-    navigationBarPadding: EdgeInsets.symmetric(vertical: 20),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          StarRating(
+            onRatingChanged: (value) {
+              rating1 = value.toDouble();
+              print((rating1+rating2+rating3)/3);
+              setState(() {
+                
+              });
+            },
+            initialRating: rating1.toInt(),
+            starEdgeStyle: StarEdgeStyle.smooth,
+            starSpacing: 10,
+            unselectedStrokeColor: Colors.red,
+          ),
+          StarRating(
+            onRatingChanged: (value) {
+              rating2 = value.toDouble();
+              print((rating1+rating2+rating3)/3);
+              setState(() {
+                
+              });
+            },
+            initialRating: rating2.toInt(),
+            starEdgeStyle: StarEdgeStyle.smooth,
+            starSpacing: 10,
+            unselectedStrokeColor: Colors.red,
+          ),
+          StarRating(
+            onRatingChanged: (value) {
+              rating3 = value.toDouble();
+              print((rating1+rating2+rating3)/3);
+              setState(() {
+                
+              });
+            },
+            initialRating: rating3.toInt(),
+            starEdgeStyle: StarEdgeStyle.smooth,
+            starSpacing: 10,
+            unselectedStrokeColor: Colors.red,
+          ),
+           StarRatingDisplay(
+            key: ValueKey((rating1+rating2+rating3)/3),
+            rating: (rating1+rating2+rating3)/3,
+            starSpacing: 10,
+            unselectedStrokeColor: Colors.red,
+            animationDuration: Duration(milliseconds: 0),
+          ),
+
+        ],
+      ),
     );
   }
 }
-
-
-
-
-
-
-
-
-// StageProgressNavigator(pages: [
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("1")),
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("2")),
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("3")),
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("1")),
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("2")),
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("3")),
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("1")),
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("2")),
-//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("3")),
-//     ], 
-//     transitionType: TransitionType.fade,
-//     onStageChanged: (stage) {
-//       print("Stage changed to $stage");
-//     },
-//     navigationBarPosition: NavigationBarPosition.left,
-//     orientation: StageProgressOrientation.vertical,
-//     activeColor: Colors.red, 
-//     inactiveColor: Colors.green,
-//     markerSize: 20,
-//     lineThickness: 15,
-//     navigationBarBackgroundColor: const Color.fromARGB(255, 48, 54, 59),
-//     showNextButton: false,
-//     showPreviousButton: false,
-//     navigationBarPadding: EdgeInsets.symmetric(vertical: 20),
-//     );
