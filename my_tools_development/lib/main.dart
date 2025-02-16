@@ -55,25 +55,58 @@ File? AudioFile;
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return StageProgressNavigator(pages: [
-      CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("1")),
-      CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("2")),
-      CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("3"))
-    ], 
-    transitionType: TransitionType.fade,
-    onStageChanged: (stage) {
-      print("Stage changed to $stage");
-    },
-    navigationBarPosition: NavigationBarPosition.left,
-    orientation: StageProgressOrientation.vertical,
-    activeColor: Colors.red, 
-    inactiveColor: Colors.green,
-    markerSize: 20,
-    lineThickness: 15,
-    navigationBarBackgroundColor: const Color.fromARGB(255, 48, 54, 59),
-    showNextButton: false,
-    showPreviousButton: false,
+    return StageProgressNavigator(
+      pages: [
+        CMaker(
+            alignment: Alignment.center, color: Colors.blue, child: Text("1")),
+        CMaker(
+            alignment: Alignment.center, color: Colors.blue, child: Text("2")),
+        CMaker(
+            alignment: Alignment.center, color: Colors.blue, child: Text("3")),
+      ],
+      transitionType: TransitionType.fade,
+      onStageChanged: (stage) {
+        print("Stage changed to $stage");
+      },
+      orientation: StageProgressOrientation.horizontal,
+      navigationBarPosition: NavigationBarPosition.bottom,
+      activeColor: Colors.red, 
+      inactiveColor: Colors.green,
     navigationBarPadding: EdgeInsets.symmetric(vertical: 20),
     );
   }
 }
+
+
+
+
+
+
+
+
+// StageProgressNavigator(pages: [
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("1")),
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("2")),
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("3")),
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("1")),
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("2")),
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("3")),
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("1")),
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("2")),
+//       CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("3")),
+//     ], 
+//     transitionType: TransitionType.fade,
+//     onStageChanged: (stage) {
+//       print("Stage changed to $stage");
+//     },
+//     navigationBarPosition: NavigationBarPosition.left,
+//     orientation: StageProgressOrientation.vertical,
+//     activeColor: Colors.red, 
+//     inactiveColor: Colors.green,
+//     markerSize: 20,
+//     lineThickness: 15,
+//     navigationBarBackgroundColor: const Color.fromARGB(255, 48, 54, 59),
+//     showNextButton: false,
+//     showPreviousButton: false,
+//     navigationBarPadding: EdgeInsets.symmetric(vertical: 20),
+//     );

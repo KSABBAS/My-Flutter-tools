@@ -104,7 +104,7 @@ class StageProgressNavigator extends StatefulWidget {
     this.showPreviousButton = true,
     this.showNextButton = true,
     this.navigationBarBackgroundColor = Colors.transparent,
-    this.navigationBarHeight = 150.0,
+    this.navigationBarHeight = 132.0,
     this.navigationBarWidth = 150.0,
     this.navigationBarPadding = EdgeInsets.zero,
   }) : super(key: key);
@@ -134,11 +134,13 @@ class _StageProgressNavigatorState extends State<StageProgressNavigator> {
   Widget _buildIndicatorStack(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final bool isHorizontal = widget.orientation == StageProgressOrientation.horizontal;
+        final bool isHorizontal =
+            widget.orientation == StageProgressOrientation.horizontal;
         final double totalLength = isHorizontal
             ? constraints.maxWidth - widget.markerSize
             : constraints.maxHeight - widget.markerSize;
-        final double ballPos = widget.markerSize / 2 + _currentFraction * totalLength;
+        final double ballPos =
+            widget.markerSize / 2 + _currentFraction * totalLength;
 
         // Base line.
         Widget line = isHorizontal
@@ -165,8 +167,12 @@ class _StageProgressNavigatorState extends State<StageProgressNavigator> {
         Widget animatedBall = AnimatedPositioned(
           duration: widget.indicatorAnimationDuration,
           curve: Curves.easeInOut,
-          left: isHorizontal ? ballPos - widget.markerSize / 2 : (constraints.maxWidth - widget.markerSize) / 2,
-          top: isHorizontal ? (constraints.maxHeight - widget.markerSize) / 2 : ballPos - widget.markerSize / 2,
+          left: isHorizontal
+              ? ballPos - widget.markerSize / 2
+              : (constraints.maxWidth - widget.markerSize) / 2,
+          top: isHorizontal
+              ? (constraints.maxHeight - widget.markerSize) / 2
+              : ballPos - widget.markerSize / 2,
           width: widget.markerSize,
           height: widget.markerSize,
           child: Container(
@@ -180,10 +186,15 @@ class _StageProgressNavigatorState extends State<StageProgressNavigator> {
         // Clickable markers.
         List<Widget> markerWidgets = [];
         for (int i = 0; i < widget.pages.length; i++) {
-          final double pos = widget.markerSize / 2 + (i / (widget.pages.length - 1)) * totalLength;
+          final double pos = widget.markerSize / 2 +
+              (i / (widget.pages.length - 1)) * totalLength;
           markerWidgets.add(Positioned(
-            left: isHorizontal ? pos - widget.markerSize / 2 : (constraints.maxWidth - widget.markerSize) / 2,
-            top: isHorizontal ? (constraints.maxHeight - widget.markerSize) / 2 : pos - widget.markerSize / 2,
+            left: isHorizontal
+                ? pos - widget.markerSize / 2
+                : (constraints.maxWidth - widget.markerSize) / 2,
+            top: isHorizontal
+                ? (constraints.maxHeight - widget.markerSize) / 2
+                : pos - widget.markerSize / 2,
             width: widget.markerSize,
             height: widget.markerSize,
             child: GestureDetector(
@@ -193,7 +204,9 @@ class _StageProgressNavigatorState extends State<StageProgressNavigator> {
                   shape: BoxShape.circle,
                   color: Colors.white,
                   border: Border.all(
-                    color: i <= _currentStage ? widget.activeColor : widget.inactiveColor,
+                    color: i <= _currentStage
+                        ? widget.activeColor
+                        : widget.inactiveColor,
                     width: 2.0,
                   ),
                 ),
@@ -222,7 +235,8 @@ class _StageProgressNavigatorState extends State<StageProgressNavigator> {
           return FadeTransition(opacity: animation, child: child);
         } else {
           return SlideTransition(
-            position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(animation),
+            position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+                .animate(animation),
             child: FadeTransition(opacity: animation, child: child),
           );
         }
@@ -247,26 +261,37 @@ class _StageProgressNavigatorState extends State<StageProgressNavigator> {
 
     Widget prevButton = widget.showPreviousButton
         ? TextButton(
-            onPressed: _currentStage > 0 ? () => _goToStage(_currentStage - 1) : null,
+            onPressed:
+                _currentStage > 0 ? () => _goToStage(_currentStage - 1) : null,
             child: Text(prevText, style: widget.buttonTextStyle),
           )
         : const SizedBox.shrink();
     Widget nextButton = widget.showNextButton
         ? TextButton(
-            onPressed: _currentStage < widget.pages.length - 1 ? () => _goToStage(_currentStage + 1) : null,
+            onPressed: _currentStage < widget.pages.length - 1
+                ? () => _goToStage(_currentStage + 1)
+                : null,
             child: Text(nextText, style: widget.buttonTextStyle),
           )
         : const SizedBox.shrink();
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [prevButton, nextButton],
-    );
+    if (widget.orientation == StageProgressOrientation.horizontal) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children:[ prevButton, nextButton],
+      );
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [prevButton, nextButton],
+      );
+    }
   }
 
   /// Builds the navigation bar which includes the indicator and (if horizontal) navigation controls.
   Widget _buildNavigationBar(BuildContext context) {
-    bool isHorizontal = widget.orientation == StageProgressOrientation.horizontal;
+    bool isHorizontal =
+        widget.orientation == StageProgressOrientation.horizontal;
     Widget content;
     if (isHorizontal) {
       if (widget.navigationBarPosition == NavigationBarPosition.top) {
@@ -288,25 +313,39 @@ class _StageProgressNavigatorState extends State<StageProgressNavigator> {
       }
     } else {
       // In vertical mode, only the indicator is shown.
-      content = Center(child: SizedBox(width: widget.navigationBarWidth, child: _buildIndicatorStack(context)));
+      if (widget.navigationBarPosition == NavigationBarPosition.left) {
+        content = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildNavigationControls(),
+            SizedBox(width: 60, child: _buildIndicatorStack(context)),
+          ],
+        );
+      } else {
+        content = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(width: 60, child: _buildIndicatorStack(context)),
+            _buildNavigationControls(),
+          ],
+        );
+      }
     }
 
     return isHorizontal
-        ?Container(
+        ? Container(
             padding: widget.navigationBarPadding,
-              color: widget.navigationBarBackgroundColor,
-              height: widget.navigationBarHeight,
-              width: double.infinity,
-              child: content,
-            )
-          
+            color: widget.navigationBarBackgroundColor,
+            height: widget.navigationBarHeight,
+            width: double.infinity,
+            child: content,
+          )
         : Container(
             padding: widget.navigationBarPadding,
-              color: widget.navigationBarBackgroundColor,
-              width: widget.navigationBarWidth,
-              height: double.infinity,
-              child: content,
-            
+            color: widget.navigationBarBackgroundColor,
+            width: widget.navigationBarWidth,
+            height: double.infinity,
+            child: content,
           );
   }
 
