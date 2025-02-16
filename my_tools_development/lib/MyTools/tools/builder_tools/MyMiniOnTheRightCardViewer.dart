@@ -40,6 +40,12 @@ class MyMiniOnTheRightCardViewer extends StatefulWidget {
   /// If true, tapping on the carousel toggles the visibility of the dots indicator.
   final bool toggleDotsOnTap;
 
+  /// Called when the displayed card changes; provides the new index.
+  final ValueChanged<int>? onPageChanged;
+
+  /// Called when a card is pressed; provides the tapped card's index.
+  final ValueChanged<int>? onCardPressed;
+
   const MyMiniOnTheRightCardViewer({
     Key? key,
     required this.itemCount,
@@ -59,6 +65,8 @@ class MyMiniOnTheRightCardViewer extends StatefulWidget {
     this.autoScrollCurve = Curves.easeInOut,
     this.scrollPhysics,
     this.toggleDotsOnTap = false,
+    this.onPageChanged,
+    this.onCardPressed,
   }) : super(key: key);
 
   @override
@@ -136,24 +144,24 @@ class _MyMiniOnTheRightCardViewerState extends State<MyMiniOnTheRightCardViewer>
 
   @override
   Widget build(BuildContext context) {
-    // Build the PageView with a scaling effect.
     Widget pageView = PageView.builder(
       controller: _pageController,
       itemCount: widget.itemCount,
       physics: widget.scrollPhysics ?? const BouncingScrollPhysics(),
-      clipBehavior: Clip.none, // Allow adjacent cards to be visible.
+      clipBehavior: Clip.none, // Allows adjacent cards to be partially visible.
       onPageChanged: (index) {
         setState(() {
           _currentPage = index;
         });
+        // Trigger the onPageChanged callback with the current index.
+        widget.onPageChanged?.call(index);
       },
       itemBuilder: (context, index) {
-        return AnimatedBuilder(
+        Widget card = AnimatedBuilder(
           animation: _pageController,
           builder: (context, child) {
             double scale = widget.scaleFactor;
-            if (_pageController.hasClients &&
-                _pageController.position.hasContentDimensions) {
+            if (_pageController.hasClients && _pageController.position.hasContentDimensions) {
               double? page = _pageController.page;
               if (page != null) {
                 double pageOffset = page - index;
@@ -178,25 +186,33 @@ class _MyMiniOnTheRightCardViewerState extends State<MyMiniOnTheRightCardViewer>
             );
           },
         );
+        // Wrap the card with GestureDetector for onCardPressed callback (passing index).
+        if (widget.onCardPressed != null || widget.toggleDotsOnTap) {
+          card = GestureDetector(
+            onTap: () {
+              widget.onCardPressed?.call(index);
+              if (widget.toggleDotsOnTap) {
+                setState(() {
+                  _dotsVisible = !_dotsVisible;
+                });
+              }
+            },
+            child: card,
+          );
+        }
+        return card;
       },
     );
 
-    // If toggleDotsOnTap is enabled, wrap pageView in a GestureDetector.
-    Widget content = pageView;
-    if (widget.toggleDotsOnTap) {
-      content = GestureDetector(
-        onTap: () {
-          setState(() {
-            _dotsVisible = !_dotsVisible;
-          });
-        },
-        child: content,
-      );
-    }
+    // Build the dots indicator container.
+    Widget miniIndicator = Container(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: _buildDotsIndicator(),
+    );
 
-    // If overlayDots is desired and dots are visible, place dots as an overlay.
-    if (_dotsVisible) {
-      content = Stack(
+    // Layout: overlay dots if toggleDotsOnTap is enabled and dots are visible; otherwise, show dots below.
+    if (widget.toggleDotsOnTap && _dotsVisible) {
+      return Stack(
         children: [
           pageView,
           Positioned(
@@ -206,27 +222,16 @@ class _MyMiniOnTheRightCardViewerState extends State<MyMiniOnTheRightCardViewer>
             child: Container(
               padding: const EdgeInsets.only(bottom: 16.0),
               alignment: Alignment.bottomCenter,
-              child: _buildDotsIndicator(),
+              child: miniIndicator,
             ),
           ),
         ],
       );
-      // Wrap the Stack in an Expanded inside a Column.
-      return Column(
-        children: [
-          Expanded(child: content),
-        ],
-      );
     } else {
-      // If overlay is not used, show dots below.
       return Column(
         children: [
-          Expanded(child: content),
-          if (!_dotsVisible && widget.showDotsIndicator)
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: _buildDotsIndicator(),
-            ),
+          Expanded(child: pageView),
+          if (widget.showDotsIndicator) miniIndicator,
         ],
       );
     }

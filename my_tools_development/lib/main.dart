@@ -7,6 +7,7 @@ import 'package:my_tools_development/MyTools/Functions/MyResponsive.dart';
 import 'package:my_tools_development/MyTools/MyFunctionTools.dart';
 import 'package:my_tools_development/MyTools/MyTools.dart';
 import 'package:my_tools_development/MyTools/tools/App_Containing_Tools/SearchAppBar.dart';
+import 'package:my_tools_development/MyTools/tools/App_Containing_Tools/StageIndicator.dart';
 import 'package:my_tools_development/MyTools/tools/Audio_tools/audio_recorder.dart';
 import 'package:my_tools_development/MyTools/tools/Audio_tools/miniAudioPlayer.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Checkbox/MultiCBox.dart';
@@ -54,24 +55,25 @@ File? AudioFile;
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return MyMiniOnTheRightImageViewer(images: [
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
-    ],
-    onImagePressed: (index) {
-      print('Image $index pressed');
+    return StageProgressNavigator(pages: [
+      CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("1")),
+      CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("2")),
+      CMaker(alignment: Alignment.center,color: Colors.blue,child: Text("3"))
+    ], 
+    transitionType: TransitionType.fade,
+    onStageChanged: (stage) {
+      print("Stage changed to $stage");
     },
-    onPageChanged: (index) {
-      print('Page changed to $index');
-    },
-    autoScroll: true,
+    navigationBarPosition: NavigationBarPosition.left,
+    orientation: StageProgressOrientation.vertical,
+    activeColor: Colors.red, 
+    inactiveColor: Colors.green,
+    markerSize: 20,
+    lineThickness: 15,
+    navigationBarBackgroundColor: const Color.fromARGB(255, 48, 54, 59),
+    showNextButton: false,
+    showPreviousButton: false,
+    navigationBarPadding: EdgeInsets.symmetric(vertical: 20),
     );
   }
 }
