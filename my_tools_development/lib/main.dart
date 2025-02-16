@@ -66,7 +66,7 @@ class _AppState extends State<App> {
             print("done");
           },
         ),
-        if (AudioFile != null) MyMiniAudioPlayer(audioFile: AudioFile,)
+        if (AudioFile != null) MyMiniAudioPlayer(audioFile: AudioFile)
       ],
     );
   }

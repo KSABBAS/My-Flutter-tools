@@ -33,14 +33,42 @@ class SoundRecorder extends StatefulWidget {
     this.onRecordingStart,
     this.onRecordingProgress,
     this.onRecordingComplete,
+    // New parameters for container decoration and icon color.
+    this.containerDecoration,
+    this.containerWidth,
+    this.containerHeight,
+    this.iconColor,
   });
 
+  /// Background color for the button when not recording.
   final Color buttonColor;
+
+  /// Background color for the button when recording.
   final Color recordingColor;
+
+  /// Size of the icon.
   final double iconSize;
+
+  /// Callback triggered when recording starts.
   final Function()? onRecordingStart;
+
+  /// Callback triggered periodically during recording with the elapsed duration.
   final Function(Duration duration)? onRecordingProgress;
+
+  /// Callback triggered when recording is complete, returning the audio file.
   final Function(File? audioFile)? onRecordingComplete;
+
+  /// Optional decoration for the container wrapping the button.
+  final BoxDecoration? containerDecoration;
+
+  /// Optional width for the container.
+  final double? containerWidth;
+
+  /// Optional height for the container.
+  final double? containerHeight;
+
+  /// Optional color for the icon (overrides default white).
+  final Color? iconColor;
 
   @override
   State<SoundRecorder> createState() => _SoundRecorderState();
@@ -144,7 +172,8 @@ class _SoundRecorderState extends State<SoundRecorder> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    // The button itself is animated between mic and stop icons.
+    final button = AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (child, animation) => ScaleTransition(
         scale: animation,
@@ -168,9 +197,33 @@ class _SoundRecorderState extends State<SoundRecorder> {
         child: Icon(
           _isRecording ? Icons.stop : Icons.mic,
           size: widget.iconSize,
-          color: Colors.white,
+          color: widget.iconColor ?? Colors.white,
         ),
       ),
+    );
+
+    // Wrap the button in a container that you can customize.
+    return Container(
+      width: widget.containerWidth,
+      height: widget.containerHeight,
+      decoration: widget.containerDecoration ??
+          BoxDecoration(
+            color: Colors.transparent,
+            gradient: const LinearGradient(
+              colors: [Colors.white, Colors.white70],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4,
+                offset: Offset(2, 2),
+              )
+            ],
+            borderRadius: BorderRadius.circular(8),
+          ),
+      child: Center(child: button),
     );
   }
 }
