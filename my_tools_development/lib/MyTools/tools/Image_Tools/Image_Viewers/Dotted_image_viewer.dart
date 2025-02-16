@@ -9,10 +9,10 @@ class MyDottedImageViewer extends StatefulWidget {
   /// - a network URL (String starting with http/https),
   /// - or raw bytes (Uint8List).
   final List<dynamic> images;
-  
+
   /// The BoxFit for the image.
   final BoxFit imageFit;
-  
+
   // ----- Dot Indicator Customization -----
   final double selectedDotWidth;
   final double selectedDotHeight;
@@ -49,11 +49,21 @@ class MyDottedImageViewer extends StatefulWidget {
   final double? miniIndicatorContainerWidth;
   final double? miniIndicatorContainerHeight;
 
+  // ----- Overlay Dots Options -----
+  final bool overlayDots;
+  final Alignment overlayDotsAlignment;
+  final EdgeInsets overlayDotsPadding;
+
+  /// Called when the viewed image changes, providing the current displayed index.
+  final ValueChanged<int>? onPageChanged;
+
+  /// Called when an image is tapped, providing the tapped image index.
+  final ValueChanged<int>? onImagePressed;
+
   const MyDottedImageViewer({
     Key? key,
     required this.images,
     this.imageFit = BoxFit.cover,
-    // Dot customization defaults:
     this.selectedDotWidth = 14.0,
     this.selectedDotHeight = 14.0,
     this.unselectedDotWidth = 12.0,
@@ -63,27 +73,28 @@ class MyDottedImageViewer extends StatefulWidget {
     this.dotSpacing = 8.0,
     this.dotAnimationCurve = Curves.easeInOut,
     this.dotAnimationDuration = const Duration(milliseconds: 300),
-    // Page transition customization:
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.easeInOut,
     this.scrollPhysics,
-    // Auto-scroll options:
     this.autoScroll = false,
     this.autoScrollInterval = const Duration(seconds: 3),
     this.autoScrollAnimationDuration = const Duration(milliseconds: 300),
-    // Big indicator container defaults:
     this.bigIndicatorContainerDecoration,
     this.bigIndicatorContainerPadding = const EdgeInsets.all(8.0),
     this.bigIndicatorContainerAlignment = Alignment.center,
     this.bigIndicatorContainerWidth,
     this.bigIndicatorContainerHeight,
-    // Mini indicator container defaults:
     this.miniIndicatorContainerDecoration,
     this.miniIndicatorContainerPadding = const EdgeInsets.all(10.0),
     this.miniIndicatorContainerAlignment = Alignment.center,
     this.miniIndicatorContainerMargin = EdgeInsets.zero,
     this.miniIndicatorContainerWidth,
     this.miniIndicatorContainerHeight,
+    this.overlayDots = false,
+    this.overlayDotsAlignment = Alignment.bottomCenter,
+    this.overlayDotsPadding = const EdgeInsets.only(bottom: 16.0),
+    this.onPageChanged,
+    this.onImagePressed,
   }) : super(key: key);
 
   @override
@@ -131,7 +142,6 @@ class _MyDottedImageViewerState extends State<MyDottedImageViewer>
     super.dispose();
   }
 
-  /// Builds the image widget using the provided imageFit.
   Widget _buildImage(dynamic imageSource) {
     if (imageSource is String) {
       if (imageSource.startsWith('http') || imageSource.startsWith('https')) {
@@ -145,85 +155,41 @@ class _MyDottedImageViewerState extends State<MyDottedImageViewer>
     return Container();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // Calculate the default height for the mini indicator container:
-    final EdgeInsets resolvedPadding =
-        widget.miniIndicatorContainerPadding.resolve(Directionality.of(context));
-    final double defaultMiniHeight =
-        max(widget.selectedDotHeight, widget.unselectedDotHeight) + resolvedPadding.vertical;
-
-    return Column(
-      children: [
-        // Display images in a PageView.
-        Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            physics: widget.scrollPhysics ?? const PageScrollPhysics(),
-            itemCount: widget.images.length,
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
+  Widget _buildDotsIndicator() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(widget.images.length, (index) {
+          bool isSelected = index == _currentPage;
+          return GestureDetector(
+            onTap: () {
+              _pageController.animateToPage(
+                index,
+                duration: widget.pageTransitionDuration,
+                curve: widget.pageTransitionCurve,
+              );
               _resetAutoScroll();
             },
-            itemBuilder: (context, index) {
-              return _buildImage(widget.images[index]);
-            },
-          ),
-        ),
-        // Full‑width big indicator container containing a scrollable mini indicator with dots.
-        Container(
-          width: widget.bigIndicatorContainerWidth ?? double.infinity,
-          height: widget.bigIndicatorContainerHeight,
-          decoration: widget.bigIndicatorContainerDecoration,
-          padding: widget.bigIndicatorContainerPadding,
-          alignment: widget.bigIndicatorContainerAlignment,
-          child: Container(
-            width: widget.miniIndicatorContainerWidth,
-            height: widget.miniIndicatorContainerHeight ?? defaultMiniHeight,
-            decoration: widget.miniIndicatorContainerDecoration,
-            padding: widget.miniIndicatorContainerPadding,
-            margin: widget.miniIndicatorContainerMargin,
-            alignment: widget.miniIndicatorContainerAlignment,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(widget.images.length, (index) {
-                  bool isSelected = _currentPage == index;
-                  return GestureDetector(
-                    onTap: () {
-                      _pageController.animateToPage(
-                        index,
-                        duration: widget.pageTransitionDuration,
-                        curve: widget.pageTransitionCurve,
-                      );
-                      _resetAutoScroll();
-                    },
-                    child: AnimatedContainer(
-                      duration: widget.dotAnimationDuration,
-                      curve: widget.dotAnimationCurve,
-                      margin: EdgeInsets.symmetric(horizontal: widget.dotSpacing / 2),
-                      width: isSelected
-                          ? widget.selectedDotWidth
-                          : widget.unselectedDotWidth,
-                      height: isSelected
-                          ? widget.selectedDotHeight
-                          : widget.unselectedDotHeight,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? widget.selectedDotColor
-                            : widget.unselectedDotColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  );
-                }),
+            child: AnimatedContainer(
+              duration: widget.dotAnimationDuration,
+              curve: widget.dotAnimationCurve,
+              margin: EdgeInsets.symmetric(horizontal: widget.dotSpacing / 2),
+              width: isSelected
+                  ? widget.selectedDotWidth
+                  : widget.unselectedDotWidth,
+              height: isSelected
+                  ? widget.selectedDotHeight
+                  : widget.unselectedDotHeight,
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? widget.selectedDotColor
+                    : widget.unselectedDotColor,
+                shape: BoxShape.circle,
               ),
             ),
-          ),
-        ),
-      ],
+          );
+        }),
+      ),
     );
   }
 
@@ -231,6 +197,77 @@ class _MyDottedImageViewerState extends State<MyDottedImageViewer>
     if (widget.autoScroll && _autoScrollController != null) {
       _autoScrollController!.reset();
       _autoScrollController!.forward();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final EdgeInsets resolvedPadding =
+        widget.miniIndicatorContainerPadding.resolve(Directionality.of(context));
+    final double defaultMiniHeight =
+        max(widget.selectedDotHeight, widget.unselectedDotHeight) +
+            resolvedPadding.vertical;
+
+    Widget pageView = PageView.builder(
+      controller: _pageController,
+      physics: widget.scrollPhysics ?? const PageScrollPhysics(),
+      itemCount: widget.images.length,
+      onPageChanged: (index) {
+        setState(() {
+          _currentPage = index;
+        });
+        _resetAutoScroll();
+
+        // Trigger the onPageChanged callback with the current displayed index.
+        if (widget.onPageChanged != null) {
+          widget.onPageChanged!(index);
+        }
+      },
+      itemBuilder: (context, index) {
+        Widget imageWidget = _buildImage(widget.images[index]);
+        // Wrap the image with GestureDetector to handle tap events and return the image tapped index.
+        if (widget.onImagePressed != null) {
+          imageWidget = GestureDetector(
+            onTap: () => widget.onImagePressed!(index),
+            child: imageWidget,
+          );
+        }
+        return imageWidget;
+      },
+    );
+
+    if (widget.overlayDots) {
+      return Column(
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                pageView,
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    alignment: widget.overlayDotsAlignment,
+                    padding: widget.overlayDotsPadding,
+                    child: _buildDotsIndicator(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        children: [
+          Expanded(child: pageView),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: _buildDotsIndicator(),
+          ),
+        ],
+      );
     }
   }
 }

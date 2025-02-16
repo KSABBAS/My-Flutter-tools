@@ -28,6 +28,8 @@ import 'package:my_tools_development/MyTools/tools/Video_Tools/miniVideoPlayer/m
 import 'package:my_tools_development/MyTools/tools/builder_tools/DistributiveGView.dart';
 import 'package:my_tools_development/MyTools/tools/builder_tools/Specific_height_width_grid.dart';
 import 'package:my_tools_development/MyTools/Functions/WidgetListBuilder.dart';
+import 'package:my_tools_development/MyTools/tools/builder_tools/MyMiniOnTheRightCardViewer.dart';
+import 'package:my_tools_development/MyTools/tools/builder_tools/cardViewWidget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,14 +55,23 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MyMiniOnTheRightImageViewer(images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0QW0phPxDyjmCAiQWzEIPhoyRJVnej55lCQ&s",
-    ], 
-    activeDotColor: Colors.green,
-    imageFit: BoxFit.fitWidth,
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+      'https://static-cse.canva.com/blob/1100617/create_portfolio_lead.11d341cb.jpg',
+    ],
+    onImagePressed: (index) {
+      print('Image $index pressed');
+    },
+    onPageChanged: (index) {
+      print('Page changed to $index');
+    },
+    autoScroll: true,
     );
   }
 }

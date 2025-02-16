@@ -31,6 +31,12 @@ class MyMiniOnTheRightImageViewer extends StatefulWidget {
   final Duration autoScrollInterval;
   final Duration autoScrollAnimationDuration;
   final Curve autoScrollCurve;
+  
+  // ----- Callbacks -----
+  /// Called when the page changes; provides the new index.
+  final ValueChanged<int>? onPageChanged;
+  /// Called when the displayed image is tapped; provides the index.
+  final ValueChanged<int>? onImagePressed;
 
   const MyMiniOnTheRightImageViewer({
     Key? key,
@@ -49,6 +55,8 @@ class MyMiniOnTheRightImageViewer extends StatefulWidget {
     this.autoScrollInterval = const Duration(seconds: 3),
     this.autoScrollAnimationDuration = const Duration(milliseconds: 300),
     this.autoScrollCurve = Curves.easeInOut,
+    this.onPageChanged,
+    this.onImagePressed,
   }) : super(key: key);
 
   @override
@@ -92,18 +100,28 @@ class _MyMiniOnTheRightImageViewerState extends State<MyMiniOnTheRightImageViewe
     super.dispose();
   }
 
-  /// Builds the image widget using the specified imageFit.
-  Widget _buildImage(dynamic imageSource) {
+  /// Builds the image widget using the specified imageFit and wraps it with a GestureDetector.
+  Widget _buildImage(dynamic imageSource, int index) {
+    Widget imageWidget;
     if (imageSource is String) {
       if (imageSource.startsWith('http') || imageSource.startsWith('https')) {
-        return Image.network(imageSource, fit: widget.imageFit);
+        imageWidget = Image.network(imageSource, fit: widget.imageFit);
       } else {
-        return Image.asset(imageSource, fit: widget.imageFit);
+        imageWidget = Image.asset(imageSource, fit: widget.imageFit);
       }
     } else if (imageSource is Uint8List) {
-      return Image.memory(imageSource, fit: widget.imageFit);
+      imageWidget = Image.memory(imageSource, fit: widget.imageFit);
+    } else {
+      imageWidget = Container();
     }
-    return Container();
+    return GestureDetector(
+      onTap: () {
+        if (widget.onImagePressed != null) {
+          widget.onImagePressed!(index);
+        }
+      },
+      child: imageWidget,
+    );
   }
 
   @override
@@ -121,6 +139,9 @@ class _MyMiniOnTheRightImageViewerState extends State<MyMiniOnTheRightImageViewe
               setState(() {
                 _currentPage = index;
               });
+              if (widget.onPageChanged != null) {
+                widget.onPageChanged!(index);
+              }
             },
             itemBuilder: (context, index) {
               return AnimatedBuilder(
@@ -157,7 +178,7 @@ class _MyMiniOnTheRightImageViewerState extends State<MyMiniOnTheRightImageViewe
                             ],
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: _buildImage(widget.images[index]),
+                          child: _buildImage(widget.images[index], index),
                         ),
                       );
                     },
