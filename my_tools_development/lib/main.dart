@@ -16,6 +16,7 @@ import 'package:my_tools_development/MyTools/tools/Button_Tools/Radio/MultiRButt
 import 'package:my_tools_development/MyTools/tools/Button_Tools/StarsRating.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/GenerateStarRating.dart';
+import 'package:my_tools_development/MyTools/tools/Generator_Tools/dayListGenerator.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/generateQRCode.dart';
 import 'package:my_tools_development/MyTools/tools/Image_Tools/Image_Viewers/ClickToOpenImageViwer.dart';
 import 'package:my_tools_development/MyTools/tools/Image_Tools/Image_Viewers/Dotted_image_viewer.dart';
@@ -52,66 +53,31 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-double rating1 = 0;
-double rating2 = 0;
-double rating3 = 0;
 
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          StarRating(
-            onRatingChanged: (value) {
-              rating1 = value.toDouble();
-              print((rating1+rating2+rating3)/3);
-              setState(() {
-                
-              });
-            },
-            initialRating: rating1.toInt(),
-            starEdgeStyle: StarEdgeStyle.smooth,
-            starSpacing: 10,
-            unselectedStrokeColor: Colors.red,
-          ),
-          StarRating(
-            onRatingChanged: (value) {
-              rating2 = value.toDouble();
-              print((rating1+rating2+rating3)/3);
-              setState(() {
-                
-              });
-            },
-            initialRating: rating2.toInt(),
-            starEdgeStyle: StarEdgeStyle.smooth,
-            starSpacing: 10,
-            unselectedStrokeColor: Colors.red,
-          ),
-          StarRating(
-            onRatingChanged: (value) {
-              rating3 = value.toDouble();
-              print((rating1+rating2+rating3)/3);
-              setState(() {
-                
-              });
-            },
-            initialRating: rating3.toInt(),
-            starEdgeStyle: StarEdgeStyle.smooth,
-            starSpacing: 10,
-            unselectedStrokeColor: Colors.red,
-          ),
-           StarRatingDisplay(
-            key: ValueKey((rating1+rating2+rating3)/3),
-            rating: (rating1+rating2+rating3)/3,
-            starSpacing: 10,
-            unselectedStrokeColor: Colors.red,
-            animationDuration: Duration(milliseconds: 0),
-          ),
-
-        ],
-      ),
+    return Column(
+      children: [
+        AutoDateDisplayer(
+          onDateSelected: (value) {
+            print(value);
+          },
+          containerHeight: 400,
+          containerWidth: 150,
+          currentDayHighlightColor: Colors.red,
+          daysAfter: 5, 
+          daysBefore: 3,
+          orientation:DateDisplayOrientation.vertical,
+          showDayName: true,
+          showDayNumber: true,
+          showSelector: true,
+          onSelectedIndexChanged: (value) {
+            print(value);
+          },
+          
+        )
+      ],
     );
   }
 }
