@@ -12,7 +12,7 @@ enum HorizontalDateOrder { dayNameOnTop, dayNumberOnTop }
 /// controls whether the day name appears on the left or the day number does.
 enum VerticalDateOrder { dayNameOnLeft, dayNumberOnLeft }
 
-class AutoDateDisplayer extends StatefulWidget {
+class MyAutoDateDisplayer extends StatefulWidget {
   /// How many days before today to display. Defaults to 3.
   final int daysBefore;
 
@@ -106,7 +106,7 @@ class AutoDateDisplayer extends StatefulWidget {
   /// Callback that returns the index of the selected date.
   final ValueChanged<int>? onSelectedIndexChanged;
 
-  const AutoDateDisplayer({
+  const MyAutoDateDisplayer({
     Key? key,
     this.daysBefore = 3,
     this.daysAfter = 10,
@@ -146,10 +146,10 @@ class AutoDateDisplayer extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AutoDateDisplayerState createState() => _AutoDateDisplayerState();
+  _MyAutoDateDisplayerState createState() => _MyAutoDateDisplayerState();
 }
 
-class _AutoDateDisplayerState extends State<AutoDateDisplayer> {
+class _MyAutoDateDisplayerState extends State<MyAutoDateDisplayer> {
   late DateTime today;
   late List<DateTime> dates;
   late int selectedIndex;
