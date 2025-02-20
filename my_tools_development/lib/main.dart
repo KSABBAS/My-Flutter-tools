@@ -16,6 +16,7 @@ import 'package:my_tools_development/MyTools/tools/Button_Tools/MyButton.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Radio/MultiRButton.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/StarsRating.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
+import 'package:my_tools_development/MyTools/tools/Generator_Tools/FlipCard.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/GenerateStarRating.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/PopUpWidget.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/dayListGenerator.dart';
@@ -58,102 +59,50 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return CMaker(
-        width: double.infinity,
-        alignment: Alignment.center,
-        color: const Color.fromARGB(255, 163, 175, 76),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-          MyPopupMenu(
-          direction: PopupDirection.left,
-          overlayBlur: 5,
-          excludeChildFromBlur: true,
-          child: CMaker(
-            height: 200,
-            width: 200,
-            color: Colors.blue,
-            child:Text('Hello'),
+    return Center(
+      child: CardFlipWidget(
+        flipType: FlipType.loop,
+        widgetList: [
+          Center(
+            child: Text(
+              " front front front 1",
+              style: TextStyle(fontSize: 30),
+            ),
           ),
-          builder: (context) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text('Hello'),
-                Text('World'),
-              ],
-            );
-          },
-        ),MyPopupMenu(
-          direction: PopupDirection.left,
-          overlayBlur: 5,
-          excludeChildFromBlur: true,
-          child: CMaker(
-            height: 200,
-            width: 200,
-            color: Colors.blue,
-            child:Text('Hello'),
+          Center(
+            child: Text(
+              " front front front 2",
+              style: TextStyle(fontSize: 30),
+            ),
           ),
-          builder: (context) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text('Hello'),
-                Text('World'),
-              ],
-            );
-          },
-        ),MyPopupMenu(
-          direction: PopupDirection.left,
-          overlayBlur: 5,
-          excludeChildFromBlur: true,
-          child: CMaker(
-            height: 200,
-            width: 200,
-            color: Colors.blue,
-            child:Text('Hello'),
+          Center(
+            child: Text(
+              " front front front 3",
+              style: TextStyle(fontSize: 30),
+            ),
           ),
-          builder: (context) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text('Hello'),
-                Text('World'),
-              ],
-            );
-          },
-        )
-        ],));
+          Center(
+            child: Text(
+              " front front front 4",
+              style: TextStyle(fontSize: 30),
+            ),
+          ),
+        ],
+        front: Center(
+          child: Text(
+            " front front front",
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
+        back: Center(
+          child: Text(
+            "back back back",
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
+        height: 230,
+        width: 350,
+      ),
+    );
   }
 }
-
-
-
-
-
-
-
-
-// Column(
-//         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//         children: [
-//           CustomPopupMenu(
-//             overlayBlur: 1,
-//             excludeChildFromBlur: true,
-//             direction: PopupDirection.bottom,
-//             slideReverse: true,
-//             animationType: PopupAnimationType.slide,
-//             builder: (context) {
-//             return Column(
-//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//               children: [
-//                 Text('Hello'),
-//                 Text('World'),
-//               ],
-//             );
-//           },child: CMaker(height: 100,width: 100,circularRadius: 15,color: Colors.red,)),
-//           CMaker(height: 100,width: 100,circularRadius: 15,color: Colors.red,),
-//           CMaker(height: 100,width: 100,circularRadius: 15,color: Colors.red,),
-//           CMaker(height: 100,width: 100,circularRadius: 15,color: Colors.red,),
-//         ],
-//       ),
