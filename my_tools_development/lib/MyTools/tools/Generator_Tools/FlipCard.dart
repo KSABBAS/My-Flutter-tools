@@ -8,7 +8,7 @@ enum FlipType {
   loop,     // Continuously cycles through a list of widgets.
 }
 
-class CardFlipWidget extends StatefulWidget {
+class MyFlipperWidget extends StatefulWidget {
   final Widget front;
   final Widget back;
   final List<Widget>? widgetList; // Required for loop mode.
@@ -21,9 +21,10 @@ class CardFlipWidget extends StatefulWidget {
   final FlipType flipType;
   final Duration bounceDelay; // Only used in bouncing mode.
   final ValueChanged<int>? onFlip; // For non-loop modes: 0 means front, 1 means back; for loop mode, the current index.
-  final VoidCallback? onTap;
+  /// onTap returns the current face index when the card is tapped (only for normal and loop modes).
+  final ValueChanged<int>? onTap;
 
-  const CardFlipWidget({
+  const MyFlipperWidget({
     Key? key,
     required this.front,
     required this.back,
@@ -47,10 +48,10 @@ class CardFlipWidget extends StatefulWidget {
         super(key: key);
 
   @override
-  _CardFlipWidgetState createState() => _CardFlipWidgetState();
+  _MyFlipperWidgetState createState() => _MyFlipperWidgetState();
 }
 
-class _CardFlipWidgetState extends State<CardFlipWidget>
+class _MyFlipperWidgetState extends State<MyFlipperWidget>
     with SingleTickerProviderStateMixin {
   // NORMAL MODE:
   late AnimationController _normalController;
@@ -108,7 +109,9 @@ class _CardFlipWidgetState extends State<CardFlipWidget>
             // If the card is now showing back, schedule a second flip after bounceDelay.
             if (!_bouncingIsFrontVisible) {
               Future.delayed(widget.bounceDelay, () {
-                if (mounted && !_bouncingController.isAnimating && !_bouncingIsFrontVisible) {
+                if (mounted &&
+                    !_bouncingController.isAnimating &&
+                    !_bouncingIsFrontVisible) {
                   _triggerBouncingFlip(); // This will flip it back.
                 }
               });
@@ -137,7 +140,7 @@ class _CardFlipWidgetState extends State<CardFlipWidget>
     }
   }
 
-  /// For bouncing mode, this triggers a normal flip.
+  /// For bouncing mode, this triggers a normal flip (back to front).
   void _triggerBouncingFlip() {
     if (!_bouncingController.isAnimating) {
       _bouncingController.forward();
@@ -180,65 +183,67 @@ class _CardFlipWidgetState extends State<CardFlipWidget>
 
   @override
   Widget build(BuildContext context) {
-    switch (widget.flipType) {
-      case FlipType.normal:
-        return GestureDetector(
-          onTap: () {
-            _flipCard();
-            widget.onTap?.call();
+    if (widget.flipType == FlipType.loop) {
+      return GestureDetector(
+        onTap: () {
+          _flipCard();
+          // Return the current index when tapped.
+          widget.onTap?.call(_loopIndex);
+        },
+        child: AnimatedBuilder(
+          animation: _loopAnimation,
+          builder: (context, child) {
+            double angle = _loopAnimation.value;
+            double extraRotation = (angle > math.pi / 2) ? math.pi : 0;
+            // For loop mode, display the current face for first half,
+            // and the next face for the second half.
+            Widget content;
+            if (angle <= math.pi / 2) {
+              content = widget.widgetList![_loopIndex];
+            } else {
+              content =
+                  widget.widgetList![(_loopIndex + 1) % widget.widgetList!.length];
+            }
+            return _buildCard(content, angle, extraRotation);
           },
-          child: AnimatedBuilder(
-            animation: _normalAnimation,
-            builder: (context, child) {
-              double angle = _normalAnimation.value;
-              double extraRotation = (angle > math.pi / 2) ? math.pi : 0;
-              Widget content = _normalIsFrontVisible
+        ),
+      );
+    } else {
+      // Normal and bouncing modes use two faces (front/back).
+      return GestureDetector(
+        onTap: () {
+          _flipCard();
+          // In normal mode, return the current index (0 for front, 1 for back).
+          if (widget.flipType == FlipType.normal) {
+            widget.onTap?.call(_normalIsFrontVisible ? 0 : 1);
+          }
+          // For bouncing, we won't call onTap.
+        },
+        child: AnimatedBuilder(
+          animation: widget.flipType == FlipType.normal
+              ? _normalAnimation
+              : _bouncingAnimation,
+          builder: (context, child) {
+            double angle = widget.flipType == FlipType.normal
+                ? _normalAnimation.value
+                : _bouncingAnimation.value;
+            double extraRotation = (angle > math.pi / 2) ? math.pi : 0;
+            // Use faces[0] as front and faces[1] as back.
+            Widget content;
+            if (widget.flipType == FlipType.normal) {
+              content = _normalIsFrontVisible
                   ? (angle <= math.pi / 2 ? widget.front : widget.back)
                   : (angle <= math.pi / 2 ? widget.back : widget.front);
-              return _buildCard(content, angle, extraRotation);
-            },
-          ),
-        );
-      case FlipType.bouncing:
-        return GestureDetector(
-          onTap: () {
-            _flipCard();
-            widget.onTap?.call();
-          },
-          child: AnimatedBuilder(
-            animation: _bouncingAnimation,
-            builder: (context, child) {
-              double angle = _bouncingAnimation.value;
-              double extraRotation = (angle > math.pi / 2) ? math.pi : 0;
-              Widget content = _bouncingIsFrontVisible
+            } else {
+              // Bouncing mode.
+              content = _bouncingIsFrontVisible
                   ? (angle <= math.pi / 2 ? widget.front : widget.back)
                   : (angle <= math.pi / 2 ? widget.back : widget.front);
-              return _buildCard(content, angle, extraRotation);
-            },
-          ),
-        );
-      case FlipType.loop:
-        return GestureDetector(
-          onTap: () {
-            _flipCard();
-            widget.onTap?.call();
+            }
+            return _buildCard(content, angle, extraRotation);
           },
-          child: AnimatedBuilder(
-            animation: _loopAnimation,
-            builder: (context, child) {
-              double angle = _loopAnimation.value;
-              double extraRotation = (angle > math.pi / 2) ? math.pi : 0;
-              Widget content;
-              if (angle <= math.pi / 2) {
-                content = widget.widgetList![_loopIndex];
-              } else {
-                content = widget.widgetList![
-                    (_loopIndex + 1) % widget.widgetList!.length];
-              }
-              return _buildCard(content, angle, extraRotation);
-            },
-          ),
-        );
+        ),
+      );
     }
   }
 

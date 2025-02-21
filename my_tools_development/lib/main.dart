@@ -59,49 +59,18 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: CardFlipWidget(
-        flipType: FlipType.loop,
-        widgetList: [
-          Center(
-            child: Text(
-              " front front front 1",
-              style: TextStyle(fontSize: 30),
-            ),
-          ),
-          Center(
-            child: Text(
-              " front front front 2",
-              style: TextStyle(fontSize: 30),
-            ),
-          ),
-          Center(
-            child: Text(
-              " front front front 3",
-              style: TextStyle(fontSize: 30),
-            ),
-          ),
-          Center(
-            child: Text(
-              " front front front 4",
-              style: TextStyle(fontSize: 30),
-            ),
-          ),
-        ],
-        front: Center(
-          child: Text(
-            " front front front",
-            style: TextStyle(fontSize: 30),
-          ),
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.deepPurple, Colors.indigo],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        back: Center(
-          child: Text(
-            "back back back",
-            style: TextStyle(fontSize: 30),
-          ),
-        ),
-        height: 230,
-        width: 350,
+      ),
+      child: Center(
+        child: Text("How To Use My Tools",style:TextStyle(fontSize: 40, color: Colors.white))
       ),
     );
   }
