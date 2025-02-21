@@ -16,6 +16,7 @@ import 'package:my_tools_development/MyTools/tools/Button_Tools/MyButton.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/Radio/MultiRButton.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/StarsRating.dart';
 import 'package:my_tools_development/MyTools/tools/CMaker_Tools/CMaker.dart';
+import 'package:my_tools_development/MyTools/tools/Generator_Tools/CustomToolTip.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/FlipCard.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/GenerateStarRating.dart';
 import 'package:my_tools_development/MyTools/tools/Generator_Tools/PopUpWidget.dart';
@@ -60,18 +61,30 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.deepPurple, Colors.indigo],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurple, Colors.indigo],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
-      ),
-      child: Center(
-        child: Text("How To Use My Tools",style:TextStyle(fontSize: 40, color: Colors.white))
-      ),
-    );
+        child: Center(
+            child: MyTooltip(
+              autoHideDelay: Duration(seconds: 5),
+              additionalOffset:Offset(50, 0),
+              tooltipWidth: 80,
+              tooltipHeight: 40,
+              tooltipPosition: TooltipPositionExtended.topRight,
+                child: CMaker(
+                  width: 150,
+                  height: 100,
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  circularRadius: 15,
+                  child: Text("Click Me", style: TextStyle(fontSize: 25),),
+                ),
+                tooltipContent: Center(child: Text("Hi There!")))));
   }
 }
