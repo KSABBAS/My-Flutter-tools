@@ -33,6 +33,7 @@ import 'package:my_tools_development/MyTools/tools/Selector_Tools/MyExpandingRow
 import 'package:my_tools_development/MyTools/tools/Selector_Tools/MyRowWidgetSelector.dart';
 import 'package:my_tools_development/MyTools/tools/Text_Tools/TMaker.dart';
 import 'package:my_tools_development/MyTools/tools/Timer_Tools/CircularCountdownTimer.dart';
+import 'package:my_tools_development/MyTools/tools/Timer_Tools/FlipTimer.dart';
 import 'package:my_tools_development/MyTools/tools/Video_Tools/miniVideoPlayer/miniVideoPlayer.dart';
 import 'package:my_tools_development/MyTools/tools/builder_tools/DistributiveGView.dart';
 import 'package:my_tools_development/MyTools/tools/builder_tools/Specific_height_width_grid.dart';
@@ -58,6 +59,7 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
+
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
@@ -72,21 +74,16 @@ class _AppState extends State<App> {
           ),
         ),
         child: Center(
-            child: MyCircularCountdownTimer(
-          seconds: 20,
-          minutes: 5,
-          textStyle: TextStyle(color: Colors.white, fontSize: 30),
-          backgroundColor: Colors.white,
-          controlButtonIconSize: 20,
-          controlButtonContainerHeight: 35,
-          controlButtonContainerWidth: 35,
-          size: 300,
-          strokeWidth: 30,
-          controlButtonAlignment: Alignment(0, .6),
-          onChangedTime: (value) {
-            print(value.seconds);
+            child: MyFlipRotateTimer(
+          initialDuration: Duration(seconds: 12),
+          displayMode: DisplayMode.current12h,
+          customTime: TimeFlipEvent(hour: 7, minute: 37, second: 23,period:"AM"),
+          onSecondFlip: (value) {
+            print(value.second);
           },
-          progressGradient: LinearGradient(colors: [Colors.greenAccent, Colors.blueAccent]),
+          onComplete: () {
+            print("done");
+          },
         )));
   }
 }
@@ -113,31 +110,11 @@ class _AppState extends State<App> {
 
 
 
-// CustomCountdownTimer(
-//               minutes: 5,
-//               seconds: 20,
-//           strokeWidth: 30,
-//           showControlButton: true,
-//           size: 300,
-//           textStyle: TextStyle(color: Colors.white, fontSize: 30),
-//           onChangedTime: (value) {
-//             print(value);
-//           },
-//           onPause:(value) {
-//             print(value);
-//           },
-//           onComplete: () {
-//             print("Timer Completed");
-//           },
-//           onPlay: (value) {
-//             print(value);
-//           },
-//           progressGradient: LinearGradient(colors: [Colors.greenAccent,Colors.blueAccent]),
-//           controlButtonAlignment: Alignment(0,.6),
-//           controlButtonBackgroundColor: Colors.white,
-//           controlButtonIconSize: 20,
-//           controlButtonIconColor: Colors.indigo,
-//           controlButtonContainerHeight: 35,
-//           controlButtonContainerWidth: 35,
-//           backgroundColor: Colors.white,
-//         )
+// MyFlipRotateTimer(
+//             animationMode: AnimationMode.flip,
+//             displayMode: DisplayMode.current12h,
+//             initialDuration: Duration(minutes: 2),
+//             onSecondFlip: (value) {
+//               print(value);
+//             },
+//           ),
