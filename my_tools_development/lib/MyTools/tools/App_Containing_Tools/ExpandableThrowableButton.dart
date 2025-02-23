@@ -1,21 +1,23 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+
 class MyFloatingMenuButton extends StatelessWidget {
   final Widget body;
   final DraggableFloatingMenu floatingWidget;
-  
+
   const MyFloatingMenuButton({
     Key? key,
     required this.body,
     required this.floatingWidget,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           body,
+          // Floating menu is placed on top of the body.
           floatingWidget,
         ],
       ),
@@ -65,30 +67,24 @@ Offset getMenuOffset(
 }
 
 /// A draggable floating menu widget that leaves the FAB unchanged but dynamically
-/// positions the popup menu in one of eight directions. The popup’s slide animation
-/// is calculated based on its computed height (from itemCount, menuItemHeight, and spacing).
-/// Items are built via an itemBuilder callback.
+/// positions the popup menu in one of eight directions. The popup’s fade animation
+/// is calculated based on its opacity. Items are built via an itemBuilder callback.
+/// Tapping a menu item calls [onItemTap] with the index of the pressed item.
 class DraggableFloatingMenu extends StatefulWidget {
-  /// Number of items to build.
   final int itemCount;
-  /// Callback to build each item.
   final Widget Function(BuildContext context, int index) itemBuilder;
-  
   final Offset initialPosition;
   final Duration animationDuration;
   final Curve animationCurve;
-  
   // FAB customization.
   final Color fabColor;
   final double fabSize;
   final Icon fabIcon;
-  
   // Popup Menu customization.
   final double menuWidth;
   final double menuItemHeight;
   final Color? menuBackgroundColor;
   final BoxDecoration? menuDecoration;
-  
   // Global menu item style parameters.
   final double? menuItemWidth;
   final EdgeInsets? menuItemPadding;
@@ -96,11 +92,14 @@ class DraggableFloatingMenu extends StatefulWidget {
   final AlignmentGeometry? menuItemAlignment;
   final double? menuItemSpacing;
   final BoxDecoration? menuItemDecoration;
-  
+  /// Callback when a menu item is tapped. Returns the index of the pressed item.
+  final ValueChanged<int>? onItemTap;
+
   const DraggableFloatingMenu({
     Key? key,
     required this.itemCount,
     required this.itemBuilder,
+    this.onItemTap,
     this.initialPosition = const Offset(20, 100),
     this.animationDuration = const Duration(milliseconds: 250),
     this.animationCurve = Curves.easeOut,
@@ -118,23 +117,21 @@ class DraggableFloatingMenu extends StatefulWidget {
     this.menuItemSpacing,
     this.menuItemDecoration,
   }) : super(key: key);
-  
+
   @override
   _DraggableFloatingMenuState createState() => _DraggableFloatingMenuState();
 }
 
-class _DraggableFloatingMenuState extends State<DraggableFloatingMenu> with SingleTickerProviderStateMixin {
+class _DraggableFloatingMenuState extends State<DraggableFloatingMenu>
+    with SingleTickerProviderStateMixin {
   late Offset position;
   late AnimationController _menuController;
   late Animation<double> _menuFadeAnimation;
-  late Animation<Offset> _translationAnimation;
-  
   bool isMenuOpen = false;
-  
   // For dragging.
   Offset? dragStart;
   Offset? dragStartPosition;
-  
+
   @override
   void initState() {
     super.initState();
@@ -147,13 +144,13 @@ class _DraggableFloatingMenuState extends State<DraggableFloatingMenu> with Sing
       CurvedAnimation(parent: _menuController, curve: widget.animationCurve),
     );
   }
-  
+
   @override
   void dispose() {
     _menuController.dispose();
     super.dispose();
   }
-  
+
   void toggleMenu() {
     setState(() {
       isMenuOpen = !isMenuOpen;
@@ -164,20 +161,21 @@ class _DraggableFloatingMenuState extends State<DraggableFloatingMenu> with Sing
       }
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final fabSize = widget.fabSize;
     final screenSize = MediaQuery.of(context).size;
     const threshold = 100.0;
     const fixedMargin = 8.0;
-    
+
     // Compute distances from the FAB to the screen edges.
     final dTop = position.dy;
     final dBottom = screenSize.height - (position.dy + fabSize);
     final dLeft = position.dx;
     final dRight = screenSize.width - (position.dx + fabSize);
-    
+
+    // Determine the popup direction based on the FAB position.
     PopupDirection popupDirection;
     if (dRight <= threshold && dBottom <= threshold) {
       popupDirection = PopupDirection.topLeft;
@@ -198,40 +196,13 @@ class _DraggableFloatingMenuState extends State<DraggableFloatingMenu> with Sing
     } else {
       popupDirection = PopupDirection.bottom;
     }
-    
+
     // Compute the popup menu height based on item count, item height, and spacing.
     final spacing = widget.menuItemSpacing ?? 0.0;
     final computedMenuHeight = (widget.itemCount * widget.menuItemHeight) +
         ((widget.itemCount - 1) * spacing);
     final menuWidth = widget.menuWidth;
-    
-    // Calculate the translation offset for the slide animation.
-    final translationOffset = () {
-      switch (popupDirection) {
-        case PopupDirection.top:
-          return Offset(0, -computedMenuHeight);
-        case PopupDirection.bottom:
-          return Offset(0, computedMenuHeight);
-        case PopupDirection.left:
-          return Offset(-menuWidth, 0);
-        case PopupDirection.right:
-          return Offset(menuWidth, 0);
-        case PopupDirection.topLeft:
-          return Offset(-menuWidth, -computedMenuHeight);
-        case PopupDirection.topRight:
-          return Offset(menuWidth, -computedMenuHeight);
-        case PopupDirection.bottomLeft:
-          return Offset(-menuWidth, computedMenuHeight);
-        case PopupDirection.bottomRight:
-          return Offset(menuWidth, computedMenuHeight);
-      }
-    }();
-    
-    _translationAnimation = Tween<Offset>(
-      begin: translationOffset,
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _menuController, curve: widget.animationCurve));
-    
+
     final menuPositionOffset = getMenuOffset(
       popupDirection,
       fabSize,
@@ -240,10 +211,19 @@ class _DraggableFloatingMenuState extends State<DraggableFloatingMenu> with Sing
       menuWidth,
       computedMenuHeight,
     );
-    
+
+    // Build menu items with their own GestureDetector for tap handling.
     Widget buildMenuItems() {
       List<Widget> items = List.generate(widget.itemCount, (i) {
-        return widget.itemBuilder(context, i);
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            if (widget.onItemTap != null) {
+              widget.onItemTap!(i);
+            }
+          },
+          child: widget.itemBuilder(context, i),
+        );
       });
       if (spacing > 0 && items.length > 1) {
         List<Widget> spaced = [];
@@ -263,15 +243,16 @@ class _DraggableFloatingMenuState extends State<DraggableFloatingMenu> with Sing
         children: items,
       );
     }
-    
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // FAB with boundaries on dragging.
-          GestureDetector(
+
+    // The revised structure: a top-level Stack with separate Positioned widgets for the FAB and popup menu.
+    return Stack(
+      clipBehavior: Clip.none, // Allows overflow so that menu items outside FAB bounds receive taps. :contentReference[oaicite:0]{index=0}
+      children: [
+        // Draggable FAB.
+        Positioned(
+          left: position.dx,
+          top: position.dy,
+          child: GestureDetector(
             onPanStart: (details) {
               dragStart = details.globalPosition;
               dragStartPosition = position;
@@ -279,7 +260,6 @@ class _DraggableFloatingMenuState extends State<DraggableFloatingMenu> with Sing
             onPanUpdate: (details) {
               final delta = details.globalPosition - dragStart!;
               final newPos = dragStartPosition! + delta;
-              // Clamp the new position so the FAB doesn't leave the screen.
               final clampedX = newPos.dx.clamp(0.0, screenSize.width - fabSize);
               final clampedY = newPos.dy.clamp(0.0, screenSize.height - fabSize);
               setState(() {
@@ -304,44 +284,44 @@ class _DraggableFloatingMenuState extends State<DraggableFloatingMenu> with Sing
               child: Center(child: widget.fabIcon),
             ),
           ),
-          // Popup menu.
-          if (isMenuOpen)
-            Positioned(
-              left: menuPositionOffset.dx,
-              top: menuPositionOffset.dy,
-              child: AnimatedBuilder(
-                animation: _menuController,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset: _translationAnimation.value,
-                    child: Opacity(
-                      opacity: _menuFadeAnimation.value,
-                      child: Container(
-                        width: menuWidth,
-                        height: computedMenuHeight,
-                        decoration: widget.menuDecoration ??
-                            BoxDecoration(
-                              color: widget.menuBackgroundColor ?? Colors.transparent,
-                              borderRadius: BorderRadius.circular(8.0),
-                              boxShadow: (widget.menuBackgroundColor == Colors.transparent)
-                                  ? []
-                                  : const [
-                                      BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 4,
-                                        offset: Offset(2, 2),
-                                      ),
-                                    ],
-                            ),
-                        child: buildMenuItems(),
-                      ),
+        ),
+        // Popup menu.
+        if (isMenuOpen)
+          Positioned(
+            left: position.dx + menuPositionOffset.dx,
+            top: position.dy + menuPositionOffset.dy,
+            child: AnimatedBuilder(
+              animation: _menuController,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _menuFadeAnimation.value,
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: Container(
+                      width: menuWidth,
+                      height: computedMenuHeight,
+                      decoration: widget.menuDecoration ??
+                          BoxDecoration(
+                            color: widget.menuBackgroundColor ?? Colors.transparent,
+                            borderRadius: BorderRadius.circular(8.0),
+                            boxShadow: (widget.menuBackgroundColor == Colors.transparent)
+                                ? []
+                                : const [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 4,
+                                      offset: Offset(2, 2),
+                                    ),
+                                  ],
+                          ),
+                      child: buildMenuItems(),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

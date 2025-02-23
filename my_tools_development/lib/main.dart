@@ -83,16 +83,23 @@ class _AppState extends State<App> {
         floatingWidget: DraggableFloatingMenu(
             itemCount: options.length,
             itemBuilder: (context, index) {
-              return CMaker(
-                height: 30,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    options[index][1],
-                    Text(options[index][0]),
-                  ],
+              return InkWell(
+                onTap: () {
+                  print("tapped $index");
+                },
+                child: CMaker(
+                  height: 30,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      options[index][1],
+                      Text(options[index][0]),
+                    ],
+                  ),
                 ),
               );
+            },onItemTap: (value) {
+              print(value);
             },
             menuItemHeight: 30));
   }
