@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-class MyFloatingIcon extends StatelessWidget {
+class MyFloatingMenuButton extends StatelessWidget {
   final Widget body;
-  final Widget floatingWidget;
+  final DraggableFloatingMenu floatingWidget;
   
-  const MyFloatingIcon({
+  const MyFloatingMenuButton({
     Key? key,
     required this.body,
     required this.floatingWidget,
@@ -109,7 +109,7 @@ class DraggableFloatingMenu extends StatefulWidget {
     this.fabIcon = const Icon(Icons.menu, color: Colors.white),
     this.menuWidth = 220.0,
     required this.menuItemHeight,
-    this.menuBackgroundColor,
+    this.menuBackgroundColor = Colors.white,
     this.menuDecoration,
     this.menuItemWidth,
     this.menuItemPadding,

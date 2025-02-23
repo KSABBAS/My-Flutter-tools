@@ -60,81 +60,41 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
+List options = [
+  ["one", Icon(Icons.home)],
+  ["two", Icon(Icons.percent)],
+  ["three", Icon(Icons.person)],
+];
 
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return MyFloatingIcon(
-      floatingWidget: DraggableFloatingMenu(
-          initialPosition: Offset(20, 100),
-          itemCount: 4,
-          // Build each item with a callback (index provided)
-          itemBuilder: (context, index) {
-            // Example: alternate background colors and display the index.
-            return Container(
-              width: 200, // You can override via menuItemWidth if desired.
-              height: 50,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              decoration: BoxDecoration(
-                color: index.isEven ? Colors.white : Colors.grey[200],
-                borderRadius: BorderRadius.circular(8.0),
+    return MyFloatingMenuButton(
+        body: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.deepPurple, Colors.indigo],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              child: Row(
-                children: [
-                  Icon(Icons.star, color: Colors.blue),
-                  const SizedBox(width: 8),
-                  Text('Custom Item $index'),
-                ],
-              ),
-            );
-          },
-          // FAB customizations:
-          fabColor: const Color.fromARGB(255, 58, 150, 183),
-          fabSize: 60,
-          fabIcon: const Icon(Icons.menu, color: Colors.white),
-          // Popup Menu customizations:
-          menuWidth: 220,
-          // Each item's fixed height.
-          menuItemHeight: 50,
-          // Global popup background (set transparent to have a "floating" look).
-          menuBackgroundColor: Colors.transparent,
-          // Global menu item style parameters (applied to all items if needed).
-          menuItemWidth: 200,
-          menuItemPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          menuItemMargin: const EdgeInsets.symmetric(vertical: 2.0),
-          menuItemAlignment: Alignment.centerLeft,
-          menuItemSpacing: 4.0,
-          menuItemDecoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          animationDuration: const Duration(milliseconds: 300),
-          animationCurve: Curves.easeOut,
-        ),
-      body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.deepPurple, Colors.indigo],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Center(
-              child: MyFlipRotateTimer(
-            initialDuration: Duration(seconds: 12),
-            displayMode: DisplayMode.current12h,
-            customTime: TimeFlipEvent(hour: 7, minute: 37, second: 23,period:"AM"),
-            onSecondFlip: (value) {
-              print(value.second);
+            )),
+        floatingWidget: DraggableFloatingMenu(
+            itemCount: options.length,
+            itemBuilder: (context, index) {
+              return CMaker(
+                height: 30,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    options[index][1],
+                    Text(options[index][0]),
+                  ],
+                ),
+              );
             },
-            onComplete: () {
-              print("done");
-            },
-          ))),
-    );
+            menuItemHeight: 30));
   }
 }
 
@@ -160,11 +120,28 @@ class _AppState extends State<App> {
 
 
 
-// MyFlipRotateTimer(
-//             animationMode: AnimationMode.flip,
-//             displayMode: DisplayMode.current12h,
-//             initialDuration: Duration(minutes: 2),
-//             onSecondFlip: (value) {
-//               print(value);
-//             },
-//           ),
+// MyFloatingIcon(
+//       body: Container(
+//           width: double.infinity,
+//           height: double.infinity,
+//           decoration: const BoxDecoration(
+//             gradient: LinearGradient(
+//               colors: [Colors.deepPurple, Colors.indigo],
+//               begin: Alignment.topLeft,
+//               end: Alignment.bottomRight,
+//             ),
+//           )),
+//       floatingWidget: DraggableFloatingMenu(
+//           itemCount: options.length,
+//           itemBuilder: (context, index) {
+//             return CMaker(
+//               height: 30,
+//               child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//               children: [
+//               options[index][1],
+//               Text(options[index][0]),
+//             ],),);
+//           },
+//           menuItemHeight: 30),
+//     );
