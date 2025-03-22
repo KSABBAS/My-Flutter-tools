@@ -3,6 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus
+  emoji_picker_flutter
   file_selector_windows
   geolocator_windows
   media_kit_libs_windows_video
