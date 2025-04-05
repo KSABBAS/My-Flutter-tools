@@ -198,28 +198,263 @@ class UserProfile {
   });
 }
 
+// Configuration classes for customization
+class MessageBubbleConfig {
+  final EdgeInsets margin;
+  final Duration appearAnimationDuration;
+  final Curve appearAnimationCurve;
+  final double transformOffset;
+  final bool enableHapticFeedback;
+  final EdgeInsets contentPadding;
+  final double fontSize;
+  final double emojiSize;
+  final double maxWidth;
+  final double maxHeight;
+  final bool showTimestamp;
+  final bool showReadStatus;
+  final TextStyle? timestampStyle;
+  final BoxDecoration? customDecoration;
+
+  const MessageBubbleConfig({
+    this.margin = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    this.appearAnimationDuration = const Duration(milliseconds: 300),
+    this.appearAnimationCurve = Curves.easeOutCubic,
+    this.transformOffset = 50,
+    this.enableHapticFeedback = true,
+    this.contentPadding = const EdgeInsets.all(12),
+    this.fontSize = 16,
+    this.emojiSize = 32,
+    this.maxWidth = 200,
+    this.maxHeight = 200,
+    this.showTimestamp = true,
+    this.showReadStatus = true,
+    this.timestampStyle,
+    this.customDecoration,
+  });
+}
+
+class InputAreaConfig {
+  final EdgeInsets margin;
+  final EdgeInsets padding;
+  final double borderRadius;
+  final double iconSize;
+  final Color? iconColor;
+  final bool showSendButton;
+  final bool showEmojiButton;
+  final bool showAttachmentButton;
+  final TextStyle? inputTextStyle;
+  final InputDecoration? inputDecoration;
+  final BoxDecoration? containerDecoration;
+  final double emojiPickerHeight;
+  final int emojiColumns;
+  final double emojiSizeMax;
+
+  const InputAreaConfig({
+    this.margin = const EdgeInsets.all(8),
+    this.padding = const EdgeInsets.symmetric(horizontal: 8),
+    this.borderRadius = 24,
+    this.iconSize = 24,
+    this.iconColor,
+    this.showSendButton = true,
+    this.showEmojiButton = true,
+    this.showAttachmentButton = true,
+    this.inputTextStyle,
+    this.inputDecoration,
+    this.containerDecoration,
+    this.emojiPickerHeight = 250,
+    this.emojiColumns = 7,
+    this.emojiSizeMax = 32,
+  });
+}
+
+class ReactionConfig {
+  final double selectorHeight;
+  final double selectorBorderRadius;
+  final EdgeInsets selectorPadding;
+  final EdgeInsets selectorMargin;
+  final double reactionSize;
+  final double spaceBetweenReactions;
+  final BoxDecoration? selectorDecoration;
+  final Duration showHideAnimationDuration;
+  final Curve showHideCurve;
+
+  const ReactionConfig({
+    this.selectorHeight = 40,
+    this.selectorBorderRadius = 24,
+    this.selectorPadding = const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+    this.selectorMargin = const EdgeInsets.symmetric(vertical: 4),
+    this.reactionSize = 20,
+    this.spaceBetweenReactions = 4,
+    this.selectorDecoration,
+    this.showHideAnimationDuration = const Duration(milliseconds: 200),
+    this.showHideCurve = Curves.easeInOut,
+  });
+}
+
 class CustomizableChatScreen extends StatefulWidget {
+  /// The title displayed in the app bar
+  /// 
+  /// Example: "Customer Support" or "Chat with John"
+  /// Used for identifying the chat conversation in the UI
   final String title;
+
+  /// The current user's profile information
+  /// 
+  /// Contains details like user ID, name, avatar URL, etc.
+  /// Example: UserProfile(id: "user123", name: "John Doe")
   final UserProfile currentUser;
+
+  /// The chat partner's profile information
+  /// 
+  /// Contains details about the person being chatted with
+  /// Can be null for broadcast or system messages
+  /// Example: UserProfile(id: "support123", name: "Support Agent")
   final UserProfile? chatPartner;
+
+  /// Initial messages to populate the chat
+  /// 
+  /// Useful for loading chat history or predefined messages
+  /// Example: [ChatMessage(id: "1", text: "Welcome!", isMe: false, ...)]
   final List<ChatMessage>? initialMessages;
+
+  /// Theme configuration for the chat UI
+  /// 
+  /// Controls colors, fonts, sizes, and other visual properties
+  /// Example: ChatTheme(primaryColor: Colors.blue, fontSize: 16)
   final ChatTheme theme;
+
+  /// Callback function when a message is sent
+  /// 
+  /// Triggered when user sends a new message
+  /// Example: (message) => saveMessageToDatabase(message)
   final MessageSentCallback? onMessageSent;
+
+  /// Callback function when a message is received
+  /// 
+  /// Triggered when a new message arrives
+  /// Example: (message) => playNotificationSound()
   final MessageReceivedCallback? onMessageReceived;
+
+  /// Callback function when a reaction is added to a message
+  /// 
+  /// Triggered when user adds/removes emoji reaction
+  /// Example: (message, emoji) => updateMessageReactions(message.id, emoji)
   final ReactionAddedCallback? onReactionAdded;
+
+  /// Callback function when an attachment is selected
+  /// 
+  /// Triggered when user picks a file/image/etc
+  /// Example: (type) => handleFileUpload(type)
   final AttachmentPickedCallback? onAttachmentPicked;
+
+  /// Enable/disable emoji picker functionality
+  /// 
+  /// When true, shows emoji button in input area
+  /// Default: true
   final bool enableEmojis;
+
+  /// Enable/disable file attachment functionality
+  /// 
+  /// When true, shows attachment button in input area
+  /// Default: true
   final bool enableAttachments;
+
+  /// Enable/disable message reactions
+  /// 
+  /// When true, allows long-press to add reactions
+  /// Default: true
   final bool enableReactions;
+
+  /// Enable/disable automatic responses
+  /// 
+  /// When true, simulates automated replies
+  /// Useful for demos or chatbot interfaces
+  /// Default: false
   final bool autoRespond;
+
+  /// Placeholder text for the message input field
+  /// 
+  /// Example: "Type a message..." or "Send a reply..."
   final String? hintText;
+
+  /// List of quick reaction emojis
+  /// 
+  /// Appears when long-pressing a message
+  /// Example: ['👍', '❤️', '😂', '😮', '😢', '👏']
   final List<String>? quickReactions;
+
+  /// Show/hide typing indicator
+  /// 
+  /// When true, displays typing status
+  /// Default: true
   final bool showTypingIndicator;
+
+  /// Show/hide read receipts
+  /// 
+  /// When true, shows message read status
+  /// Default: true
   final bool showReadReceipts;
+
+  /// Custom widget to display at the top of chat
+  /// 
+  /// Useful for notifications or custom headers
+  /// Example: Banner or ConnectionStatus widget
   final Widget? header;
+
+  /// Custom widget to display at the bottom of chat
+  /// 
+  /// Useful for ads or additional controls
+  /// Example: AdBanner or ActionButtons widget
   final Widget? footer;
+
+  /// Custom message bubble builder
+  /// 
+  /// For complete control over message rendering
+  /// Example: (context, message) => CustomMessageBubble(message)
   final Widget Function(BuildContext, ChatMessage)? customMessageBuilder;
+
+  /// Duration for auto-scrolling animations
+  /// 
+  /// Controls smooth scrolling behavior
+  /// Example: Duration(milliseconds: 300)
   final Duration? autoScrollDuration;
+
+  /// URL for current user's avatar image
+  /// 
+  /// Displayed in message bubbles and app bar
+  /// Example: "https://example.com/avatar.jpg"
+  final String? myImageUrl;
+
+  /// URL for chat partner's avatar image
+  /// 
+  /// Displayed in message bubbles and app bar
+  /// Example: "https://example.com/partner-avatar.jpg"
+  final String? otherImageUrl;
+
+  /// Show/hide the app bar
+  /// 
+  /// When false, removes the top app bar
+  /// Useful for custom layouts or embedded chats
+  /// Default: true
+  final bool showAppBar;
+
+  /// Configuration for message bubbles
+  /// 
+  /// Controls appearance and behavior of message bubbles
+  /// Example: MessageBubbleConfig(maxWidth: 280, fontSize: 16)
+  final MessageBubbleConfig messageBubbleConfig;
+
+  /// Configuration for input area
+  /// 
+  /// Controls appearance and behavior of message input
+  /// Example: InputAreaConfig(borderRadius: 24, iconSize: 24)
+  final InputAreaConfig inputAreaConfig;
+
+  /// Configuration for reactions
+  /// 
+  /// Controls appearance and behavior of reaction selector
+  /// Example: ReactionConfig(selectorHeight: 40, reactionSize: 20)
+  final ReactionConfig reactionConfig;
 
   const CustomizableChatScreen({
     Key? key,
@@ -227,7 +462,7 @@ class CustomizableChatScreen extends StatefulWidget {
     required this.currentUser,
     this.chatPartner,
     this.initialMessages,
-    required this.theme ,
+    required this.theme,
     this.onMessageSent,
     this.onMessageReceived,
     this.onReactionAdded,
@@ -244,6 +479,12 @@ class CustomizableChatScreen extends StatefulWidget {
     this.footer,
     this.customMessageBuilder,
     this.autoScrollDuration,
+    this.myImageUrl,
+    this.otherImageUrl,
+    this.showAppBar = true,
+    this.messageBubbleConfig = const MessageBubbleConfig(),
+    this.inputAreaConfig = const InputAreaConfig(),
+    this.reactionConfig = const ReactionConfig(),
   }) : super(key: key);
 
   @override
@@ -257,9 +498,7 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
   final ScrollController _scrollController = ScrollController();
   bool _showEmojiPicker = false;
   final FocusNode _focusNode = FocusNode();
-  bool _isTyping = false;
 
-  // Animation controllers for various animations
   late AnimationController _typingController;
   late AnimationController _newMessageController;
 
@@ -267,7 +506,6 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
   void initState() {
     super.initState();
 
-    // Initialize animation controllers
     _typingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -278,26 +516,11 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
       duration: const Duration(milliseconds: 500),
     );
 
-    // Add initial messages if provided
     if (widget.initialMessages != null && widget.initialMessages!.isNotEmpty) {
       _messages.addAll(widget.initialMessages!);
     } else {
-      // Load sample messages for demo if no initial messages
       _loadSampleMessages();
     }
-
-    // Listen to text changes to show typing indicator
-    _textController.addListener(() {
-      if (_textController.text.isNotEmpty && !_isTyping) {
-        setState(() {
-          _isTyping = true;
-        });
-      } else if (_textController.text.isEmpty && _isTyping) {
-        setState(() {
-          _isTyping = false;
-        });
-      }
-    });
   }
 
   void _loadSampleMessages() {
@@ -348,59 +571,46 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
     super.dispose();
   }
 
-void _handleSubmitted(String text) {
-  if (text.trim().isEmpty) return;
+  void _handleSubmitted(String text) {
+    if (text.trim().isEmpty) return;
 
-  _textController.clear();
+    _textController.clear();
 
-  // Determine message type
-  final MessageType messageType;
-  if (text.length < 3 && RegExp(r'[\p{Emoji}]', unicode: true).hasMatch(text)) {
-    messageType = MessageType.emoji;
-  } else {
-    messageType = MessageType.text;
-  }
+    final MessageType messageType;
+    if (text.length < 3 && RegExp(r'[\p{Emoji}]', unicode: true).hasMatch(text)) {
+      messageType = MessageType.emoji;
+    } else {
+      messageType = MessageType.text;
+    }
 
-  final message = ChatMessage(
-    id: DateTime.now().millisecondsSinceEpoch.toString(),
-    text: text,
-    isMe: true,
-    timestamp: DateTime.now(),
-    type: messageType,
-    isNew: true,
-  );
+    final message = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      text: text,
+      isMe: true,
+      timestamp: DateTime.now(),
+      type: messageType,
+      isNew: true,
+    );
 
-  setState(() {
-    _messages.add(message);
-    _isTyping = false;
-  });
-
-  _scrollToBottom();
-  _newMessageController.forward().then((_) => _newMessageController.reset());
-
-  // Trigger the onMessageSent callback
-  if (widget.onMessageSent != null) {
-    widget.onMessageSent!(message);
-  }
-
-  // Auto respond if enabled
-  if (widget.autoRespond) {
-    _simulateResponse();
-  }
-}
-
-  void _simulateResponse() {
     setState(() {
-      _isTyping = true;
+      _messages.add(message);
     });
 
-    // Simulate a response after a short delay
+    _scrollToBottom();
+    _newMessageController.forward().then((_) => _newMessageController.reset());
+
+    if (widget.onMessageSent != null) {
+      widget.onMessageSent!(message);
+    }
+
+    if (widget.autoRespond) {
+      _simulateResponse();
+    }
+  }
+
+  void _simulateResponse() {
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
-
-      setState(() {
-        _isTyping = false;
-      });
 
       final response = ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -418,7 +628,6 @@ void _handleSubmitted(String text) {
       _scrollToBottom();
       HapticFeedback.lightImpact();
 
-      // Trigger the onMessageReceived callback
       if (widget.onMessageReceived != null) {
         widget.onMessageReceived!(response);
       }
@@ -479,7 +688,6 @@ void _handleSubmitted(String text) {
       }
     });
 
-    // Trigger the onReactionAdded callback
     if (widget.onReactionAdded != null) {
       widget.onReactionAdded!(message, emoji);
     }
@@ -507,7 +715,7 @@ void _handleSubmitted(String text) {
       ),
       child: Scaffold(
         backgroundColor: widget.theme.backgroundColor,
-        appBar: _buildAppBar(),
+        appBar: widget.showAppBar ? _buildAppBar() : null,
         body: Container(
           decoration: widget.theme.backgroundImage != null
               ? BoxDecoration(
@@ -524,12 +732,8 @@ void _handleSubmitted(String text) {
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  itemCount: _messages.length + (_isTyping ? 1 : 0),
+                  itemCount: _messages.length,
                   itemBuilder: (context, index) {
-                    if (index == _messages.length && _isTyping) {
-                      // Show typing indicator
-                      return _buildTypingIndicator();
-                    }
                     final message = _messages[index];
                     return widget.customMessageBuilder != null
                         ? widget.customMessageBuilder!(context, message)
@@ -551,18 +755,18 @@ void _handleSubmitted(String text) {
       backgroundColor: widget.theme.appBarColor,
       title: Row(
         children: [
-          if (widget.chatPartner != null && widget.chatPartner!.avatarUrl != null)
+          if (widget.chatPartner != null)
             CircleAvatar(
-              backgroundImage: NetworkImage(widget.chatPartner!.avatarUrl!),
+              backgroundImage: widget.otherImageUrl != null 
+                  ? NetworkImage(widget.otherImageUrl!)
+                  : null,
               backgroundColor: widget.chatPartner!.avatarColor ?? widget.theme.secondaryColor,
-            )
-          else if (widget.chatPartner != null)
-            CircleAvatar(
-              backgroundColor: widget.chatPartner!.avatarColor ?? widget.theme.secondaryColor,
-              child: Text(
-                widget.chatPartner!.name.substring(0, 1).toUpperCase(),
-                style: TextStyle(color: widget.theme.sentMessageTextColor),
-              ),
+              child: widget.otherImageUrl == null 
+                  ? Text(
+                      widget.chatPartner!.name.substring(0, 1).toUpperCase(),
+                      style: TextStyle(color: widget.theme.sentMessageTextColor),
+                    )
+                  : null,
             ),
           const SizedBox(width: 10),
           Column(
@@ -588,9 +792,7 @@ void _handleSubmitted(String text) {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      widget.chatPartner!.isOnline
-                          ? (_isTyping ? 'Typing...' : 'Online')
-                          : 'Offline',
+                      widget.chatPartner!.isOnline ? 'Online' : 'Offline',
                       style: TextStyle(
                         fontSize: 12,
                         color: widget.theme.sentMessageTextColor.withOpacity(0.7),
@@ -617,7 +819,6 @@ void _handleSubmitted(String text) {
           icon: const Icon(Icons.more_vert),
           color: widget.theme.sentMessageTextColor,
           onPressed: () {
-            // Show chat settings menu
             _showChatSettingsMenu();
           },
         ),
@@ -627,7 +828,8 @@ void _handleSubmitted(String text) {
 
   Widget _buildInputArea() {
     return Container(
-      decoration: BoxDecoration(
+      margin: widget.inputAreaConfig.margin,
+      decoration: widget.inputAreaConfig.containerDecoration ?? BoxDecoration(
         color: widget.theme.inputBarColor,
         boxShadow: [
           BoxShadow(
@@ -641,23 +843,24 @@ void _handleSubmitted(String text) {
         child: Column(
           children: [
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              padding: widget.inputAreaConfig.padding,
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(widget.inputAreaConfig.borderRadius),
                 color: widget.theme.brightness == Brightness.light
                     ? Colors.grey.shade200
                     : Colors.grey.shade800,
-                borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: widget.theme.secondaryColor.withOpacity(0.2),
                 ),
               ),
               child: Row(
                 children: [
-                  if (widget.enableEmojis)
+                  if (widget.enableEmojis && widget.inputAreaConfig.showEmojiButton)
                     IconButton(
                       icon: Icon(
                         _showEmojiPicker ? Icons.keyboard : Icons.emoji_emotions_outlined,
-                        color: widget.theme.secondaryColor,
+                        color: widget.inputAreaConfig.iconColor ?? widget.theme.secondaryColor,
+                        size: widget.inputAreaConfig.iconSize,
                       ),
                       onPressed: _toggleEmojiPicker,
                     ),
@@ -665,51 +868,56 @@ void _handleSubmitted(String text) {
                     child: TextField(
                       controller: _textController,
                       focusNode: _focusNode,
-                      style: TextStyle(
-                        color: widget.theme.receivedMessageTextColor,
-                        fontFamily: widget.theme.fontFamily,
-                        fontSize: widget.theme.fontSize,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: widget.hintText ?? 'Type a message...',
-                        hintStyle: TextStyle(
-                          color: widget.theme.hintTextColor,
-                          fontFamily: widget.theme.fontFamily,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                      ),
+                      style: widget.inputAreaConfig.inputTextStyle ??
+                          TextStyle(
+                            color: widget.theme.receivedMessageTextColor,
+                            fontFamily: widget.theme.fontFamily,
+                            fontSize: widget.theme.fontSize,
+                          ),
+                      decoration: widget.inputAreaConfig.inputDecoration ??
+                          InputDecoration(
+                            hintText: widget.hintText ?? 'Type a message...',
+                            hintStyle: TextStyle(
+                              color: widget.theme.hintTextColor,
+                              fontFamily: widget.theme.fontFamily,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                          ),
                       onSubmitted: _handleSubmitted,
                     ),
                   ),
-                  if (widget.enableAttachments)
+                  if (widget.enableAttachments && widget.inputAreaConfig.showAttachmentButton)
                     IconButton(
                       icon: Icon(
                         Icons.attach_file,
-                        color: widget.theme.secondaryColor,
+                        color: widget.inputAreaConfig.iconColor ?? widget.theme.secondaryColor,
+                        size: widget.inputAreaConfig.iconSize,
                       ),
                       onPressed: () => _showAttachmentOptions(),
                     ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.send,
-                      color: widget.theme.primaryColor,
+                  if (widget.inputAreaConfig.showSendButton)
+                    IconButton(
+                      icon: Icon(
+                        Icons.send,
+                        color: widget.theme.primaryColor,
+                        size: widget.inputAreaConfig.iconSize,
+                      ),
+                      onPressed: () => _handleSubmitted(_textController.text),
                     ),
-                    onPressed: () => _handleSubmitted(_textController.text),
-                  ),
                 ],
               ),
             ),
             if (_showEmojiPicker && widget.enableEmojis)
               SizedBox(
-                height: 250,
+                height: widget.inputAreaConfig.emojiPickerHeight,
                 child: EmojiPicker(
                   onEmojiSelected: (category, emoji) => _onEmojiSelected(emoji.emoji),
                   config: Config(
-                    height: 250,
+                    height: widget.inputAreaConfig.emojiPickerHeight,
                     emojiViewConfig: EmojiViewConfig(
-                      columns: 7,
-                      emojiSizeMax: 32,
+                      columns: widget.inputAreaConfig.emojiColumns,
+                      emojiSizeMax: widget.inputAreaConfig.emojiSizeMax,
                       verticalSpacing: 0,
                       horizontalSpacing: 0,
                       backgroundColor: widget.theme.brightness == Brightness.light
@@ -737,78 +945,10 @@ void _handleSubmitted(String text) {
       showStatus: widget.theme.showSentStatus && message.isMe,
       quickReactions: widget.quickReactions ?? ['👍', '❤️', '😂', '😮', '😢', '👏'],
       userProfile: message.isMe ? widget.currentUser : widget.chatPartner,
-    );
-  }
-
-  Widget _buildTypingIndicator() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (widget.chatPartner != null && widget.theme.showUserAvatar)
-            Container(
-              margin: const EdgeInsets.only(right: 8),
-              child: widget.chatPartner!.avatarUrl != null
-                  ? CircleAvatar(
-                      radius: 16,
-                      backgroundImage: NetworkImage(widget.chatPartner!.avatarUrl!),
-                    )
-                  : CircleAvatar(
-                      radius: 16,
-                      backgroundColor: widget.chatPartner!.avatarColor ?? widget.theme.secondaryColor,
-                      child: Text(
-                        widget.chatPartner!.name.substring(0, 1).toUpperCase(),
-                        style: TextStyle(color: widget.theme.sentMessageTextColor),
-                      ),
-                    ),
-            ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: widget.theme.receivedMessageColor,
-              borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius),
-            ),
-            child: Row(
-              children: [
-                _buildDot(0),
-                const SizedBox(width: 4),
-                _buildDot(100),
-                const SizedBox(width: 4),
-                _buildDot(200),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDot(int delay) {
-    return AnimatedBuilder(
-      animation: _typingController,
-      builder: (context, child) {
-        final begin = 0.0;
-        final end = 1.0;
-        final animationValue = Tween<double>(begin: begin, end: end)
-            .animate(CurvedAnimation(
-              parent: _typingController,
-              curve: Interval(delay / 1000, (delay + 300) / 1000, curve: Curves.easeInOut),
-            ))
-            .value;
-        
-        return Transform.translate(
-          offset: Offset(0, -3 * animationValue),
-          child: Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(
-              color: widget.theme.receivedMessageTextColor.withOpacity(0.7),
-              shape: BoxShape.circle,
-            ),
-          ),
-        );
-      },
+      myImageUrl: widget.myImageUrl,
+      otherImageUrl: widget.otherImageUrl,
+      config: widget.messageBubbleConfig,
+      reactionConfig: widget.reactionConfig,
     );
   }
 
@@ -893,7 +1033,6 @@ void _handleSubmitted(String text) {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  // Handle view profile
                 },
               ),
               ListTile(
@@ -904,7 +1043,6 @@ void _handleSubmitted(String text) {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  // Handle mute notifications
                 },
               ),
               ListTile(
@@ -915,7 +1053,6 @@ void _handleSubmitted(String text) {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  // Handle search
                 },
               ),
               ListTile(
@@ -950,6 +1087,10 @@ class AnimatedMessageBubble extends StatefulWidget {
   final bool showStatus;
   final List<String> quickReactions;
   final UserProfile? userProfile;
+  final String? myImageUrl;
+  final String? otherImageUrl;
+  final MessageBubbleConfig config;
+  final ReactionConfig reactionConfig;
 
   const AnimatedMessageBubble({
     Key? key,
@@ -963,6 +1104,10 @@ class AnimatedMessageBubble extends StatefulWidget {
     this.showStatus = true,
     this.quickReactions = const ['👍', '❤️', '😂', '😮', '😢', '👏'],
     this.userProfile,
+    this.myImageUrl,
+    this.otherImageUrl,
+    this.config = const MessageBubbleConfig(),
+    this.reactionConfig = const ReactionConfig(),
   }) : super(key: key);
 
   @override
@@ -980,11 +1125,11 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
     super.initState();
     _appearController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: widget.config.appearAnimationDuration,
     );
     _appearAnimation = CurvedAnimation(
       parent: _appearController,
-      curve: Curves.easeOutCubic,
+      curve: widget.config.appearAnimationCurve,
     );
 
     if (widget.isNew) {
@@ -1005,35 +1150,16 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
   }
 
   Widget _buildAvatar() {
-    if (!widget.showAvatar || widget.userProfile == null) {
-      return const SizedBox(width: 32);
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      child: widget.userProfile!.avatarUrl != null
-          ? CircleAvatar(
-              radius: 16,
-              backgroundImage: NetworkImage(widget.userProfile!.avatarUrl!),
-            )
-          : CircleAvatar(
-              radius: 16,
-              backgroundColor: widget.userProfile!.avatarColor ?? widget.theme.secondaryColor,
-              child: Text(
-                widget.userProfile!.name.substring(0, 1).toUpperCase(),
-                style: TextStyle(color: widget.theme.sentMessageTextColor),
-              ),
-            ),
-    );
+    return const SizedBox.shrink();
   }
 
   Widget _buildMessageContent() {
     switch (widget.message.type) {
       case MessageType.image:
         return Container(
-          constraints: const BoxConstraints(
-            maxWidth: 200,
-            maxHeight: 200,
+          constraints: BoxConstraints(
+            maxWidth: widget.config.maxWidth,
+            maxHeight: widget.config.maxHeight,
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius - 3),
@@ -1043,8 +1169,8 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
                 return Container(
-                  width: 200,
-                  height: 150,
+                  width: widget.config.maxWidth,
+                  height: widget.config.maxHeight,
                   color: widget.theme.secondaryColor.withOpacity(0.3),
                   child: Center(
                     child: CircularProgressIndicator(
@@ -1061,14 +1187,13 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
           ),
         );
       case MessageType.video:
-        // Simple video thumbnail representation
         return Stack(
           alignment: Alignment.center,
           children: [
             Container(
-              constraints: const BoxConstraints(
-                maxWidth: 200,
-                maxHeight: 200,
+              constraints: BoxConstraints(
+                maxWidth: widget.config.maxWidth,
+                maxHeight: widget.config.maxHeight,
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius - 3),
@@ -1097,7 +1222,7 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
         return Text(
           widget.message.text,
           style: TextStyle(
-            fontSize: 32,
+            fontSize: widget.config.emojiSize,
           ),
         );
       case MessageType.file:
@@ -1144,7 +1269,7 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
         );
       case MessageType.audio:
         return Container(
-          width: 200,
+          width: widget.config.maxWidth,
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             children: [
@@ -1188,8 +1313,8 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
         );
       case MessageType.location:
         return Container(
-          width: 200,
-          height: 150,
+          width: widget.config.maxWidth,
+          height: widget.config.maxHeight,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius - 3),
             image: const DecorationImage(
@@ -1213,7 +1338,7 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
             color: widget.message.isMe
                 ? widget.theme.sentMessageTextColor
                 : widget.theme.receivedMessageTextColor,
-            fontSize: widget.theme.fontSize,
+            fontSize: widget.config.fontSize,
             fontFamily: widget.theme.fontFamily,
           ),
         );
@@ -1235,18 +1360,19 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
         alignment: widget.message.isMe ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: widget.theme.brightness == Brightness.light
-                ? Colors.white
-                : Colors.grey.shade800,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
+          decoration: widget.reactionConfig.selectorDecoration ??
+              BoxDecoration(
+                color: widget.theme.brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.grey.shade800,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                  ),
+                ],
               ),
-            ],
-          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: widget.message.reactions.map((emoji) {
@@ -1254,7 +1380,7 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Text(
                   emoji,
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: widget.reactionConfig.reactionSize),
                 ),
               );
             }).toList(),
@@ -1270,28 +1396,24 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
     }
 
     return Container(
-      margin: EdgeInsets.only(
-        top: 4,
-        bottom: 4,
-        left: widget.message.isMe ? 40 : 0,
-        right: widget.message.isMe ? 0 : 40,
-      ),
+      margin: widget.reactionConfig.selectorMargin,
       child: Align(
         alignment: widget.message.isMe ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          decoration: BoxDecoration(
-            color: widget.theme.brightness == Brightness.light
-                ? Colors.white
-                : Colors.grey.shade800,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
+          padding: widget.reactionConfig.selectorPadding,
+          decoration: widget.reactionConfig.selectorDecoration ??
+              BoxDecoration(
+                color: widget.theme.brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.grey.shade800,
+                borderRadius: BorderRadius.circular(widget.reactionConfig.selectorBorderRadius),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                  ),
+                ],
               ),
-            ],
-          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: widget.quickReactions.map((emoji) {
@@ -1303,10 +1425,11 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
                   });
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: widget.reactionConfig.spaceBetweenReactions),
                   child: Text(
                     emoji,
-                    style: const TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: widget.reactionConfig.reactionSize),
                   ),
                 ),
               );
@@ -1324,7 +1447,10 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
       builder: (context, child) {
         return Transform.translate(
           offset: Offset(
-              widget.message.isMe ? (1 - _appearAnimation.value) * 50 : -(1 - _appearAnimation.value) * 50, 0),
+              widget.message.isMe
+                  ? (1 - _appearAnimation.value) * widget.config.transformOffset
+                  : -(1 - _appearAnimation.value) * widget.config.transformOffset,
+              0),
           child: Opacity(
             opacity: _appearAnimation.value,
             child: child,
@@ -1339,69 +1465,70 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
                     setState(() {
                       _showReactions = !_showReactions;
                     });
-                    HapticFeedback.mediumImpact();
+                    if (widget.config.enableHapticFeedback) {
+                      HapticFeedback.mediumImpact();
+                    }
                   }
                 : null,
             child: Container(
-              margin: EdgeInsets.only(
-                top: 8,
-                bottom: 4,
-                right: widget.message.isMe ? 0 : 40,
-                left: widget.message.isMe ? 40 : 0,
-              ),
+              margin: widget.config.margin,
               child: Row(
                 mainAxisAlignment:
                     widget.message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  if (!widget.message.isMe && widget.showAvatar) _buildAvatar(),
                   Flexible(
                     child: Container(
-                      padding: widget.theme.messagePadding,
-                      decoration: BoxDecoration(
-                        color: widget.message.isMe
-                            ? widget.theme.sentMessageColor
-                            : widget.theme.receivedMessageColor,
-                        borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius),
-                        boxShadow: widget.theme.messageShadow != null
-                            ? [widget.theme.messageShadow!]
-                            : null,
-                      ),
+                      padding: widget.config.contentPadding,
+                      decoration: widget.config.customDecoration ??
+                          BoxDecoration(
+                            color: widget.message.isMe
+                                ? widget.theme.sentMessageColor
+                                : widget.theme.receivedMessageColor,
+                            borderRadius:
+                                BorderRadius.circular(widget.theme.messageBorderRadius),
+                            boxShadow: widget.theme.messageShadow != null
+                                ? [widget.theme.messageShadow!]
+                                : null,
+                          ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildMessageContent(),
                           const SizedBox(height: 2),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                _formatTime(widget.message.timestamp),
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: (widget.message.isMe
-                                          ? widget.theme.sentMessageTextColor
-                                          : widget.theme.receivedMessageTextColor)
-                                      .withOpacity(0.7),
+                          if (widget.config.showTimestamp)
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  _formatTime(widget.message.timestamp),
+                                  style: widget.config.timestampStyle ??
+                                      TextStyle(
+                                        fontSize: 10,
+                                        color: (widget.message.isMe
+                                                ? widget.theme.sentMessageTextColor
+                                                : widget.theme.receivedMessageTextColor)
+                                            .withOpacity(0.7),
+                                      ),
                                 ),
-                              ),
-                              if (widget.message.isMe && widget.showStatus)
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4),
-                                  child: Icon(
-                                    Icons.done_all,
-                                    size: 12,
-                                    color: widget.theme.sentMessageTextColor.withOpacity(0.7),
+                                if (widget.message.isMe &&
+                                    widget.config.showReadStatus &&
+                                    widget.showStatus)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Icon(
+                                      Icons.done_all,
+                                      size: 12,
+                                      color: widget.theme.sentMessageTextColor.withOpacity(0.7),
+                                    ),
                                   ),
-                                ),
-                            ],
-                          ),
+                              ],
+                            ),
                         ],
                       ),
                     ),
                   ),
-                  if (widget.message.isMe && widget.showAvatar) _buildAvatar(),
                 ],
               ),
             ),

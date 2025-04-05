@@ -35,13 +35,17 @@ class _MyAppState extends State<MyApp> {
         },
         onMessageReceived: (message) {
           print(message.text);
-          
         },
         enableReactions: true,
         enableEmojis: true,
         enableAttachments: true,
         title: "hi",
         currentUser: UserProfile(id: "hi", name: "kareem"),
-        theme: ChatTheme());
+        theme: ChatTheme(),
+        myImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyzTWQoCUbRNdiyorem5Qp1zYYhpliR9q0Bw&s",
+        otherImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyzTWQoCUbRNdiyorem5Qp1zYYhpliR9q0Bw&s",
+        showAppBar: false,
+        messageBubbleConfig: MessageBubbleConfig(),
+        );
   }
 }
