@@ -1,8 +1,13 @@
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as path;
 
 // Message model to store different types of messages
 class ChatMessage {
@@ -39,9 +44,26 @@ class ChatMessage {
 
   /// URL for media content (images, videos, audio, files)
   /// 
-  /// Used to load and display media content within the message
+  /// Used to load and display media content from a network source
   /// Example: "https://example.com/image.jpg"
   final String? mediaUrl;
+  
+  /// Local file path for media content
+  /// 
+  /// Used to load media from a file
+  /// Example: "/path/to/local/file.mp4"
+  final String? mediaPath;
+  
+  /// Memory data for media content as bytes
+  /// 
+  /// Used when media is loaded directly from memory
+  /// Example: Uint8List data from a picked image
+  final Uint8List? mediaBytes;
+  
+  /// Media source type
+  /// 
+  /// Determines how the media should be loaded (network, file, memory)
+  final MediaSourceType mediaSourceType;
 
   /// List of emoji reactions added to this message
   /// 
@@ -68,6 +90,9 @@ class ChatMessage {
     required this.timestamp,
     required this.type,
     this.mediaUrl,
+    this.mediaPath,
+    this.mediaBytes,
+    this.mediaSourceType = MediaSourceType.network,
     this.reactions = const [],
     this.isNew = false,
     this.metadata,
@@ -81,6 +106,9 @@ class ChatMessage {
     DateTime? timestamp,
     MessageType? type,
     String? mediaUrl,
+    String? mediaPath,
+    Uint8List? mediaBytes,
+    MediaSourceType? mediaSourceType,
     List<String>? reactions,
     bool? isNew,
     Map<String, dynamic>? metadata,
@@ -92,6 +120,9 @@ class ChatMessage {
       timestamp: timestamp ?? this.timestamp,
       type: type ?? this.type,
       mediaUrl: mediaUrl ?? this.mediaUrl,
+      mediaPath: mediaPath ?? this.mediaPath,
+      mediaBytes: mediaBytes ?? this.mediaBytes,
+      mediaSourceType: mediaSourceType ?? this.mediaSourceType,
       reactions: reactions ?? this.reactions,
       isNew: isNew ?? this.isNew,
       metadata: metadata ?? this.metadata,
@@ -100,6 +131,7 @@ class ChatMessage {
 }
 
 enum MessageType { text, image, video, emoji, file, audio, location }
+enum MediaSourceType { network, file, memory }
 
 // Callback typedefs
 typedef MessageSentCallback = void Function(ChatMessage message);
@@ -550,6 +582,48 @@ class InputAreaConfig {
   /// When true, displays the attach file button
   /// Example: true
   final bool showAttachmentButton;
+  
+  /// Flag to show/hide the voice message button
+  /// 
+  /// When true, displays the microphone button for voice messages
+  /// Example: true
+  final bool showVoiceButton;
+  
+  /// Flag to show/hide the camera button
+  /// 
+  /// When true, displays a quick camera access button
+  /// Example: true
+  final bool showCameraButton;
+  
+  /// Flag to show/hide the call button in the app bar
+  /// 
+  /// When true, displays a call button in the app bar
+  /// Example: true
+  final bool showCallButton;
+  
+  /// Flag to show/hide the video call button in the app bar
+  /// 
+  /// When true, displays a video call button in the app bar
+  /// Example: true
+  final bool showVideoCallButton;
+  
+  /// Flag to show/hide the settings button in the app bar
+  /// 
+  /// When true, displays a settings button in the app bar
+  /// Example: true
+  final bool showSettingsButton;
+  
+  /// Flag to show/hide the search button in the app bar
+  /// 
+  /// When true, displays a search button in the app bar
+  /// Example: true
+  final bool showSearchButton;
+  
+  /// Flag to show/hide the input area completely
+  /// 
+  /// When false, hides the entire input area (for read-only chats)
+  /// Example: true
+  final bool showInputArea;
 
   /// Custom text style for the input field
   /// 
@@ -596,6 +670,13 @@ class InputAreaConfig {
     this.showSendButton = true,
     this.showEmojiButton = true,
     this.showAttachmentButton = true,
+    this.showVoiceButton = false,
+    this.showCameraButton = false,
+    this.showCallButton = false,
+    this.showVideoCallButton = false,
+    this.showSettingsButton = true,
+    this.showSearchButton = false,
+    this.showInputArea = true,
     this.inputTextStyle,
     this.inputDecoration,
     this.containerDecoration,
@@ -617,6 +698,13 @@ class InputAreaConfig {
       showSendButton: true,
       showEmojiButton: true,
       showAttachmentButton: true,
+      showVoiceButton: true,
+      showCameraButton: true,
+      showCallButton: true,
+      showVideoCallButton: true,
+      showSettingsButton: true,
+      showSearchButton: true,
+      showInputArea: true,
       inputTextStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.normal,
@@ -651,6 +739,13 @@ class InputAreaConfig {
       showSendButton: true,
       showEmojiButton: true,
       showAttachmentButton: true,
+      showVoiceButton: false,
+      showCameraButton: false,
+      showCallButton: false,
+      showVideoCallButton: false,
+      showSettingsButton: true,
+      showSearchButton: false,
+      showInputArea: true,
       inputTextStyle: const TextStyle(
         fontSize: 15,
         color: Color(0xFF1A1A1A),
@@ -682,6 +777,13 @@ class InputAreaConfig {
       showSendButton: true,
       showEmojiButton: true,
       showAttachmentButton: true,
+      showVoiceButton: true,
+      showCameraButton: true,
+      showCallButton: true,
+      showVideoCallButton: true,
+      showSettingsButton: true,
+      showSearchButton: true,
+      showInputArea: true,
       inputTextStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.normal,
@@ -702,6 +804,49 @@ class InputAreaConfig {
       emojiPickerHeight: 320,
       emojiColumns: 8,
       emojiSizeMax: 34,
+    );
+  }
+  
+  /// Creates a minimal configuration with only essential controls
+  /// 
+  /// Features only the most crucial UI elements for a clean, focused interface
+  static InputAreaConfig minimal() {
+    return const InputAreaConfig(
+      margin: EdgeInsets.fromLTRB(8, 4, 8, 8),
+      padding: EdgeInsets.symmetric(horizontal: 6),
+      borderRadius: 20,
+      iconSize: 22,
+      showSendButton: true,
+      showEmojiButton: false,
+      showAttachmentButton: false,
+      showVoiceButton: false,
+      showCameraButton: false,
+      showCallButton: false,
+      showVideoCallButton: false,
+      showSettingsButton: false,
+      showSearchButton: false,
+      showInputArea: true,
+      emojiPickerHeight: 250,
+      emojiColumns: 8,
+      emojiSizeMax: 28,
+    );
+  }
+  
+  /// Creates a read-only configuration for viewing chats without interaction
+  /// 
+  /// Hides the input area completely for chats that shouldn't allow new messages
+  static InputAreaConfig readOnly() {
+    return const InputAreaConfig(
+      showSendButton: false,
+      showEmojiButton: false,
+      showAttachmentButton: false,
+      showVoiceButton: false,
+      showCameraButton: false,
+      showCallButton: false,
+      showVideoCallButton: false,
+      showSettingsButton: true,
+      showSearchButton: true,
+      showInputArea: false,
     );
   }
 }
@@ -987,7 +1132,7 @@ class CustomizableChatScreen extends StatefulWidget {
   /// 
   /// Default: true
   final bool showAppBar;
-
+  
   /// Customize the appearance and behavior of message bubbles
   /// 
   /// Example: MessageBubbleConfig(maxWidth: 280, fontSize: 16)
@@ -1046,6 +1191,110 @@ class CustomizableChatScreen extends StatefulWidget {
     this.inputAreaConfig = const InputAreaConfig(),
     this.reactionConfig = const ReactionConfig(),
   }) : super(key: key);
+  
+  /// Creates a chat screen with all features enabled
+  /// 
+  /// Provides access to all functionality with a modern design
+  static CustomizableChatScreen fullFeatured({
+    required String title,
+    required UserProfile currentUser,
+    UserProfile? chatPartner,
+    List<ChatMessage>? initialMessages,
+    ChatTheme? theme,
+    MessageSentCallback? onMessageSent,
+    MessageReceivedCallback? onMessageReceived,
+    ReactionAddedCallback? onReactionAdded,
+    AttachmentPickedCallback? onAttachmentPicked,
+    String? hintText,
+    String? myImageUrl,
+    String? otherImageUrl,
+  }) {
+    return CustomizableChatScreen(
+      title: title,
+      currentUser: currentUser,
+      chatPartner: chatPartner,
+      initialMessages: initialMessages,
+      theme: theme ?? ChatTheme.modernLight(),
+      onMessageSent: onMessageSent,
+      onMessageReceived: onMessageReceived,
+      onReactionAdded: onReactionAdded,
+      onAttachmentPicked: onAttachmentPicked,
+      enableEmojis: true,
+      enableAttachments: true,
+      enableReactions: true,
+      hintText: hintText,
+      quickReactions: expandedReactions,
+      myImageUrl: myImageUrl,
+      otherImageUrl: otherImageUrl,
+      messageBubbleConfig: MessageBubbleConfig.modern(),
+      inputAreaConfig: InputAreaConfig.modern(),
+      reactionConfig: ReactionConfig.modern(),
+    );
+  }
+  
+  /// Creates a chat screen with minimal UI elements
+  /// 
+  /// Provides a clean, focused interface with only essential features
+  static CustomizableChatScreen minimal({
+    required String title,
+    required UserProfile currentUser,
+    UserProfile? chatPartner,
+    List<ChatMessage>? initialMessages,
+    ChatTheme? theme,
+    MessageSentCallback? onMessageSent,
+    String? hintText,
+    String? myImageUrl,
+    String? otherImageUrl,
+  }) {
+    return CustomizableChatScreen(
+      title: title,
+      currentUser: currentUser,
+      chatPartner: chatPartner,
+      initialMessages: initialMessages,
+      theme: theme ?? ChatTheme.modernLight(),
+      onMessageSent: onMessageSent,
+      enableEmojis: false,
+      enableAttachments: false,
+      enableReactions: false,
+      hintText: hintText,
+      showTypingIndicator: false,
+      myImageUrl: myImageUrl,
+      otherImageUrl: otherImageUrl,
+      messageBubbleConfig: MessageBubbleConfig.compact(),
+      inputAreaConfig: InputAreaConfig.minimal(),
+      reactionConfig: ReactionConfig.subtle(),
+    );
+  }
+  
+  /// Creates a read-only chat screen for viewing conversation history
+  /// 
+  /// Provides a view-only interface without input capabilities
+  static CustomizableChatScreen readOnly({
+    required String title,
+    required UserProfile currentUser,
+    UserProfile? chatPartner,
+    required List<ChatMessage> messages,
+    ChatTheme? theme,
+    String? myImageUrl,
+    String? otherImageUrl,
+  }) {
+    return CustomizableChatScreen(
+      title: title,
+      currentUser: currentUser,
+      chatPartner: chatPartner,
+      initialMessages: messages,
+      theme: theme ?? ChatTheme.modernLight(),
+      enableEmojis: false,
+      enableAttachments: false,
+      enableReactions: false,
+      showTypingIndicator: false,
+      myImageUrl: myImageUrl,
+      otherImageUrl: otherImageUrl,
+      messageBubbleConfig: MessageBubbleConfig.modern(),
+      inputAreaConfig: InputAreaConfig.readOnly(),
+      reactionConfig: ReactionConfig.subtle(),
+    );
+  }
 
   @override
   State<CustomizableChatScreen> createState() => _CustomizableChatScreenState();
@@ -1224,9 +1473,127 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
     });
   }
 
-  void _handleAttachmentPressed(String type) {
+  void _handleAttachmentPressed(String type) async {
     if (widget.onAttachmentPicked != null) {
       widget.onAttachmentPicked!(type);
+    }
+    
+    switch (type) {
+      case 'photo':
+        await _pickImage();
+        break;
+      case 'video':
+        await _pickVideo();
+        break;
+      case 'file':
+        await _pickDocument();
+        break;
+      case 'audio':
+        await _pickAudio();
+        break;
+      case 'location':
+        _addMediaMessage(type); // Just use the sample for location
+        break;
+    }
+  }
+  
+  String _formatFileSize(int bytes) {
+    if (bytes < 1024) {
+      return '$bytes B';
+    } else if (bytes < 1024 * 1024) {
+      return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    } else if (bytes < 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    } else {
+      return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
+    }
+  }
+
+  void _addMediaMessage(String type) {
+    final String id = DateTime.now().millisecondsSinceEpoch.toString();
+    final DateTime timestamp = DateTime.now();
+    
+    late ChatMessage message;
+    
+    switch (type) {
+      case 'photo':
+        message = ChatMessage(
+          id: id,
+          text: '',
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.image,
+          mediaUrl: 'https://picsum.photos/500/300?random=${Random().nextInt(100)}',
+          mediaSourceType: MediaSourceType.network,
+          isNew: true,
+        );
+        break;
+      case 'video':
+        message = ChatMessage(
+          id: id,
+          text: '',
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.video,
+          mediaUrl: 'https://example.com/sample_video.mp4',
+          mediaSourceType: MediaSourceType.network,
+          isNew: true,
+        );
+        break;
+      case 'file':
+        message = ChatMessage(
+          id: id,
+          text: '',
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.file,
+          mediaUrl: 'https://example.com/sample_document.pdf',
+          mediaSourceType: MediaSourceType.network,
+          isNew: true,
+          metadata: {
+            'filename': 'document.pdf',
+            'size': '2.5 MB',
+          },
+        );
+        break;
+      case 'audio':
+        message = ChatMessage(
+          id: id,
+          text: 'Voice message',
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.audio,
+          mediaUrl: 'https://example.com/audio_sample.mp3',
+          mediaSourceType: MediaSourceType.network,
+          isNew: true,
+          metadata: {
+            'duration': '0:42',
+          },
+        );
+        break;
+      case 'location':
+        message = ChatMessage(
+          id: id,
+          text: 'My Location',
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.location,
+          isNew: true,
+        );
+        break;
+      default:
+        return;
+    }
+    
+    setState(() {
+      _messages.add(message);
+    });
+    
+    _scrollToBottom();
+    _newMessageController.forward().then((_) => _newMessageController.reset());
+    
+    if (widget.onMessageSent != null) {
+      widget.onMessageSent!(message);
     }
   }
 
@@ -1255,26 +1622,93 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(
-        primaryColor: widget.theme.primaryColor,
-        colorScheme: ColorScheme(
-          brightness: widget.theme.brightness,
-          primary: widget.theme.primaryColor,
-          onPrimary: widget.theme.sentMessageTextColor,
-          secondary: widget.theme.secondaryColor,
-          onSecondary: Colors.white,
-          error: Colors.red,
-          onError: Colors.white,
-          background: widget.theme.backgroundColor,
-          onBackground: widget.theme.receivedMessageTextColor,
-          surface: widget.theme.inputBarColor,
-          onSurface: widget.theme.receivedMessageTextColor,
-        ),
-        fontFamily: widget.theme.fontFamily,
+      data: Theme.of(context).copyWith(
+        brightness: widget.theme.brightness,
       ),
       child: Scaffold(
         backgroundColor: widget.theme.backgroundColor,
-        appBar: widget.showAppBar ? _buildAppBar() : null,
+        appBar: widget.showAppBar
+            ? AppBar(
+                title: Row(
+                  children: [
+                    if (widget.chatPartner != null && widget.theme.showUserAvatar)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: CircleAvatar(
+                          backgroundColor: widget.chatPartner!.avatarColor,
+                          backgroundImage: widget.chatPartner!.avatarUrl != null
+                              ? NetworkImage(widget.chatPartner!.avatarUrl!)
+                              : widget.otherImageUrl != null
+                                  ? NetworkImage(widget.otherImageUrl!)
+                                  : null,
+                          child: widget.chatPartner!.avatarUrl == null && widget.otherImageUrl == null
+                              ? Text(
+                                  widget.chatPartner!.name.isNotEmpty
+                                      ? widget.chatPartner!.name[0].toUpperCase()
+                                      : "",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : null,
+                        ),
+                      ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.title,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (widget.chatPartner != null && widget.chatPartner!.status != null)
+                            Text(
+                              widget.chatPartner?.status ?? "",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: widget.theme.brightness == Brightness.light
+                                    ? Colors.white70
+                                    : Colors.black54,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                backgroundColor: widget.theme.appBarColor,
+                elevation: 1,
+                actions: [
+                  if (widget.inputAreaConfig.showCallButton)
+                    IconButton(
+                      icon: Icon(Icons.call),
+                      onPressed: () {
+                        // Handle call button press
+                      },
+                    ),
+                  if (widget.inputAreaConfig.showVideoCallButton)
+                    IconButton(
+                      icon: Icon(Icons.videocam),
+                      onPressed: () {
+                        // Handle video call button press
+                      },
+                    ),
+                  if (widget.inputAreaConfig.showSearchButton)
+                    IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        // Handle search button press
+                      },
+                    ),
+                  if (widget.inputAreaConfig.showSettingsButton)
+                    IconButton(
+                      icon: Icon(Icons.more_vert),
+                      onPressed: _showChatSettingsMenu,
+                    ),
+                ],
+              )
+            : null,
         body: Container(
           decoration: widget.theme.backgroundImage != null
               ? BoxDecoration(
@@ -1309,83 +1743,12 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: widget.theme.appBarColor,
-      title: Row(
-        children: [
-          if (widget.chatPartner != null)
-            CircleAvatar(
-              backgroundImage: widget.otherImageUrl != null 
-                  ? NetworkImage(widget.otherImageUrl!)
-                  : null,
-              backgroundColor: widget.chatPartner!.avatarColor ?? widget.theme.secondaryColor,
-              child: widget.otherImageUrl == null 
-                  ? Text(
-                      widget.chatPartner!.name.substring(0, 1).toUpperCase(),
-                      style: TextStyle(color: widget.theme.sentMessageTextColor),
-                    )
-                  : null,
-            ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.title,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: widget.theme.sentMessageTextColor,
-                ),
-              ),
-              if (widget.chatPartner != null && widget.showTypingIndicator)
-                Row(
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: widget.chatPartner!.isOnline ? Colors.green : Colors.grey,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      widget.chatPartner!.isOnline ? 'Online' : 'Offline',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: widget.theme.sentMessageTextColor.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.call),
-          color: widget.theme.sentMessageTextColor,
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: const Icon(Icons.videocam),
-          color: widget.theme.sentMessageTextColor,
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: const Icon(Icons.more_vert),
-          color: widget.theme.sentMessageTextColor,
-          onPressed: () {
-            _showChatSettingsMenu();
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildInputArea() {
+    // If input area is disabled, return an empty container
+    if (!widget.inputAreaConfig.showInputArea) {
+      return Container();
+    }
+    
     return Container(
       margin: widget.inputAreaConfig.margin,
       decoration: widget.inputAreaConfig.containerDecoration ?? BoxDecoration(
@@ -1414,6 +1777,15 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
               ),
               child: Row(
                 children: [
+                  if (widget.inputAreaConfig.showCameraButton)
+                    IconButton(
+                      icon: Icon(
+                        Icons.camera_alt,
+                        color: widget.inputAreaConfig.iconColor ?? widget.theme.secondaryColor,
+                        size: widget.inputAreaConfig.iconSize,
+                      ),
+                      onPressed: () => _handleAttachmentPressed('photo'),
+                    ),
                   if (widget.enableEmojis && widget.inputAreaConfig.showEmojiButton)
                     IconButton(
                       icon: Icon(
@@ -1446,6 +1818,15 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
                       onSubmitted: _handleSubmitted,
                     ),
                   ),
+                  if (widget.inputAreaConfig.showVoiceButton)
+                    IconButton(
+                      icon: Icon(
+                        Icons.mic,
+                        color: widget.inputAreaConfig.iconColor ?? widget.theme.secondaryColor,
+                        size: widget.inputAreaConfig.iconSize,
+                      ),
+                      onPressed: () => _handleAttachmentPressed('audio'),
+                    ),
                   if (widget.enableAttachments && widget.inputAreaConfig.showAttachmentButton)
                     IconButton(
                       icon: Icon(
@@ -1547,12 +1928,23 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
               ListTile(
                 leading: Icon(Icons.insert_drive_file, color: widget.theme.primaryColor),
                 title: Text(
-                  'File',
+                  'Document',
                   style: TextStyle(color: widget.theme.receivedMessageTextColor),
                 ),
                 onTap: () {
                   Navigator.pop(context);
                   _handleAttachmentPressed('file');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.mic, color: widget.theme.primaryColor),
+                title: Text(
+                  'Audio',
+                  style: TextStyle(color: widget.theme.receivedMessageTextColor),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _handleAttachmentPressed('audio');
                 },
               ),
               ListTile(
@@ -1632,6 +2024,197 @@ class _CustomizableChatScreenState extends State<CustomizableChatScreen>
         );
       },
     );
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      
+      if (image != null) {
+        final File imageFile = File(image.path);
+        final String id = DateTime.now().millisecondsSinceEpoch.toString();
+        final DateTime timestamp = DateTime.now();
+        
+        // Get file size
+        final int fileSize = await imageFile.length();
+        final String formattedSize = _formatFileSize(fileSize);
+        
+        // Create message
+        final ChatMessage message = ChatMessage(
+          id: id,
+          text: path.basename(image.path),
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.image,
+          mediaPath: image.path,
+          mediaSourceType: MediaSourceType.file,
+          isNew: true,
+          metadata: {
+            'filename': path.basename(image.path),
+            'size': formattedSize,
+          },
+        );
+        
+        setState(() {
+          _messages.add(message);
+        });
+        
+        _scrollToBottom();
+        _newMessageController.forward().then((_) => _newMessageController.reset());
+        
+        if (widget.onMessageSent != null) {
+          widget.onMessageSent!(message);
+        }
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+    }
+  }
+  
+  Future<void> _pickVideo() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
+      
+      if (video != null) {
+        final File videoFile = File(video.path);
+        final String id = DateTime.now().millisecondsSinceEpoch.toString();
+        final DateTime timestamp = DateTime.now();
+        
+        // Get file size
+        final int fileSize = await videoFile.length();
+        final String formattedSize = _formatFileSize(fileSize);
+        
+        // Create message
+        final ChatMessage message = ChatMessage(
+          id: id,
+          text: path.basename(video.path),
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.video,
+          mediaPath: video.path,
+          mediaSourceType: MediaSourceType.file,
+          isNew: true,
+          metadata: {
+            'filename': path.basename(video.path),
+            'size': formattedSize,
+          },
+        );
+        
+        setState(() {
+          _messages.add(message);
+        });
+        
+        _scrollToBottom();
+        _newMessageController.forward().then((_) => _newMessageController.reset());
+        
+        if (widget.onMessageSent != null) {
+          widget.onMessageSent!(message);
+        }
+      }
+    } catch (e) {
+      print('Error picking video: $e');
+    }
+  }
+  
+  Future<void> _pickDocument() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'txt', 'xlsx', 'pptx', 'zip'],
+      );
+      
+      if (result != null && result.files.single.path != null) {
+        final String filePath = result.files.single.path!;
+        final File file = File(filePath);
+        final String id = DateTime.now().millisecondsSinceEpoch.toString();
+        final DateTime timestamp = DateTime.now();
+        
+        // Get file size
+        final int fileSize = await file.length();
+        final String formattedSize = _formatFileSize(fileSize);
+        
+        // Create message
+        final ChatMessage message = ChatMessage(
+          id: id,
+          text: '',
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.file,
+          mediaPath: filePath,
+          mediaSourceType: MediaSourceType.file,
+          isNew: true,
+          metadata: {
+            'filename': path.basename(filePath),
+            'size': formattedSize,
+          },
+        );
+        
+        setState(() {
+          _messages.add(message);
+        });
+        
+        _scrollToBottom();
+        _newMessageController.forward().then((_) => _newMessageController.reset());
+        
+        if (widget.onMessageSent != null) {
+          widget.onMessageSent!(message);
+        }
+      }
+    } catch (e) {
+      print('Error picking document: $e');
+    }
+  }
+  
+  Future<void> _pickAudio() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['mp3', 'wav', 'm4a', 'ogg', 'aac'],
+      );
+      
+      if (result != null && result.files.single.path != null) {
+        final String filePath = result.files.single.path!;
+        final File file = File(filePath);
+        final String id = DateTime.now().millisecondsSinceEpoch.toString();
+        final DateTime timestamp = DateTime.now();
+        
+        // Get file size
+        final int fileSize = await file.length();
+        final String formattedSize = _formatFileSize(fileSize);
+        
+        // Create message
+        final ChatMessage message = ChatMessage(
+          id: id,
+          text: 'Audio message',
+          isMe: true,
+          timestamp: timestamp,
+          type: MessageType.audio,
+          mediaPath: filePath,
+          mediaSourceType: MediaSourceType.file,
+          isNew: true,
+          metadata: {
+            'filename': path.basename(filePath),
+            'size': formattedSize,
+            'duration': '0:00', // We would need an audio plugin to get the real duration
+          },
+        );
+        
+        setState(() {
+          _messages.add(message);
+        });
+        
+        _scrollToBottom();
+        _newMessageController.forward().then((_) => _newMessageController.reset());
+        
+        if (widget.onMessageSent != null) {
+          widget.onMessageSent!(message);
+        }
+      }
+    } catch (e) {
+      print('Error picking audio: $e');
+    }
   }
 }
 
@@ -1747,7 +2330,10 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
   late AnimationController _appearController;
   late Animation<double> _appearAnimation;
   bool _showReactions = false;
-
+  
+  // Add this method to provide context access
+  BuildContext get _context => context;
+  
   @override
   void initState() {
     super.initState();
@@ -1791,61 +2377,11 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius - 3),
-            child: Image.network(
-              widget.message.mediaUrl ?? 'https://picsum.photos/200',
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  width: widget.config.maxWidth,
-                  height: widget.config.maxHeight,
-                  color: widget.theme.secondaryColor.withOpacity(0.3),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              (loadingProgress.expectedTotalBytes ?? 1)
-                          : null,
-                      color: widget.theme.primaryColor,
-                    ),
-                  ),
-                );
-              },
-            ),
+            child: _buildImageContent(),
           ),
         );
       case MessageType.video:
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              constraints: BoxConstraints(
-                maxWidth: widget.config.maxWidth,
-                maxHeight: widget.config.maxHeight,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius - 3),
-                child: Image.network(
-                  widget.message.mediaUrl ?? 'https://picsum.photos/200',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-          ],
-        );
+        return _buildVideoContent();
       case MessageType.emoji:
         return SelectableText(
           widget.message.text,
@@ -1861,112 +2397,9 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
           ),
         );
       case MessageType.file:
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.insert_drive_file,
-                color: widget.message.isMe
-                    ? widget.theme.sentMessageTextColor
-                    : widget.theme.receivedMessageTextColor,
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SelectableText(
-                      'File name.pdf',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: widget.message.isMe
-                            ? widget.theme.sentMessageTextColor
-                            : widget.theme.receivedMessageTextColor,
-                      ),
-                      enableInteractiveSelection: true,
-                      toolbarOptions: const ToolbarOptions(
-                        copy: true,
-                        selectAll: true,
-                        cut: false,
-                        paste: false,
-                      ),
-                    ),
-                    SelectableText(
-                      '2.5 MB',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: (widget.message.isMe
-                                ? widget.theme.sentMessageTextColor
-                                : widget.theme.receivedMessageTextColor)
-                            .withOpacity(0.7),
-                      ),
-                      enableInteractiveSelection: true,
-                      toolbarOptions: const ToolbarOptions(
-                        copy: true,
-                        selectAll: true,
-                        cut: false,
-                        paste: false,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+        return _buildFileContent();
       case MessageType.audio:
-        return Container(
-          width: widget.config.maxWidth,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: [
-              Icon(
-                Icons.play_circle_fill,
-                color: widget.message.isMe
-                    ? widget.theme.sentMessageTextColor
-                    : widget.theme.receivedMessageTextColor,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 3,
-                      decoration: BoxDecoration(
-                        color: (widget.message.isMe
-                                ? widget.theme.sentMessageTextColor
-                                : widget.theme.receivedMessageTextColor)
-                            .withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    SelectableText(
-                      '0:42',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: (widget.message.isMe
-                                ? widget.theme.sentMessageTextColor
-                                : widget.theme.receivedMessageTextColor)
-                            .withOpacity(0.7),
-                      ),
-                      enableInteractiveSelection: true,
-                      toolbarOptions: const ToolbarOptions(
-                        copy: true,
-                        selectAll: true,
-                        cut: false,
-                        paste: false,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+        return _buildAudioContent();
       case MessageType.location:
         return Container(
           width: widget.config.maxWidth,
@@ -2006,6 +2439,546 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
           ),
         );
     }
+  }
+  
+  Widget _buildImageContent() {
+    Widget imageWidget;
+    
+    switch (widget.message.mediaSourceType) {
+      case MediaSourceType.network:
+        imageWidget = Image.network(
+          widget.message.mediaUrl ?? 'https://picsum.photos/200',
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Container(
+              width: widget.config.maxWidth,
+              height: 150,
+              color: widget.theme.secondaryColor.withOpacity(0.3),
+              child: Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          (loadingProgress.expectedTotalBytes ?? 1)
+                      : null,
+                  color: widget.theme.primaryColor,
+                ),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: widget.config.maxWidth,
+              height: 150,
+              color: Colors.grey.shade200,
+              child: const Center(
+                child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
+              ),
+            );
+          },
+        );
+        break;
+      case MediaSourceType.file:
+        imageWidget = widget.message.mediaPath != null
+            ? Image.file(
+                File(widget.message.mediaPath!),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: widget.config.maxWidth,
+                    height: 150,
+                    color: Colors.grey.shade200,
+                    child: const Center(
+                      child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                    ),
+                  );
+                },
+              )
+            : Container(
+                width: widget.config.maxWidth,
+                height: 150,
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                ),
+              );
+        break;
+      case MediaSourceType.memory:
+        imageWidget = widget.message.mediaBytes != null
+            ? Image.memory(
+                widget.message.mediaBytes!,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: widget.config.maxWidth,
+                    height: 150,
+                    color: Colors.grey.shade200,
+                    child: const Center(
+                      child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                    ),
+                  );
+                },
+              )
+            : Container(
+                width: widget.config.maxWidth,
+                height: 150,
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                ),
+              );
+        break;
+    }
+    
+    // Wrap with GestureDetector to handle tap for full-screen view
+    return GestureDetector(
+      onTap: () => _openFullScreenImage(context),
+      child: imageWidget,
+    );
+  }
+  
+  void _openFullScreenImage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            iconTheme: const IconThemeData(color: Colors.white),
+            elevation: 0,
+          ),
+          body: Center(
+            child: InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 3.0,
+              child: Hero(
+                tag: widget.message.id,
+                child: widget.message.mediaSourceType == MediaSourceType.network
+                    ? Image.network(widget.message.mediaUrl ?? '')
+                    : widget.message.mediaSourceType == MediaSourceType.file && widget.message.mediaPath != null
+                        ? Image.file(File(widget.message.mediaPath!))
+                        : widget.message.mediaSourceType == MediaSourceType.memory && widget.message.mediaBytes != null
+                            ? Image.memory(widget.message.mediaBytes!)
+                            : Container(
+                                color: Colors.grey.shade900,
+                                child: const Center(
+                                  child: Icon(Icons.broken_image, size: 60, color: Colors.white54),
+                                ),
+                              ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildVideoContent() {
+    return GestureDetector(
+      onTap: () => _playVideo(),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius - 3),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            _buildVideoThumbnail(),
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.play_arrow_rounded,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  void _playVideo() {
+    try {
+      // Use the context from this widget state
+      final BuildContext context = _context;
+      
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext dialogContext) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+
+      Future<void> initializeAndPlayVideo(VideoPlayerController videoController) async {
+        try {
+          await videoController.initialize();
+          // Pop loading dialog
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            
+            // Navigate to full screen player
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => _FullScreenVideoPlayer(controller: videoController),
+              ),
+            );
+          }
+        } catch (e) {
+          // Pop loading dialog
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error playing video: ${e.toString()}')),
+            );
+          }
+          videoController.dispose();
+        }
+      }
+
+      switch (widget.message.mediaSourceType) {
+        case MediaSourceType.network:
+          if (widget.message.mediaUrl != null && widget.message.mediaUrl!.isNotEmpty) {
+            // For YouTube videos, we should extract the video URL
+            if (widget.message.mediaUrl!.contains('youtube.com') || 
+                widget.message.mediaUrl!.contains('youtu.be')) {
+              // This is a placeholder - in a real app, you'd use a package like youtube_explode_dart
+              // to extract the actual video stream URL
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('YouTube videos require additional packages to play')),
+              );
+              Navigator.of(context).pop(); // Pop loading dialog
+              return;
+            }
+            
+            // Use cached_network_image approach for caching
+            final networkController = VideoPlayerController.networkUrl(
+              Uri.parse(widget.message.mediaUrl!),
+              httpHeaders: const {'User-Agent': 'MyApp/1.0'},
+              videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false),
+            );
+            initializeAndPlayVideo(networkController);
+          } else {
+            Navigator.of(context).pop(); // Pop loading dialog
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('No video URL found')),
+            );
+          }
+          break;
+          
+        case MediaSourceType.file:
+          if (widget.message.mediaPath != null && widget.message.mediaPath!.isNotEmpty) {
+            final fileController = VideoPlayerController.file(
+              File(widget.message.mediaPath!),
+              videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false),
+            );
+            initializeAndPlayVideo(fileController);
+          } else {
+            Navigator.of(context).pop(); // Pop loading dialog
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('No video file found')),
+            );
+          }
+          break;
+          
+        case MediaSourceType.memory:
+          Navigator.of(context).pop(); // Pop loading dialog
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Memory videos are not supported')),
+          );
+          break;
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(_context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+  
+  Widget _buildVideoThumbnail() {
+    Widget placeholder = Container(
+      width: widget.config.maxWidth,
+      height: 180,
+      color: Colors.grey.shade800,
+      child: const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.movie_outlined, size: 48, color: Colors.white70),
+            SizedBox(height: 8),
+            Text(
+              "Tap to play video",
+              style: TextStyle(color: Colors.white70, fontSize: 14),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    switch (widget.message.mediaSourceType) {
+      case MediaSourceType.network:
+        return widget.message.mediaUrl != null 
+            ? Stack(
+                children: [
+                  Image.network(
+                    // Try to get a thumbnail URL from the video URL if possible
+                    "https://img.youtube.com/vi/${_extractVideoId(widget.message.mediaUrl!)}/0.jpg",
+                    fit: BoxFit.cover,
+                    width: widget.config.maxWidth,
+                    height: 180,
+                    errorBuilder: (context, error, stackTrace) {
+                      return placeholder;
+                    },
+                  ),
+                  // Gradient overlay to make play button more visible
+                  Container(
+                    width: widget.config.maxWidth,
+                    height: 180,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.5),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : placeholder;
+      case MediaSourceType.file:
+        return widget.message.mediaPath != null
+            ? Container(
+                width: widget.config.maxWidth,
+                height: 180,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade800,
+                  borderRadius: BorderRadius.circular(widget.theme.messageBorderRadius - 3),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.play_circle_fill, size: 48, color: Colors.white70),
+                    const SizedBox(height: 8),
+                    Text(
+                      path.basename(widget.message.mediaPath!),
+                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              )
+            : placeholder;
+      case MediaSourceType.memory:
+        return placeholder;
+    }
+  }
+  
+  String? _extractVideoId(String url) {
+    // Try to extract a YouTube video ID if it's a YouTube URL
+    try {
+      RegExp regExp = RegExp(
+        r'^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*',
+        caseSensitive: false,
+        multiLine: false,
+      );
+      Match? match = regExp.firstMatch(url);
+      
+      return match?.group(7);
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  Widget _buildFileContent() {
+    // Extract filename from path or URL
+    String filename = 'File';
+    String fileSize = '---';
+    
+    if (widget.message.metadata != null) {
+      filename = widget.message.metadata!['filename'] ?? 'File';
+      fileSize = widget.message.metadata!['size'] ?? '---';
+    } else if (widget.message.mediaPath != null) {
+      filename = widget.message.mediaPath!.split('/').last;
+    } else if (widget.message.mediaUrl != null) {
+      filename = widget.message.mediaUrl!.split('/').last;
+    }
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            _getFileIcon(filename),
+            color: widget.message.isMe
+                ? widget.theme.sentMessageTextColor
+                : widget.theme.receivedMessageTextColor,
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SelectableText(
+                  filename,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: widget.message.isMe
+                        ? widget.theme.sentMessageTextColor
+                        : widget.theme.receivedMessageTextColor,
+                  ),
+                  enableInteractiveSelection: true,
+                  toolbarOptions: const ToolbarOptions(
+                    copy: true,
+                    selectAll: true,
+                    cut: false,
+                    paste: false,
+                  ),
+                ),
+                SelectableText(
+                  fileSize,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: (widget.message.isMe
+                            ? widget.theme.sentMessageTextColor
+                            : widget.theme.receivedMessageTextColor)
+                        .withOpacity(0.7),
+                  ),
+                  enableInteractiveSelection: true,
+                  toolbarOptions: const ToolbarOptions(
+                    copy: true,
+                    selectAll: true,
+                    cut: false,
+                    paste: false,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  IconData _getFileIcon(String filename) {
+    final String ext = filename.contains('.') ? filename.split('.').last.toLowerCase() : '';
+    
+    switch (ext) {
+      case 'pdf':
+        return Icons.picture_as_pdf;
+      case 'doc':
+      case 'docx':
+        return Icons.description;
+      case 'xls':
+      case 'xlsx':
+        return Icons.table_chart;
+      case 'ppt':
+      case 'pptx':
+        return Icons.slideshow;
+      case 'zip':
+      case 'rar':
+      case '7z':
+        return Icons.folder_zip;
+      case 'txt':
+        return Icons.text_snippet;
+      default:
+        return Icons.insert_drive_file;
+    }
+  }
+  
+  Widget _buildAudioContent() {
+    String duration = '0:00';
+    
+    if (widget.message.metadata != null && widget.message.metadata!.containsKey('duration')) {
+      duration = widget.message.metadata!['duration'];
+    }
+    
+    return Container(
+      width: widget.config.maxWidth,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(
+            Icons.play_circle_filled,
+            color: widget.message.isMe
+                ? widget.theme.sentMessageTextColor
+                : widget.theme.receivedMessageTextColor,
+            size: 36,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: (widget.message.isMe
+                            ? widget.theme.sentMessageTextColor
+                            : widget.theme.receivedMessageTextColor)
+                        .withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SelectableText(
+                      duration,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: (widget.message.isMe
+                                ? widget.theme.sentMessageTextColor
+                                : widget.theme.receivedMessageTextColor)
+                            .withOpacity(0.7),
+                      ),
+                      enableInteractiveSelection: true,
+                      toolbarOptions: const ToolbarOptions(
+                        copy: true,
+                        selectAll: true,
+                        cut: false,
+                        paste: false,
+                      ),
+                    ),
+                    if (widget.message.text.isNotEmpty)
+                      SelectableText(
+                        widget.message.text,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                          color: (widget.message.isMe
+                                  ? widget.theme.sentMessageTextColor
+                                  : widget.theme.receivedMessageTextColor)
+                              .withOpacity(0.7),
+                        ),
+                        enableInteractiveSelection: true,
+                        toolbarOptions: const ToolbarOptions(
+                          copy: true,
+                          selectAll: true,
+                          cut: false,
+                          paste: false,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildReactions(ChatMessage message) {
@@ -2224,4 +3197,400 @@ class _AnimatedMessageBubbleState extends State<AnimatedMessageBubble>
       ),
     );
   }
+}
+
+// VideoPlayer screen for displaying videos in fullscreen
+class _FullScreenVideoPlayer extends StatefulWidget {
+  final VideoPlayerController controller;
+
+  const _FullScreenVideoPlayer({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  State<_FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();
+}
+
+class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+  bool _isPlaying = false;
+  double _currentPosition = 0;
+  double _totalDuration = 0;
+  bool _hasError = false;
+  String _errorMessage = "";
+  
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller;
+    _initializeVideoPlayerFuture = _initializeVideo();
+  }
+
+  Future<void> _initializeVideo() async {
+    try {
+      await _controller.initialize();
+      if (mounted) {
+        setState(() {
+          _totalDuration = _controller.value.duration.inMilliseconds.toDouble();
+          _isPlaying = true;
+          _controller.play();
+        });
+        
+        // Add listener to update position
+        _controller.addListener(_videoListener);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+          _errorMessage = "Could not load video: ${e.toString()}";
+          print("Video player error: $e");
+        });
+      }
+    }
+    return;
+  }
+  
+  void _videoListener() {
+    if (!mounted) return;
+    setState(() {
+      _currentPosition = _controller.value.position.inMilliseconds.toDouble();
+      _isPlaying = _controller.value.isPlaying;
+      
+      // Handle video completion
+      if (_controller.value.position >= _controller.value.duration) {
+        _isPlaying = false;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_videoListener);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$minutes:$seconds";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
+        title: const Text('Video Player', style: TextStyle(color: Colors.white)),
+      ),
+      body: _hasError 
+          ? _buildErrorWidget()
+          : FutureBuilder(
+              future: _initializeVideoPlayerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (_controller.value.isInitialized) {
+                    return _buildVideoPlayer();
+                  } else {
+                    return _buildErrorWidget(message: "Failed to initialize video");
+                  }
+                } else {
+                  return _buildLoadingWidget();
+                }
+              },
+            ),
+    );
+  }
+  
+  Widget _buildVideoPlayer() {
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Video display with GestureDetector for tap to play/pause
+          GestureDetector(
+            onTap: _togglePlayPause,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                ),
+                // Play/Pause overlay that appears briefly when tapped
+                if (!_isPlaying)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    child: const Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 60,
+                    ),
+                  ),
+                // Quality indicator
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _controller.value.size.width >= 1280 ? "HD" : "SD",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.hd,
+                          color: _controller.value.size.width >= 1280 
+                              ? Colors.red 
+                              : Colors.white,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Video controls
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _formatDuration(Duration(milliseconds: _currentPosition.toInt())),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Expanded(
+                  child: Slider(
+                    value: _currentPosition.clamp(0, _totalDuration),
+                    min: 0,
+                    max: _totalDuration > 0 ? _totalDuration : 1,
+                    onChanged: (value) {
+                      setState(() {
+                        _currentPosition = value;
+                      });
+                    },
+                    onChangeEnd: (value) {
+                      _controller.seekTo(Duration(milliseconds: value.toInt()));
+                    },
+                    activeColor: Colors.red,
+                    inactiveColor: Colors.white24,
+                  ),
+                ),
+                Text(
+                  _formatDuration(Duration(milliseconds: _totalDuration.toInt())),
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          // Control buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.replay_10,
+                  color: Colors.white,
+                  size: 32,
+                ),
+                onPressed: _rewindTenSeconds,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  padding: EdgeInsets.all(12),
+                  icon: Icon(
+                    _isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                  onPressed: _togglePlayPause,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.forward_10,
+                  color: Colors.white,
+                  size: 32,
+                ),
+                onPressed: _forwardTenSeconds,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildLoadingWidget() {
+    return const Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircularProgressIndicator(color: Colors.white),
+          SizedBox(height: 16),
+          Text(
+            "Loading video...",
+            style: TextStyle(color: Colors.white),
+          )
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildErrorWidget({String? message}) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              message ?? _errorMessage,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Go Back"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  void _togglePlayPause() {
+    setState(() {
+      if (_isPlaying) {
+        _controller.pause();
+      } else {
+        _controller.play();
+      }
+      _isPlaying = !_isPlaying;
+    });
+  }
+  
+  void _rewindTenSeconds() {
+    final newPosition = _controller.value.position - const Duration(seconds: 10);
+    _controller.seekTo(newPosition < Duration.zero ? Duration.zero : newPosition);
+  }
+  
+  void _forwardTenSeconds() {
+    final newPosition = _controller.value.position + const Duration(seconds: 10);
+    _controller.seekTo(
+      newPosition > _controller.value.duration ? _controller.value.duration : newPosition
+    );
+  }
+}
+
+/// Example of how to use the CustomizableChatScreen with specific buttons visible/hidden
+///
+/// This example shows how to create a chat screen with custom button visibility
+void customButtonVisibilityExample() {
+  final currentUser = UserProfile(
+    id: 'user1',
+    name: 'John Doe',
+    isOnline: true,
+  );
+  
+  final chatPartner = UserProfile(
+    id: 'user2',
+    name: 'Jane Smith',
+    isOnline: true,
+    status: 'Online',
+  );
+  
+  // Create a custom input configuration with specific buttons visible
+  final customInputConfig = InputAreaConfig(
+    // Standard styling
+    margin: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+    padding: const EdgeInsets.symmetric(horizontal: 8),
+    borderRadius: 24,
+    iconSize: 24,
+    iconColor: const Color(0xFF4A6FFF),
+    
+    // Control which buttons are visible
+    showSendButton: true,         // Show the send button
+    showEmojiButton: true,        // Show emoji picker button
+    showAttachmentButton: false,  // Hide attachment button
+    showVoiceButton: true,        // Show voice message button
+    showCameraButton: true,       // Show camera button
+    
+    // App bar buttons
+    showCallButton: false,        // Hide call button in app bar
+    showVideoCallButton: false,   // Hide video call button in app bar
+    showSettingsButton: true,     // Show settings button in app bar
+    showSearchButton: true,       // Show search button in app bar
+    
+    // Always show input area (set false for read-only view)
+    showInputArea: true,
+    
+    // Emoji picker settings
+    emojiPickerHeight: 300,
+    emojiColumns: 8,
+    emojiSizeMax: 32,
+  );
+  
+  // Create the chat screen with custom button visibility
+  final chatScreen = CustomizableChatScreen(
+    title: 'Custom Chat',
+    currentUser: currentUser,
+    chatPartner: chatPartner,
+    theme: ChatTheme.modernLight(),
+    enableEmojis: true,        // Enable emoji functionality
+    enableAttachments: false,  // Disable attachments (redundant with showAttachmentButton: false)
+    enableReactions: true,     // Enable message reactions
+    showAppBar: true,          // Show the app bar
+    
+    // Use our custom input configuration with specific buttons visible
+    inputAreaConfig: customInputConfig,
+    
+    // Use modern styling for other components
+    messageBubbleConfig: MessageBubbleConfig.modern(),
+    reactionConfig: ReactionConfig.modern(),
+  );
+  
+  // Usage:
+  // Navigator.push(context, MaterialPageRoute(builder: (context) => chatScreen));
 }
