@@ -28,24 +28,20 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return CustomizableChatScreen(
-        quickReactions: ["hi"],
-        autoRespond: true,
-        onMessageSent: (message) {
-          print(message.text);
-        },
-        onMessageReceived: (message) {
-          print(message.text);
-        },
-        enableReactions: true,
-        enableEmojis: true,
-        enableAttachments: true,
-        title: "hi",
-        currentUser: UserProfile(id: "hi", name: "kareem"),
-        theme: ChatTheme(),
-        myImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyzTWQoCUbRNdiyorem5Qp1zYYhpliR9q0Bw&s",
-        otherImageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyzTWQoCUbRNdiyorem5Qp1zYYhpliR9q0Bw&s",
-        showAppBar: false,
-        messageBubbleConfig: MessageBubbleConfig(),
-        );
+      title: "Chat with Support",
+      currentUser: UserProfile(id: "23", name: "dj"),
+      chatPartner: UserProfile(id: "sd", name: "sdc"),
+      theme: ChatTheme.modernLight(), // or modernDark() for dark mode
+      messageBubbleConfig: MessageBubbleConfig.modern(),
+      inputAreaConfig: InputAreaConfig.modern(),
+      reactionConfig: ReactionConfig.modern(),
+      quickReactions: CustomizableChatScreen.expandedReactions,
+      onReactionAdded: (message, emoji) {
+        print(message.text);
+        print(emoji);
+      },
+      autoRespond: true,
+      autoRespondText: "ok",
+    );
   }
 }
