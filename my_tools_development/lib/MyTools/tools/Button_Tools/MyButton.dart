@@ -51,17 +51,15 @@ class MyButton extends StatefulWidget {
     this.loadingSize = 20.0,
     this.loadingColor,
     this.tooltipMessage,
-    this.tooltipPosition = TooltipPosition.above,
+    // Removed tooltipPosition parameter
     this.shimmerDirection = ShimmerDirection.leftToRight,
     this.shimmerWidth = 0.5,
     this.shimmerOpacity = 0.3,
     this.shimmerDuration = const Duration(milliseconds: 1500),
-    //,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, Missing parameters for glow effect
     this.glowColor,
     this.glowRadius = 12.0,
     this.glowSpread = 2.0,
     this.glowOpacity = 0.6,
-    // Missing parameters for pulse effect
     this.pulseMinScale = 1.0,
     this.pulseMaxScale = 1.05,
     this.pulseDuration = const Duration(milliseconds: 1000),
@@ -225,11 +223,10 @@ class MyButton extends StatefulWidget {
 
   /// An optional tooltip message to show on hover.
   /// Useful for providing additional context about the button's action.
+  /// The tooltip will always appear above the button.
   final String? tooltipMessage;
-
-  /// The position of the tooltip relative to the button.
-  /// Can be above, below, left, or right. Default is above.
-  final TooltipPosition tooltipPosition;
+  
+  // Removed tooltipPosition property
   
   /// The direction of the shimmer animation.
   /// Can be leftToRight, rightToLeft, or bottomLeftToTopRight.
@@ -431,13 +428,12 @@ class _MyButtonState extends State<MyButton> with SingleTickerProviderStateMixin
     
     Widget buttonContent = _buildButtonContent(effectiveTextColor);
     
-    // Apply tooltip if provided
+    // Apply tooltip if provided - simplified to always show above
     if (widget.tooltipMessage != null) {
       buttonContent = Tooltip(
         message: widget.tooltipMessage!,
-        preferBelow: widget.tooltipPosition == TooltipPosition.below,
-        verticalOffset: widget.tooltipPosition == TooltipPosition.above || 
-                        widget.tooltipPosition == TooltipPosition.below ? 20 : 0,
+        preferBelow: false, // Always show above
+        verticalOffset: 20,  // Consistent offset
         child: buttonContent,
       );
     }

@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
     return Center(
       child: MyButton(
         text: "hi",
-         hoverEffect: HoverEffect.bounce,
+         tooltipMessage: "khvjg",
          icon:Icon( Icons.abc),
          gradient: LinearGradient(colors:[Colors.red,Colors.blue]),
         onTap: () {
