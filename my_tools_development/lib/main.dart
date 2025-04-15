@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tools_development/MyTools/tools/Button_Tools/MyButton.dart';
+import 'package:my_tools_development/MyTools/tools/Text_Tools/TMaker.dart';
 import 'package:my_tools_development/MyTools/tools/Text_Tools/Texting/AnimatedChatScreen.dart';
 import 'package:my_tools_development/MyTools/tools/Video_Tools/miniVideoPlayer/miniVideoPlayer.dart';
 import 'package:my_tools_development/MyTools/tools/internet_tools/IsConnected/IsConnected.dart';
@@ -24,18 +25,32 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: MyButton(
-        text: "hi",
-         tooltipMessage: "khvjg",
-         icon:Icon( Icons.abc),
-         gradient: LinearGradient(colors:[Colors.red,Colors.blue]),
+      child: TMaker(
+        text: "hiiiiiiiiiiiiiiii",
+        fontSize: 80,
+        fontWeight: FontWeight.w700,
+        color: Colors.black,
+        isClickable: true,
+        shadows: [BoxShadow(offset: Offset(1, 1), color: Colors.black, spreadRadius: 10,blurRadius: 2)],
+        hoverGradient:  LinearGradient(
+            end: Alignment.topLeft,
+            begin: Alignment.bottomRight,
+            colors: [Colors.red, Colors.blue]),
+        hoverEffect: TextHoverEffect.color,
+        hoverDuration: Duration(seconds: 1),
+
         onTap: () {
-          print("hi");
+          print("hello");
         },
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.red, Colors.blue]),
       ),
     );
   }
