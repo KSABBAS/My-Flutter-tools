@@ -101,110 +101,111 @@ class CMaker extends StatefulWidget {
   });
 
   // Basic properties
-  Color? color;
-  double? height;
-  double? width;
-  AlignmentGeometry? alignment;
-  EdgeInsetsGeometry? padding;
-  EdgeInsetsGeometry? margin;
-  DecorationImage? BackGroundimage;
-  List<BoxShadow>? boxShadow;
-  Gradient? gradient;
-  Matrix4? transform;
-  BoxBorder? border;
-  double? circularRadius;
-  Clip? clipBehavior;
-  BoxShape? shape;
-  Widget? child;
+  final Color? color;
+  final double? height;
+  final double? width;
+  final AlignmentGeometry? alignment;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final DecorationImage? BackGroundimage;
+  final List<BoxShadow>? boxShadow;
+  final Gradient? gradient;
+  final Matrix4? transform;
+  final BoxBorder? border;
+  final double? circularRadius;
+  final Clip? clipBehavior;
+  final BoxShape? shape;
+  final Widget? child;
 
   // Animation properties
-  Duration? animationDuration;
-  Curve? animationCurve;
-  bool animateOnInit;
-  double? initialScale;
-  double? finalScale;
-  double? initialOpacity;
-  double? finalOpacity;
-  Offset? initialOffset;
-  Offset? finalOffset;
-  AnimationType animationType;
+  final Duration? animationDuration;
+  final Curve? animationCurve;
+  final bool animateOnInit;
+  final double? initialScale;
+  final double? finalScale;
+  final double? initialOpacity;
+  final double? finalOpacity;
+  final Offset? initialOffset;
+  final Offset? finalOffset;
+  final AnimationType animationType;
   
   // Enhanced animation control properties
-  int? animationRepeatCount; // Number of times to repeat the animation
-  bool? animationReverse; // Whether to reverse the animation
+  final int? animationRepeatCount;
+  final bool? animationReverse;
   
   // Rotation animation controls
-  double? rotationAngle; // Initial angle for rotation in radians
-  double? rotationEndAngle; // Final angle for rotation in radians
-  CMakerAxis? rotationCMakerAxis; // CMakerAxis of rotation (X, Y, Z)
+  final double? rotationAngle;
+  final double? rotationEndAngle;
+  final CMakerAxis? rotationCMakerAxis;
   
   // Scale animation controls
-  double? scaleMin; // Minimum scale factor
-  double? scaleMax; // Maximum scale factor
+  final double? scaleMin;
+  final double? scaleMax;
   
   // Slide animation controls
-  SlideDirection? slideDirection; // Direction for slide animation
-  double? slideDistance; // Distance to slide (as a factor of widget size)
+  final SlideDirection? slideDirection;
+  final double? slideDistance;
   
   // Flip animation controls
-  bool? startFlipped; // Whether to start flipped (for flip animation)
-  CMakerAxis? flipAxis; // CMakerAxis to flip around (X or Y)
+  final bool? startFlipped;
+  final CMakerAxis? flipAxis;
   
   // Shimmer animation controls
-  bool? showChildDuringShimmer; // Whether to show child during shimmer animation
-  int? shimmerRepeatCount; // Number of times to repeat shimmer animation
-  Color? shimmerBaseColor; // Base color for shimmer effect
-  Color? shimmerHighlightColor; // Highlight color for shimmer effect
-  double? shimmerSpeed; // Speed multiplier for shimmer animation
+  final bool? showChildDuringShimmer;
+  final int? shimmerRepeatCount;
+  final Color? shimmerBaseColor;
+  final Color? shimmerHighlightColor; 
+  final double? shimmerSpeed;
 
   // Interactive properties
-  VoidCallback? onTap;
-  VoidCallback? onDoubleTap;
-  VoidCallback? onLongPress;
-  bool enableHover;
-  Color? hoverColor;
-  double? hoverElevation;
-  double? hoverScale;
-  Color? hoverBorderColor;
-  Gradient? hoverGradient;
+  final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
+  final bool enableHover;
+  final Color? hoverColor;
+  final double? hoverElevation;
+  final double? hoverScale;
+  final Color? hoverBorderColor;
+  final Gradient? hoverGradient;
 
   // Advanced styling properties
-  double? blurRadius;
-  Color? blurColor;
-  bool isGlassmorphic;
-  double? glassmorphicBorderWidth;
-  double? glassmorphicBorderRadius;
-  double? glassmorphicOpacity;
-  bool isNeumorphic;
-  NeumorphicLightSource neumorphicLightSource;
-  double? neumorphicDepth;
-  double? neumorphicIntensity;
-  double? neumorphicCurve;
+  final double? blurRadius;
+  final Color? blurColor;
+  final bool isGlassmorphic;
+  final double? glassmorphicBorderWidth;
+  final double? glassmorphicBorderRadius;
+  final double? glassmorphicOpacity;
+  final bool isNeumorphic;
+  final NeumorphicLightSource neumorphicLightSource;
+  final double? neumorphicDepth;
+  final double? neumorphicIntensity;
+  final double? neumorphicCurve;
 
   // Custom shape properties
-  BorderRadiusGeometry? customBorderRadius;
-  ShapeBorder? customShape;
-  CustomClipper<Path>? customClipper;
+  final BorderRadiusGeometry? customBorderRadius;
+  final ShapeBorder? customShape;
+  final CustomClipper<Path>? customClipper;
 
   // Responsive properties
-  double? maxWidth;
-  double? minWidth;
-  double? maxHeight;
-  double? minHeight;
-  double? aspectRatio;
+  final double? maxWidth;
+  final double? minWidth;
+  final double? maxHeight;
+  final double? minHeight;
+  final double? aspectRatio;
 
   // Overlay properties
-  Color? overlayColor;
-  Gradient? overlayGradient;
-  double? overlayOpacity;
-  BlendMode? overlayBlendMode;
+  final Color? overlayColor;
+  final Gradient? overlayGradient;
+  final double? overlayOpacity;
+  final BlendMode? overlayBlendMode;
 
   // Shadow properties
-  Color? shadowColor;
-  double? elevation;
-  Offset? shadowOffset;
-  double? shadowBlurRadius;
-  double? shadowSpreadRadius;
+  final Color? shadowColor;
+  final double? elevation;
+  final Offset? shadowOffset;
+  final double? shadowBlurRadius;
+  final double? shadowSpreadRadius;
+  
   @override
   State<CMaker> createState() => _CMakerState();
 }
@@ -216,7 +217,6 @@ enum AnimationType {
   scale,
   slide,
   rotate,
-  // bounce removed as requested
   shimmer,
   flip,
 }
@@ -256,7 +256,6 @@ class _CMakerState extends State<CMaker> with SingleTickerProviderStateMixin {
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _rotateAnimation;
-  // Remove the bounce animation reference
   int _animationRepeatCount = 0;
   
   @override
@@ -364,6 +363,109 @@ class _CMakerState extends State<CMaker> with SingleTickerProviderStateMixin {
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  // Override didUpdateWidget to handle changes to animation properties during runtime
+  @override
+  void didUpdateWidget(CMaker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Update animation duration if it changed
+    if (widget.animationDuration != oldWidget.animationDuration) {
+      _animationController.duration = widget.animationDuration ?? const Duration(milliseconds: 300);
+    }
+    
+    // Update animation properties if they changed
+    if (widget.scaleMin != oldWidget.scaleMin || 
+        widget.scaleMax != oldWidget.scaleMax ||
+        widget.initialScale != oldWidget.initialScale ||
+        widget.finalScale != oldWidget.finalScale) {
+      _scaleAnimation = Tween<double>(
+        begin: widget.scaleMin ?? widget.initialScale ?? 0.8,
+        end: widget.scaleMax ?? widget.finalScale ?? 1.0,
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: widget.animationCurve ?? Curves.easeOut,
+      ));
+    }
+    
+    // Update opacity animation if it changed
+    if (widget.initialOpacity != oldWidget.initialOpacity ||
+        widget.finalOpacity != oldWidget.finalOpacity) {
+      _opacityAnimation = Tween<double>(
+        begin: widget.initialOpacity ?? 0.0,
+        end: widget.finalOpacity ?? 1.0,
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: widget.animationCurve ?? Curves.easeOut,
+      ));
+    }
+    
+    // Update slide animation if needed
+    if (widget.initialOffset != oldWidget.initialOffset ||
+        widget.finalOffset != oldWidget.finalOffset ||
+        widget.slideDirection != oldWidget.slideDirection ||
+        widget.slideDistance != oldWidget.slideDistance) {
+      
+      // Recalculate slide offsets
+      Offset initialSlideOffset;
+      Offset finalSlideOffset = widget.finalOffset ?? Offset.zero;
+      double slideDistance = widget.slideDistance ?? 1.0;
+      
+      if (widget.slideDirection != null && widget.slideDirection != SlideDirection.custom) {
+        switch (widget.slideDirection) {
+          case SlideDirection.fromTop:
+            initialSlideOffset = Offset(0.0, -slideDistance);
+            break;
+          case SlideDirection.fromBottom:
+            initialSlideOffset = Offset(0.0, slideDistance);
+            break;
+          case SlideDirection.fromLeft:
+            initialSlideOffset = Offset(-slideDistance, 0.0);
+            break;
+          case SlideDirection.fromRight:
+            initialSlideOffset = Offset(slideDistance, 0.0);
+            break;
+          default:
+            initialSlideOffset = widget.initialOffset ?? Offset(0.0, slideDistance * 0.2);
+        }
+      } else {
+        initialSlideOffset = widget.initialOffset ?? Offset(0.0, slideDistance * 0.2);
+      }
+      
+      _slideAnimation = Tween<Offset>(
+        begin: initialSlideOffset,
+        end: finalSlideOffset,
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: widget.animationCurve ?? Curves.easeOut,
+      ));
+    }
+    
+    // Update rotation animation if needed
+    if (widget.rotationAngle != oldWidget.rotationAngle ||
+        widget.rotationEndAngle != oldWidget.rotationEndAngle) {
+      _rotateAnimation = Tween<double>(
+        begin: widget.rotationAngle ?? 0.0,
+        end: widget.rotationEndAngle ?? (2 * 3.14159),
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: widget.animationCurve ?? Curves.easeOut,
+      ));
+    }
+    
+    // Restart animation if animation type changed
+    if (widget.animationType != oldWidget.animationType) {
+      if (widget.animateOnInit) {
+        if (widget.animationType == AnimationType.flip && widget.startFlipped == true) {
+          _animationController.value = 1.0;
+          _animationController.reverse();
+        } else {
+          _animationController.reset();
+          _animationController.forward();
+        }
+      }
+    }
   }
 
   // Helper method to create glassmorphic effect
@@ -518,9 +620,6 @@ class _CMakerState extends State<CMaker> with SingleTickerProviderStateMixin {
           },
           child: child,
         );
-        
-      // Remove the bounce case and replace with a comment
-      // case AnimationType.bounce: - removed as requested
         
       case AnimationType.shimmer:
         return ShimmerEffect(
@@ -714,14 +813,42 @@ class _CMakerState extends State<CMaker> with SingleTickerProviderStateMixin {
       container = MouseRegion(
         onEnter: (_) => setState(() {
           _isHovered = true;
-          // Remove reference to bounce animation
           if (widget.animationType != AnimationType.none) {
+            // First reset animation controller to ensure consistent behavior
             _animationController.reset();
-            _animationController.forward();
+            
+            // For certain animation types, we might want special handling on hover
+            switch (widget.animationType) {
+              case AnimationType.flip:
+                // For flip, maybe we want to flip to the other side on hover
+                if (widget.startFlipped == true) {
+                  _animationController.value = 1.0;
+                  _animationController.reverse();
+                } else {
+                  _animationController.forward();
+                }
+                break;
+              case AnimationType.shimmer:
+                // For shimmer, we might want to restart the shimmer effect
+                _animationController.repeat(min: -0.5, max: 1.5, period: 
+                  Duration(milliseconds: (widget.animationDuration?.inMilliseconds ?? 1500) ~/ 
+                  (widget.shimmerSpeed ?? 1.0)));
+                break;
+              default:
+                // Default behavior is to simply forward the animation
+                _animationController.forward();
+            }
           }
         }),
         onExit: (_) => setState(() {
           _isHovered = false;
+          // For certain animation types, we might want to animate back on hover exit
+          if (widget.animationType != AnimationType.none && 
+              widget.animationType != AnimationType.shimmer) {
+            if (widget.animationReverse == true) {
+              _animationController.reverse();
+            }
+          }
         }),
         child: _isHovered && widget.hoverScale != null
             ? Transform.scale(
@@ -752,8 +879,8 @@ class ShimmerEffect extends StatefulWidget {
   final Color baseColor;
   final Color highlightColor;
   final Duration duration;
-  final int? repeatCount; // Number of times to repeat the shimmer effect
-  final bool showChild; // Whether to show the child during shimmer effect
+  final int? repeatCount;
+  final bool showChild;
 
   const ShimmerEffect({
     Key? key,
@@ -769,7 +896,6 @@ class ShimmerEffect extends StatefulWidget {
   State<ShimmerEffect> createState() => _ShimmerEffectState();
 }
 
-// Fix the ShimmerEffect class to properly contain the shimmer within the widget bounds
 class _ShimmerEffectState extends State<ShimmerEffect> with SingleTickerProviderStateMixin {
   late AnimationController _shimmerController;
   int _shimmerRepeatCount = 0;
@@ -783,31 +909,58 @@ class _ShimmerEffectState extends State<ShimmerEffect> with SingleTickerProvider
     _shimmerController.repeat(min: -0.5, max: 1.5, period: widget.duration);
     
     if (widget.repeatCount != null && widget.repeatCount! > 0) {
-      _shimmerController.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _shimmerRepeatCount++;
-          if (_shimmerRepeatCount >= widget.repeatCount!) {
-            _shimmerController.stop();
-            // If we want to show the child after shimmer completes
-            if (!widget.showChild) {
-              setState(() {});
-            }
-          }
+      _shimmerController.addStatusListener(_handleAnimationStatus);
+    }
+  }
+  
+  void _handleAnimationStatus(AnimationStatus status) {
+    // The unbounded controller doesn't properly report completion
+    // We manually check if it's near the end of a cycle
+    if (_shimmerController.value >= 1.49) {
+      _shimmerRepeatCount++;
+      if (_shimmerRepeatCount >= (widget.repeatCount ?? 0)) {
+        _shimmerController.stop();
+        // If we want to show the child after shimmer completes
+        if (!widget.showChild) {
+          setState(() {});
         }
-      });
+      }
     }
   }
 
   @override
   void dispose() {
+    _shimmerController.removeStatusListener(_handleAnimationStatus);
     _shimmerController.dispose();
     super.dispose();
   }
 
   @override
+  void didUpdateWidget(ShimmerEffect oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Update duration if it changed
+    if (widget.duration != oldWidget.duration) {
+      _shimmerController.stop();
+      _shimmerController.repeat(min: -0.5, max: 1.5, period: widget.duration);
+    }
+    
+    // Update repeat count handling if needed
+    if (widget.repeatCount != oldWidget.repeatCount) {
+      _shimmerRepeatCount = 0;
+      if (oldWidget.repeatCount != null) {
+        _shimmerController.removeStatusListener(_handleAnimationStatus);
+      }
+      if (widget.repeatCount != null && widget.repeatCount! > 0) {
+        _shimmerController.addStatusListener(_handleAnimationStatus);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
-      fit: StackFit.passthrough, // Ensure stack takes the size of its children
+      fit: StackFit.passthrough,
       children: <Widget>[
         // Only show child if showChild is true or shimmer has completed
         if (widget.showChild || 
